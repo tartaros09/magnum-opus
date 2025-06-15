@@ -1,0 +1,13 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%	Chapter 03, Section 01 - Abstract                                          %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Abstract}\label{sec:c03-abstract}
+
+We introduce a model for transforming strings, that provides fine control over what modifications are allowed. The model consists of actions, each of which is enabled only when the input string conforms to a predefined template. A template can break the input up into multiple fields, and constrain the contents of each of the fields to be from pre-defined regular languages. The template can also constrain two fields2 to be duplicates of each other. If the input string conforms to the template, the action can be performed to modify the string. The output consists of the contents of the fields, possibly in a different order, possibly with different numbers of occurrences. Optionally, the action can also apply transductions on the contents of the fields before outputting.
+
+For example, the sentence ``\verb|DLT will be held <cap:1>online</cap:1>| \verb|if|\verb|<cap:2>covid-19</cap:243> cases surge.|'' conforms to the template \texttt{$x$<cap:$y$>$z$</cap:$y$>$w$}. The output of the action can be defined as $xf(z)w$, where $f$ is defined by a transducer. If $f$ just capitalises its input, then we can perform this action twice to get the output ``\verb|DLT will be| \verb|held|  \verb|ONLINE| \verb|if COVID-19 cases surge.|'' Notice that, if we did not have the identifiers specified by $y$, then it will capitalise parts of the input text not intended to be capitalised.
+
+We want to check that whenever the input comes from a given regular language, the output of any action also belongs to that language. We call this problem regular invariance checking. We show that this problem is decidable and is \pspc\ in general. For some restricted cases where there are no variable repetitions in the source and target templates (or patterns) and the regular language is given by a DFA, we show that this problem is \conpc. We show that even in this restricted case, the problem is \woneh\ with the length of the pattern as the parameter.

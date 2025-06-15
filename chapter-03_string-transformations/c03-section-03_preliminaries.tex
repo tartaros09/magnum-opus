@@ -1,0 +1,17 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%	Chapter 03, Section 03 - Preliminaries                                     %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Preliminaries}\label{sec:c03-preliminaries}
+
+The set of all finite strings or words over a finite alphabet $\alphabet$ is denoted $\alphabet^\ast$. The empty string is denoted $\epsilon$. For a string $w$, $|w|$ is its length and $w[i]$ is its $i$\textsuperscript{th} letter.
+
+\paragraph*{Mealy Machines} We consider functions from words to words defined by Mealy Machines as a basic ingredient for our text-transforming actions. These functions are also called pure sequential functions. We recall the definition of Mealy Machines here, slightly simplified to our setting. 
+
+A Mealy machine defining a transduction from $\Sigma^\ast$ to $\Sigma^\ast$ is given by a tuple $\mm = (\mmstate, \mminitial, \mmtrans, \mmout)$ where $\mmstate$ is a finite set of states, $\mminitial \in \mmstate$ is the initial state, $\mmtrans : \mmstate \times \alphabet \to \mmstate$ is the state transition function, and $\mmout : \mmstate \times \alphabet \to \alphabet^\ast$ is the output function.
+
+We naturally extend the functions $\mmtrans$ and $\mmout$ to words instead of letters as follows. We let $\mmtransstar(q,\epsilon) = q$, and  $\mmtransstar(q, wa) = \mmtrans(\mmtransstar(q,w), a)$, where $q \in \mmstate$, $w \in \alphabet^\ast$ and $a \in \alphabet$. Similarly $\mmoutstar(q,\epsilon) = \epsilon$ and $\mmoutstar(q,wa) = \mmoutstar(q,w)\mmout(\mmtransstar(q,w),a)$.
+
+The function defined by $\mm$ is denoted $\fmm{\mm}$. $\fmm{\mm}: \alphabet^\ast \to \alphabet^\ast$ is given by $\fmm{\mm}(w) = \mmoutstar(\mminitial, w)$.

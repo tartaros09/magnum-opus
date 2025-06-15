@@ -1,0 +1,95 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%	Chapter 03, Section 04 - Model                                             %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Model}\label{sec:c03-model}
+
+Let \var{} be a countable set of \emph{variables}. A \emph{pattern} is a string in $(\var \cup \Sigma)^*$. For a pattern $\VARpat$, $\var_\VARpat$ is the set of elements from $\var$ appearing in $\VARpat$, the elements of which will be called \emph{variables of \VARpat}. A \emph{valuation} is a morphism $\sigma : \var \to \Sigma^*$. By abuse of notation, we extend this to a function $\sigma : (\var \cup \Sigma)^* \to \Sigma^*$ by setting it to identity on $\Sigma$, and then naturally extending it to the asterate.  We now define \textit{actions} that transform an input text to an output text.
+
+An \emph{action} $\alpha$ is a 4-tuple $ \alpha := (\spat, \guardL, \T, \tpat)$, where $\spat$, $\tpat$ are (source and target) patterns, $\guardL: \var_\alpha \to \reg(\Sigma)$, $\T :\var_\alpha \to \set{T : T \mbox{ is a transduction over $\alphabet$}}$ are functions. Here $\var_\alpha := \var_\spat \cup \var_\tpat$ and $\reg(\Sigma)$ is the set of regular languages over $\Sigma$.
+
+An action $\alpha = (\spat, \guardL, \T, \tpat)$ is \emph{enabled} at a string $w$ if there exists a valuation $\ssub$ such that $\sigma(\spat) = w$ and $\sigma(x) \in \guardL(x)$ for all $x$ in  $\var_\spat$. We call $\ssub$ an \emph{enabling} valuation of $\alpha$ at $w$. We denote by $\sigma_\alpha$ the valuation defined by $\sigma_\alpha(x)=\T(x)(\sigma(x))$ for all $x$ in $\var$ (recall that $\T(x)$ is a transduction associated with $x$). The action $\alpha$ acts on $w$ using $\alpha$, resulting in the string $\sigma_\alpha(\tpat)$; we denote it by $w\cdot (\alpha, \ssub)$.
+
+\begin{example}\label{example:gpu}
+Suppose configuration information about GPUs allocated to processes are maintained in a text file. One part of  the file stores priorities of processes, using strings of the form ``process 1 : high'', ``process 2 : low'' etc. Another part of the file tracks GPUs allocated to processes, with strings of the form ``process 1 : gpu 1, gpu 2,'', ``process 2 : gpu 3,'' and so on. We describe an action that allows to move a GPU from a low priority process to a high priority one, provided there is still at least one GPU left for the low priority process. The source and target patterns are as follows:\\
+
+\noindent
+\begin{flushright}
+\textbf{Source Pattern:} $x_1 \text{ process }x_2:\text{low }~x_3 
+	\text{ process }x_4:\mathrm{high}~x_5~\text{ process 
+}x_2:~x_6 $ ~ $ \text{ gpu } x_7 ~x_8 ~\text{ process }x_4: x_9 ~ x_{10}.$\\
+%
+\textbf{Target Pattern:} $x_1 \text{ process }x_2:\text{low }~x_3 
+\text{ process }x_4:\mathrm{high}~x_5~\text{ process 
+}x_2:~x_6 $ ~ $ x_8 ~\text{ process }x_4: x_9  \text{ gpu } x_7 ~ x_{10}$.\\
+\end{flushright}
+
+\begin{table}[t]
+	\centering
+\begin{tabular}{|c | l  | p{9cm}|}
+	\hline
+	$\var$ & $\guardL$ & Comments\\
+	\hline
+	\hline
+	$x_1$ & $\Sigma^*$ & filler to match the prefix up to the 
+	position where 	changes are to be made\\
+	\hline
+	$x_2$ & $[0-9]^+$ & Id of the low priority process\\
+	\hline
+	$x_3$ & $\Sigma^*$ & filler\\
+	\hline
+	$x_4$ & $[0-9]^+$ & Id of the high priority process\\
+	\hline
+	$x_5$ & $\Sigma^*$ & filler\\
+	\hline
+	$x_6$ & $(\text{gpu }[0-9]^+,)^+$ &IDs of GPUs currently allocated 
+		to 	process $x_2$,  not to be transferred\\
+		\hline
+			$x_7$ & $[0-9]^*$ &ID of the GPU currently allocated 
+		to 	process $x_2$,   to be transferred to $x_4$\\
+		\hline
+			$x_8$ & $\Sigma^*$ & filler\\
+			\hline
+				$x_9$ & $(\text{gpu }[0-9]^+,)^*$ &IDs of GPUs currently allocated 
+			to 	process $x_4$\\
+			\hline
+			$x_{10}$ & $\Sigma^*$ & filler\\
+\hline			
+\end{tabular}
+\caption{The variables and their guard languages from Example~\ref{example:gpu}.}\label{table:gpu}
+\end{table}
+The guard languages assigned and the intended purpose of the variables 
+are given in Table~\ref{table:gpu}.
+This action will move the gpu $x_7$ from the low priority process $x_2$ to 
+the high priority process $x_4$. If changes to the configuration file 
+are only allowed through this action, then GPUs cannot be moved 
+from high priority to low priority processes.	
+\end{example}
+\smallskip
+
+While changing strings as above, we would like to ensure that the 
+syntactical structure of the strings is not broken. Suppose the 
+contents of the file in the above example belong to the language 
+$(\mathrm{process [0-9]^+}:(\mathrm{high}+\mathrm{low}), )^* 
+(\mathrm{process}[0-9]^+:(\mathrm{gpu}[0-9]^+,)^*)^*$. We want to verify that after applying the actions, the resulting string is still in the 
+language. We formalise this next.
+
+Let $\Sigma$ be a finite alphabet, $L \subseteq \Sigma^*$ be a language and $\alpha$ be an action over $\Sigma$. We denote by
+$\post(L, \alpha)$ the set $\{w \cdot (\alpha, \ssub) \mid  w \in L, \ssub \text{ enables } \alpha \text{ at } w\}$ of results of $\alpha$ acting on strings in $L$. We study the following problem:
+\medskip
+
+\uline{\emph{Invariance-checking Problem}}
+
+\textbf{Input:} Action $\action$, regular language $L$.
+
+\textbf{Question:} $\post(L, \action) \subseteq L$?
+
+\begin{example}
+	Consider an action $\alpha$  with $\spat := xy, \tpat := yx$, $\guardL$ assigns $\Sigma^*$  and $\T$ assigns the identity transduction
+	to all variables. Note that $\post(L,\alpha)=\set{uv \mid vu \in L, u, v \in \Sigma^*}$ is the \emph{rotational closure} of $L$. A
+	given language $L$ is invariant under $\alpha$ only if $L$ is closed under rotations.
+\end{example}
+
+We study the complexity of the invariance-checking problem in the rest of the paper.

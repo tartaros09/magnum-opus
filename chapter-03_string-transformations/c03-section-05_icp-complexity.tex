@@ -1,0 +1,160 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%	Chapter 03, Section 05 - ICP Complexity                                    %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{ICP Complexity}\label{sec:c03-icp-complexity}
+
+\begin{theorem}
+	The invariance-checking problem is in \psp\ if the regular language L is given by an NFA A, and the transduction $\T(x)$ is given by a
+	Mealy machine for each variable $x$.
+\end{theorem}
+
+\begin{proof}
+	It is sufficient to show that checking whether $\post(L(\Aut), \action) \not\subseteq L(\Aut)$ is in \psp. Let
+	$\action := (\spat, \guardL, \T, \tpat)$ be an action. For every $x \in \var_\alpha$, let  $\Aut_x$ be an NFA for $\guardL(x)$. For ease
+	of use in this proof, let $P$ denote $\spat$ and $P'$ denote $\tpat$. 
+	
+	Let  $\ssub: \var_\alpha \to \Sigma^\ast$ be a valuation and $\ssub_\alpha: \var_\alpha \to \Sigma^\ast$ be the valuation defined by
+	$\ssub_\alpha(x) = \T(x)(\ssub(x))$ for every $x \in \var_\alpha$. Checking if $\post(L(\Aut), \action) \not\subseteq L(\Aut)$ is
+	equivalent to checking the existence of a valuation $\ssub$ satisfying the following conditions.
+  	\begin{enumerate}
+  		\item $\ssub(x)\in \guardL(x) $ for all $x \in \var$,
+ 		\item $\ssub(P) \in L(\Aut)$ and
+ 		\item $\ssub_\alpha(P') \not\in L(\Aut)$.
+ 	\end{enumerate}
+	
+	Let $\Aut = (Q, \alphabet, \auttrans, \autinitial, \autfin)$ be the input NFA describing the potential invariant language. Let
+	$\matrixSet(\Aut) = \{0,1\}^{Q \times Q}$ be the set of transformation matrices of $\Aut$. Suppose $\Id $ denotes the identity matrix.
+	The set $\matrixSet(\Aut)$ along with matrix multiplication (over the Boolean semiring) forms a monoid, with $\Id$ as the identity
+	element. Let $h: \Sigma^\ast \to \matrixSet(\Aut)$ be the homomorphism given by $h(a) = \mu_a$ where  $\mu_a \in \matrixSet(\Aut)$
+	denotes the transition matrix for the letter $a$ in $\Aut$.  Note that $h(w)$ is the state transformation induced by the word
+	$w$ --- the $(q, q')$ entry is $1$ in $h(w)$ if and only if there is a path from $q$ to $q'$ in $\Aut$ on the word $w$. Let
+	$e \in \{0,1\}^Q$ be the  row vector whose $q$\textsuperscript{th} entry is $1$ if and only if $q \in Q_\textsf{in}$ and
+	$f^T \in \{0,1\}^Q$ be the column vector whose $q$\textsuperscript{th} entry is $1$ if and only if $q \in Q_\textsf{fin}$. The string
+	$w$ is in $L(\Aut)$ iff $eh(w) f =1$.
+	
+	To check whether $\post(L(\Aut),\alpha) \not\subseteq (L(\Aut))$, in place of checking for the existence of a valuation $\ssub$ as
+	above, we can equivalently check for the existence of functions $g,g' : \alphabet \cup \var_\alpha \to \matrixSet(\Aut)$ satisfying
+	the following conditions.
+	\begin{enumerate}
+		\setcounter{enumi}{3}
+		\item $g(a) = h(a) = g'(a)$ for all $a \in \Sigma$,
+		\item for all $x \in var$, there exists $w_x \in h^{-1}(g(x)) \cap \guardL(x)$ such that $g'(x) = h(\T(x)(w_x))$,
+		\item $e g(P) f = 1$ and
+		\item $e g'(P') f = 0$.
+	\end{enumerate}
+
+	Suppose there is a valuation $\sigma$ satisfying conditions 1---3. Setting $w_x=\sigma(x)$, $g(x)=h(w_x)$ and $g'(x)=h(\T(x)(w_x))$ for
+	all $x\in \var$ will satisfy conditions 4---7. Conversely, suppose there exist functions $g,g'$ satisfying conditions 4---7. Setting
+	$\sigma(x)=w_x$ for all $x \in \var$ will satisfy conditions 1---3.
+
+	Now we give a non-deterministic \psp{} procedure for the invariant checking problem. It will guess functions $g,g'$ and check that they
+	satisfy conditions 4---7. Checking conditions 4, 6 and 7 can be easily done in \psp{}. We will next prove that if there exists a string
+	$w_x$ satisfying condition 5, there exists such a string of length at most exponential in the size of the input, so that its existence can
+	be verified in \psp{}.
+
+	Suppose there exists a string $w_x$ satisfying condition 5. For every $i$ in the set $\set{0,\ldots,|w_x|}$, let $e_i$ be a vector over
+	$\set{0,1}$ defined as follows. The vector $e_i$ is indexed by $Q\times Q\times Q_x\times Q_x\times T_x\times T_x \times Q\times Q$,
+	where $Q$ is the set of states of $\Aut$, $Q_x$ is the set of states in the NFA $\Aut_x$ recognising $\guardL(x)$ and $T_x$ is the set of
+	states in the Mealy machine $M_x$ for $\T(x)$. Let $w[1,i]$ be the restriction of $w$ to positions $1 \ldots i$, with $w[1,0] := \e$, the empty word.
+	The entry of $e_i$ at the index $(q_s^{},q'_s, q_x^{},q'_x,t_x^{},t'_x,q_t^{},q'_t)$ is $1$ iff the following four conditions are
+	satisfied: 1) there is a path from $q_s$ to $q_s'$ on $w[1,i]$ in $\Aut$, 2) there is a path from $q_x$ to $q'_x$ on $w[1,i]$ in $\Aut_x$,
+	3) there is a path from $t_x$ to $t'_x$ on $w[1,i]$ in $M_x$ and 4) there is a path from $q_t$ to $q'_t$ on $\T(x)(w[1,i])$ in $\Aut$.
+	Let $n=|Q|^4 |Q_x|^2|T_x|^2$ and $N=2^n$ be the number of distinct vectors over $\set{0,1}$ indexed by
+	$Q\times Q\times Q_x\times Q_x\times T_x \times T_x \times Q\times Q$ that can exist. If $|w_x| > N$, then there are distinct positions
+	$i,j$ such that $e_i = e_j$. We can drop the portion of $w_x$ between $i$ and $j$ and the resulting string will still satisfy condition 5.
+	We can continue this until we get a string of length at most $N$ that satisfies condition 5. Hence a non-deterministic \psp{} procedure can
+	guess and verify the existence of a string satisfying condition 5, using space linear in $\log N=|Q|^4 |Q_x|^2|T_x|^2$. By Savitch's
+	theorem, there is a \psp\ procedure that does the same.
+
+	Hence, the invariance-checking problem is in \npsp\,, and again by Savitch's theorem, it is in \psp{}.\qed
+\end{proof}
+
+We give complexity lower bounds for the invariance-checking problem under some restrictions on the kind of patterns that are allowed and the
+representation used to specify the invariant language.
+\begin{definition}
+	A pattern $\VARpat$ over $(\var ~ \cup \Sigma)$ is called \emph{copyless} if every variable in \VARpat\ occurs at most once. A pattern
+	is called \emph{copyful} if it is not copyless.
+\end{definition}
+
+\begin{theorem}
+	The invariance-checking problem is \psph\ even if $\T$ is the constant identity transduction function, $\guardL$ is the constant
+	$\Sigma^*$ function and at least one of the following is true: 1) the candidate language is given as an NFA, 2) $\spat$ is copyful
+	or 3) $\tpat$ is copyful.
+\end{theorem}
+
+The proof of the above theorem is split into the following three lemmas. 
+They all give reductions from the following DFA Intersection Problem, which is known to be \pspc\ \cite{K1977}.
+\medskip
+
+\uline{\emph{DFA Intersection Problem}}
+
+\textbf{Input:} DFAs $A_1,A_2, \ldots, A_n$.
+
+\textbf{Question:} $L(A_1) \cap L(A_2) \cap \cdots \cap L(A_n) \neq \emptyset$?
+
+%
+\begin{lemma}
+	Let $A$ be an \textbf{NFA}  and  $\alpha$ be an action 
+	 with a copyless \spat\ and a copyless \tpat. Then the 
+	problem of deciding whether $\post(L(A), \alpha) \not\subseteq L(A)$ 
+	is \psph. 
+\end{lemma}
+%
+\begin{proof}
+	Let $A_1, A_2, \dots, A_n$ be a given instance of the DFA intersection problem. Let $A$ be an NFA over $\{\#\} \cup \alphabet$ recognising
+	the language $\set{\#} \cup \overline{L(A_1)} \cup \overline{L(A_2)} \cup \cdots \cup \overline{L(A_n)}$. Since $A_1, A_2, \dots, A_n$ are
+	DFAs, the NFA $A$ can be constructed in polynomial time. For the action $\alpha$, let the source pattern be \#, and the target pattern be
+	$x$. The guard languages are given by $\guardL(x) := \Sigma^*$, and finally, the function $\T$ assigns the identity transduction to each
+	variable $x$.
+
+	For any string  $w \in L(A)$, the action $\alpha$ is enabled at $w$ using a valuation $\sigma$ iff $\sigma(x)\in \Sigma^*$ and $w = \#$.
+	For such a valuation $\sigma$, $w \cdot(\alpha,\sigma)=\sigma(x)$. Hence $\post(L(A), \alpha) = \Sigma^*$. Also,
+	$\Sigma^* \cap \set{\#} = \emptyset$ which gives us that $\post(L(A), \alpha) \subseteq L(A)$ iff
+	$\Sigma^* \subseteq \overline{L(A_1)} \cup \overline{L(A_2)} \cup \dots \cup \overline{L(A_n)} \iff \bigcap_{i=1}^n L(A_i) = \emptyset$.
+	This completes the reduction.\qed
+\end{proof}
+
+% INT < A010
+\begin{lemma}
+	Let $A$ be a DFA. Let $\alpha$ be an action with a \textbf{copyful} \spat\ and a copyless \tpat. Then the problem of deciding whether
+	$\post(L(A), \alpha) \not\subseteq L(A)$ is \psph.
+\end{lemma}
+%
+\begin{proof}
+	Let $A_1, A_2, \dots, A_n$ be a given instance of the DFA intersection problem. Let $\aut$ be a DFA over  $\{\# \} \cup \alphabet$ for the
+	language $\Sigma^*\#L(A_1)\#L(A_2)\#\dots\#L(A_n).$ Since $A_i$ are all DFAs, the DFA $\aut$ can be constructed in polynomial time. For
+	the action $\alpha$, let the source pattern be $y\#x\#x\#\dots\#x$, where we have $n$ occurrences of the variable $x$, and the target
+	pattern be $x$. Let \guardL\ be the constant $\Sigma^*$ function, and finally, the function $\T$ assigns the identity transduction to each
+	variable $x$.
+	\medskip
+
+	Notice that the target pattern (and hence any result of applying $\alpha$ on any input string) does not contain the symbol \#, but every
+	string in the invariant language contains at least one occurrence of \#. Hence $\post(L(A), \alpha) \subseteq L(A)$ iff
+	$\post(L(A), \alpha) = \emptyset$ iff $\alpha$ is never enabled on $L(A)$ iff $\bigcap_{i=1}^n L(A_i) = \emptyset$. This completes the
+	reduction.\qed
+\end{proof}
+
+% INT < A001
+\begin{lemma}
+	Let $A$ be a DFA. Let $\alpha$ be an action with a copyless \spat\ and a \textbf{copyful} \tpat. Then the problem of deciding whether
+	$\post(L(A), \alpha) \not\subseteq L(A)$ is \psph.
+\end{lemma}
+%
+\begin{proof}
+	Let $A_1, A_2, \dots, A_n$ be a given instance of the DFA intersection problem. Let $A$ be a DFA over the alphabet
+	$\set{\natural} \cup \set{\#} \cup \alphabet$ for the language
+	$\set{\natural} \cup \overline{\left(L(A_1)\#L(A_2)\#\dots\#L(A_n)\right)}$.For the action $\alpha$, let the source pattern be $\natural$,
+	and the target pattern be $x\#x\#\dots\#x$. The guard languages are given by\\ $\guardL(x) := \Sigma^*,~ \forall x$, and finally, the function $\T$
+	assigns the identity transduction to each variable $x$.
+\medskip
+
+	For any string in $w \in L(A)$, the action $\alpha$ is enabled at $w$ using a valuation $\sigma$ iff $\sigma(x)\in \Sigma^*$ and
+	$w = \natural$. For such a valuation $\sigma$, $w \cdot(\alpha,\sigma)=\sigma(x)$. Hence
+	$\post(L(A), \alpha) := \set{w\#w\#\dots\#w \mid w \in \Sigma^*}$. Since $\natural$ is not in $\post(L(A), \alpha)$, we have that
+	$\post(L(A), \alpha) \not\subseteq L(A) \iff$ there exists $w_1 \in \Sigma^*$ such that
+	$w_1\#w_1\#\dots\#w_1 \not\in L(A) \iff w_1 \in L(A_i),\forall i\leq n \iff \bigcap_{i=1}^nL(A_i) \neq \emptyset$. This completes the
+	reduction.\qed
+\end{proof}
