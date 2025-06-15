@@ -1,0 +1,37 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%	Certificates Page                                                          %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\makecertificatepage} {
+	\newpage
+	\cmiheader{\supervisorname}{\supervisoremail}
+	
+	\bigskip
+	\begin{center}
+		{\Huge \bf CERTIFICATE}
+	\end{center}
+	\bigskip
+	
+	{
+		\large
+		I certify that the thesis entitled {\it \bf ``\@title"} submitted for the degree of {\it \bf Doctor of Philosophy in Computer Science} by ``\@author" is the record of research work carried out by him under my guidance and supervision, and that this work has not formed the basis for the award of any degree, diploma, associateship, fellowship or other titles in this University or any other University or Institution of Higher Learning. I further certify that the new results presented in this thesis represent his independent work in a very substantial measure.
+		
+		\vspace{2in}
+		
+		\noindent
+		\begin{minipage}{0.4\textwidth}
+			\begin{flushleft}
+				Chennai Mathematical Institute \\
+				\emph{Date:} \hspace{.1cm} \sdate.
+			\end{flushleft}
+		\end{minipage}
+		\begin{minipage}{0.6\textwidth}
+			\begin{flushright}
+				\emph{\supervisorname}\\
+				\emph{ Supervisors.}
+			\end{flushright}
+		\end{minipage}
+	}
+}

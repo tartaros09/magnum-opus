@@ -1,0 +1,408 @@
+%\theoremstyle{definition}
+%\newtheorem{example}{Example}
+%\newtheorem{observation}{Observation}
+%\newtheorem{definition}{Definition}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem*{proofIdea}{Proof Idea}
+%\spnewtheorem*{proofIdea}{Proof Idea}{\bfseries}{\itshape}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2.1) Calligraphic Letters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mymathbf}[1]{\mathsf{#1}}
+
+\providecommand {\calA}      {{\mathcal A}}
+\providecommand {\calB}      {{\mathcal B}\xspace}
+\providecommand {\calC}      {{\mathcal C}}
+\providecommand {\calD}      {{\mathcal D}\xspace}
+\providecommand {\calE}      {{\mathcal E}\xspace}
+\providecommand {\calF}      {{\mathcal F}\xspace}
+\providecommand {\calG}      {{\mathcal G}\xspace}
+\providecommand {\calH}      {{\mathcal H}\xspace}
+\providecommand {\calK}      {{\mathcal K}\xspace}
+\providecommand {\calI}      {{\mathcal I}}
+\providecommand {\calL}      {{\mathcal L}}
+\providecommand {\calM}      {{\mathcal M}\xspace}
+\providecommand {\calN}      {{\mathcal N}\xspace}
+\providecommand {\calO}      {{\mathcal O}\xspace}
+\providecommand {\calP}      {{\mathcal P}}
+\providecommand {\calO}      {{\mathcal O}\xspace}
+\providecommand {\calQ}      {{\mathcal Q}}
+\providecommand {\calR}      {{\mathcal R}\xspace}
+\providecommand {\calS}      {{\mathcal S}}
+\providecommand {\calT}      {{\mathcal T}\xspace}
+\providecommand {\calU}      {{\mathcal U}\xspace}
+\providecommand {\calV}      {{\mathcal V}\xspace}
+\providecommand {\calX}      {{\mathcal X}\xspace}
+\providecommand {\calZ}      {{\mathcal Z}\xspace}
+
+
+% naturals
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+
+% rationals
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+
+% reals
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+\newcommand{\comm}[1]{\textcolor{blue}{Arc: #1}}
+
+\newcommand{\RBP}{\textsf{RedBluePath}}
+\newcommand{\EP}{\textsf{EvenPath}}
+\newcommand{\DPTP}{\textsf{DisjointPathsTotalParity}}
+\newcommand{\EC}{\textsf{EvenCycle}}
+\newcommand{\DPP}{\textsf{DisjointPaths}}
+\newcommand{\REACH}{\textsf{Reachability}}
+
+\newcommand{\bigo}[1]{$O$\textsf{(#1)}}
+\newcommand{\DFS}{\textsf{DFS}}
+\newcommand{\BFS}{\textsf{BFS}}
+\newcommand{\maxp}{\textsf{MaximalPath}}
+\newcommand{\scmf}{single-crossing-minor-free}
+
+
+%\newcommand{\dotcup}{\mathbin{\dot\cup}}
+%\newcommand{\N}{nondeterministic }
+\newcommand{\shrp}[1]{\mbox{{\sf \##1}}}
+\newcommand{\Log}{\mbox{{\sf L}}}
+\newcommand{\logs}{\mbox{{\sf Logspace}}}
+\newcommand{\LogCFL}{\mbox{{\sf LogCFL}}}
+\newcommand{\LogDCFL}{\mbox{{\sf LogDCFL}}}
+\newcommand{\DSPACE}{\mbox{{\sf DSPACE}}}
+\newcommand{\FNL}{\mbox{{\sf FNL}}}
+\newcommand{\FSL}{\mbox{{\sf FL}$^{{\sf SL}}$}}
+\newcommand{\FL}{\mbox{\sf FL}}
+\newcommand{\NL}{\mbox{{\sf NL}}}
+\newcommand{\coNL}{\mbox{{\sf co-NL}}}
+\newcommand{\UL}{\mbox{{\sf UL}}}
+\newcommand{\StUL}{\mbox{{\sf StUL}}}
+\newcommand{\coUL}{\mbox{{\sf co-UL}}}
+\newcommand{\ULx}{\mbox{{\sf UL $\cap$ co-UL}}}
+%\newcommand{\SPL}{\mbox{{\sf SPL}}}
+%\newcommand{\Ceql}{\mbox{{\sf C=L}}}
+%\newcommand{\Shl}{\mbox{{\sf \#L}}}
+%\newcommand{\ShP}{\mbox{{\sf \#P}}}
+%\newcommand{\pt}{\mbox{$\sf \oplus$}}
+%\newcommand{\lggr}{\mbox{{\sf LGGR}}}
+%\newcommand{\UPM}{\mbox{{\sf UPM}}}
+%\newcommand{\BUPM}{\mbox{{\sf B-UPM}}}
+%\newcommand{\PBUPM}{\mbox{{\sf Pl-B-UPM}}}
+%\newcommand{\PM}{\mbox{{\sf PM}}}
+%\newcommand{\BPM}{\mbox{{\sf B-PM}}}
+%\newcommand{\PBPM}{\mbox{{\sf Pl-B-PM}}}
+%\newcommand{\GGUPM}{\mbox{{\sf GGUPM}}}
+%\newcommand{\Sh}{\mbox{{\sf \#}}}
+\newcommand{\Pt}{\mbox{{\sf P}}}
+%\newcommand{\qP}{\mbox{{\sf quasiP}}}
+\newcommand{\myP}{\mbox{{\sf P}}}
+\newcommand{\NP}{\mbox{{\sf NP}}}
+\newcommand{\RP}{\mbox{{\sf RP}}}
+%\newcommand{\Gl}{\mbox{{\sf GapL}}}
+%\newcommand{\Gs}{\mbox{{\sf GapSAC}$^1$}}
+%\newcommand{\Gsm}{\mbox{{\sf GapSAC}$^1_M$}}
+%\newcommand{\SL}{\mbox{{\sf SL}}}
+\newcommand{\NC}{\mbox{{\sf NC}}}
+\newcommand{\NCo}{\mbox{{\sf NC}$^1$}}
+\newcommand{\NCz}{\mbox{{\sf NC}$^0$}}
+\newcommand{\NCt}{\mbox{{\sf NC}$^2$}}
+\newcommand{\RNC}{\mbox{{\sf RNC}}}
+\newcommand{\CRCWL}[1]{\mbox{{\sf CRCW}$[\log^{#1}n]$}}
+\newcommand{\CRCWl}{\mbox{{\sf CRCW}$[\log n]$}}
+\newcommand{\CRCW}{\mbox{\sf CRCW}}
+\newcommand{\CREWL}[1]{\mbox{{\sf CREW}$[\log^{#1}n]$}}
+\newcommand{\CREWl}{\mbox{{\sf CREW}$[\log n]$}}
+\newcommand{\CREW}{\mbox{\sf CREW}}
+%\newcommand{\CROW}{\mbox{{\sf CROW}$[\log n]$}}
+\newcommand{\EREWl}{\mbox{{\sf EREW}$[\log n]$}}
+\newcommand{\EREW}{\mbox{\sf EREW}}
+%\newcommand{\OROW}{\mbox{{\sf OROW}$[\log n]$}}
+\newcommand{\AC}{\mbox{{\sf AC}}}
+%\newcommand{\bfNC}{\mbox{{\textbf{\textsf{NC}}}}}
+%\newcommand{\bfRNC}{\mbox{{\textbf{\textsf{RNC}}}}}
+%\newcommand{\SC}{\mbox{{\sf SC}}}
+%\newcommand{\SCk}{\mbox{{\sf SC}$^k$}}
+%\newcommand{\RNC}{\mbox{{\sf RNC}}}
+\newcommand{\ACo}{\mbox{{\sf AC}$^1$}}
+%\newcommand{\unambACo}{\mbox{{\sf UAC}$^1$}}
+\newcommand{\ACz}{\mbox{{\sf AC}$^0$}}
+%\newcommand{\ACCz}{\mbox{{\sf ACC}$^0$}}
+\newcommand{\ACU}{\AC$^1$(\ULx)}
+%\newcommand{\TC}{\mbox{{\sf TC}}}
+%\newcommand{\TCz}{\mbox{{\sf TC}$^0$}}
+\newcommand{\SACo}{\mbox{{\sf SAC}$^1$}}
+%\newcommand{\unambSACo}{\mbox{{\sf USAC}$^1$}}
+%\newcommand{\StUAPDA}{\mbox{{\sf StUAPDA($\log$,poly)}}}
+%\newcommand{\UAPDA}{\mbox{{\sf UAPDA($\log$,poly)}}}
+%\newcommand{\DAPDA}{\mbox{{\sf DAPDA($\log$,poly)}}}
+%\newcommand{\NAPDA}{\mbox{{\sf NAPDA($\log$,poly)}}}
+\newcommand{\SAC}{\mbox{{\sf SAC}}}
+\newcommand{\SACt}{\mbox{{\sf SAC}$^2$}}
+%\newcommand{\NCp}[1]{\mbox{{\sf NC}$^{#1}$}}
+%\newcommand{\Shpm}{\mbox{{\sf \#pm}}}
+%%\newcommand{\ShACz}{\mbox{{\sf \#AC$^0$}}}
+%\newcommand{\DynC}{\mbox{{\sf Dyn}$\mathcal{C}$}}
+%\newcommand{\DynP}{\mbox{{\sf DynP}}}
+%\newcommand{\DynTCz}{\mbox{{\sf DynTC$^0$}}}
+%\newcommand{\DynACz}{\mbox{{\sf DynAC$^0$}}}
+%\newcommand{\DynACzt}{\mbox{{\sf DynAC$^0[2]$}}}
+%\newcommand{\DynACzp}{\mbox{{\sf DynAC$^0[p]$}}}
+%\newcommand{\ACzt}{\mbox{{\sf AC$^0[2]$}}}
+%\newcommand{\ACzp}{\mbox{{\sf AC}$^0[p]$}}
+%\newcommand{\ACzpar}{\mbox{{\sf AC}$^0[\oplus]$}}
+
+\newcommand  {\myclass} [1]  {\ensuremath{\textsc{#1}}}
+
+% Layout for static classes
+\newcommand{\StaClass}[1]{\myclass{#1}\xspace}
+
+%  Layout for dynamic classes (absolute and Delta-Semantics)
+%\newcommand{\DynClass}[1]{\myclass{Dyn#1}\xspace}
+%\newcommand{\DynFO}{\DynClass{FO}}
+%
+%\newcommand{\DynFOt}{\mbox{{\sf DynFO[2]}}\xspace}
+%\newcommand{\DynFOar}{\mbox{{\sf DynFO$(+,\!\times\!)$}}\xspace}
+
+%\newcommand{\Canpath}{CanPath}
+%\newcommand{\Crossings}{Crossings}
+%\newcommand{\Ubound}{UpperBound}
+%\newcommand{\Lbound}{LowerBound}
+%\newcommand{\Bound}{Bound}
+\newcommand{\myproblem}[1]{\textsc{#1}}
+%\newcommand{\Mrank}{\myproblem{MatrixRank}\xspace}
+%\newcommand{\InvMatrixV}{\myproblem{InvMatrixV}\xspace}
+%\newcommand{\Reach}{\myproblem{Reach}\xspace}
+%\newcommand{\PMatching}{\myproblem{PerfectMatching}\xspace}
+%\newcommand{\MMatching}{\myproblem{MaxMatching}\xspace}
+\newcommand{\PlanarDFS}{\myproblem{PlDFS}\xspace}
+%\newcommand{\PlanarDistance}{\myproblem{PlDist}\xspace}
+%\newcommand{\PDLP}{\myproblem{PlDAGLongest}\xspace}
+%\newcommand{\TwoSAT}{\myproblem{$2$-Sat}\xspace}
+%
+%\newcommand{\rank}{\ensuremath{\text{rank}}}
+%\newcommand{\Ker}{\ensuremath{\text{Ker}}}
+%\newcommand{\rk}{\rank}
+
+\newcommand{\PRAM}{\textsf{PRAM}}
+
+\newcommand{\tru}{\emph{True}}
+\newcommand{\fal}{\emph{False}}
+
+\newcommand{\sspd}{\sf SSPD}
+\newcommand{\sspds}{\sf SSPDs}
+\newcommand{\DAG}{\sf DAG}
+\newcommand{\DAGs}{\sf DAGs}
+
+% Even path/Disjoint path macros
+
+\newcommand{\reach}{\mbox{\sf REACH}}
+\newcommand{\dist}{\mbox{\sf DIST}}
+\newcommand{\PlanarDistance}{\textsc{PlDIST}\xspace}
+\newcommand{\mxalp}[2]{\mbox{\sf MAXIMAL\_PATH(#1,#2)}}
+
+%-----Indexes------
+\newcommand{\inda}{l}
+\newcommand{\indb}{i}
+\newcommand{\indc}{j}
+\newcommand{\indd}{k}
+\newcommand{\inde}{a}
+\newcommand{\indf}{b}
+\newcommand{\indg}{c}
+
+%---------Tree, Path macros
+\newcommand{\T}{T_G}
+\newcommand{\tlex}{T_l}
+\newcommand{\Tx}{T'_G}
+\newcommand{\Ty}{T'_G}
+\newcommand{\Tc}{R}
+\newcommand{\twh}{\tau_H}
+\newcommand{\rnode}{S}
+\newcommand{\tnode}{T}
+\newcommand{\pnode}[1]{t_{#1}}
+%\newcommand{\lnode}{L}
+\newcommand{\parnode}{H}
+\newcommand{\parnodex}{H'}
+\newcommand{\cent}{central}
+\newcommand{\scc}{strongly connected component}
+\newcommand{\sccs}{strongly connected components}
+\newcommand{\Grem}{G_{rem}}
+%\newcommand{\bigo}[1]{\mathcal{O}(#1)}
+\newcommand{\sep}[1]{$#1$-separator}
+\newcommand{\psep}[1]{$#1$-path separator}
+\newcommand{\wt}{w}
+\newcommand{\tw}{t}
+\newcommand{\du}[1]{{#1}^*}
+\newcommand{\ie}{interior-exterior}
+\newcommand{\inte}[1]{int(#1)}
+\newcommand{\exte}[1]{ext(#1)}
+\newcommand{\frem}{F_{rem}}
+\newcommand{\fnsep}{F_{sep}}
+\newcommand{\fnsepx}[2]{F_{sep}(#1,#2)}
+\newcommand{\lspan}[1]{span(#1)}
+\newcommand{\leftb}[2]{P_\textsf{left}(#1,#2)}
+\newcommand{\sleftb}[2]{P_\textsf{sleft}(#1,#2)}
+\newcommand{\startpt}{start}
+\newcommand{\finpt}{end}
+\newcommand{\dpc}[3]{DP(#1\text{-}#2\text{-}#3)}
+
+\newcommand{\oface}{f_0}
+\newcommand{\ofacex}{f'_0}
+
+%even path macros 
+\newcommand{\main}{main}
+\newcommand{\branch}{branch}
+\newcommand{\lnode}{L}
+\newcommand{\lnodex}{L'}
+\newcommand{\lsfbeg}[1]{begin_{#1}}
+\newcommand{\lsfend}[1]{end_{#1}}
+\newcommand{\csum}[1]{\oplus_{#1}}
+
+\newcommand{\jctxt}{\emph{junction configuration}}
+\newcommand{\jcstxt}{\emph{junction configurations}}
+\newcommand{\jcset}[2]{JC_{#1}({#2})}
+\newcommand{\pctxt}{\emph{piece configuration}}
+\newcommand{\pcset}[1]{PC_{#1}}
+\newcommand{\terminal}{terminal}
+\newcommand{\terminals}{terminals}
+\newcommand{\lclterm}{local terminal}
+\newcommand{\inj}{\emph{in}}
+\newcommand{\outj}{\emph{out}}
+\newcommand{\inoutj}{\emph{in-out}}
+\newcommand{\f}[1]{f_{#1}}
+\newcommand{\formevenp}[3]{\phi_{even:#1\rightarrow #2}(#3)}
+\newcommand{\formoddp}[3]{\phi_{odd:#1\rightarrow #2}(#3)}
+\newcommand{\formdisj}[2]{\phi_{disj}(#1,#2)}
+\newcommand{\parConf}{\mathcal{P}}
+%\newcommand{\parConfx}[1]{\mathcal{P}(#1)}
+\newcommand{\parConfBad}{{\mathcal{P}}_{bad}}
+%\newcommand{\parConfBadx}[1]{\cal{P}_{bad}(#1)}
+\newcommand{\bk}[1]{{#1}_{bad}}
+\newcommand{\bkc}[1]{\widetilde{#1}_{bad}}
+\newcommand{\subc}{\subseteq_c}
+
+\newcommand{\outn}{out-neighbour}
+\newcommand{\outns}{out-neighbours}
+\newcommand{\inn}{in-neighbour}
+\newcommand{\inns}{in-neighbours}
+
+\newcommand{\boolEven}[3]{Even_{#1}(#2,#3)}
+\newcommand{\boolOdd}[3]{Odd_{#1}(#2,#3)}
+\newcommand{\boolViaEven}[4]{ViaEven_{#1}(#2,#3,#4)}
+\newcommand{\boolViaOdd}[4]{ViaOdd_{#1}(#2,#3,#4)}
+
+\newcommand{\dirs}[1]{\emph{Dir}_{#1}}
+\newcommand{\vias}[1]{\emph{Via}_{#1}}
+\newcommand{\dirx}[3]{\text{\emph{Dir}}_{#1}(#2,#3)}
+\newcommand{\via}[4]{\text{\emph{Via}}_{#1}(#2,#3,#4)}
+\newcommand{\snap}[3]{((#1,#2),#3)}
+\newcommand{\snapx}[5]{((#1,#2),(#3,#4),#5)}
+
+\newcommand{\proj}[1]{\mathcal{N}(#1)}
+%\newcommand{\projnet}{projection}
+\newcommand{\projsetU}{\tilde{\mathcal{N}}}
+\newcommand{\projset}[1]{\mathcal{N}(#1)}
+\newcommand{\projsetx}[1]{\mathcal{N'}(#1)}
+
+\newcommand{\leftR}[1]{left(#1)}
+\newcommand{\rightR}[1]{right(#1)}
+
+\newcommand{\leftm}[1]{{#1}^{L}}
+\newcommand{\rightm}[1]{{#1}^{R}}
+
+
+\newcommand{\OPath}{\mbox{OPath}}
+\newcommand{\EPath}{\mbox{EPath}}
+\newcommand{\DEPath}{\mbox{DEPath}}
+\newcommand{\DOPath}{\mbox{DOPath}}
+\newcommand{\DisjEvenPath}{\mbox{DisjEvenPath}}
+\newcommand{\phidisj}[2]{\phi_{disj}(#1,#2)}
+\newcommand{\phipart}[3]{\phi_{part}(#1,#2,#3)}
+\newcommand{\phieven}[1]{\phi^{e}_{s,t}(#1)}
+\newcommand{\phiodd}[1]{\phi^{o}_{s,t}(#1)}
+\newcommand{\phidpp}{\phi_{s_1,t_1,s_2,t_2}}
+\newcommand{\phidppeven}{\phi^{e}_{s_1,t_1,s_2,t_2}}
+
+%mesh separator commands, added by Archit, possible overlap with ACD macros
+\newcommand{\mesh}{\mymathbf{mesh}}
+\newcommand{\seg}{\mymathbf{segment}}
+\newcommand{\segx}[2]{\mymathbf{segment(#1,#2)}}
+\newcommand{\iiseg}{\mymathbf{ i\textsf{-}i\textsf{-}segment}}
+\newcommand{\iisegs}{\mymathbf{i\textsf{-}i\textsf{-}segments}}
+\newcommand{\petal}{\mymathbf{petal}}
+%\newcommand{\fl}[1]{\mymathbf{flower({#1})}}
+\newcommand{\fl}[1]{\mymathbf{flower}({#1})}
+\newcommand{\br}{\mymathbf{bridge}}
+\newcommand{\brclos}[1]{\mymathbf{#1}^{\circ}}
+\newcommand{\brarg}[3]{\mymathbf{#1}^{\circ}_{#2}({#3})}
+\newcommand{\brs}{\mymathbf{bridges}}
+\newcommand{\twobr}{\mymathbf{2\textsf{-}bridge}}
+\newcommand{\thbr}{\mymathbf{3\textsf{-}bridge}}
+\newcommand{\cv}{\mymathbf{central\textsf{-}node}}
+\newcommand{\cen}{\mymathbf{center}}
+\newcommand{\SCC}{\mymathbf{\SCC}}
+\newcommand{\IStxt}{\mymathbf{internal\textsf{-}skeleton}}
+%\newcommand{\M}{\mymathbf{M}}
+\newcommand{\M}{M}
+\newcommand{\closure}[1]{\mymathbf{\widetilde{#1}}}
+\newcommand{\clos}[1]{\widetilde{#1}}
+\newcommand{\IS}[1]{I({#1})}
+\newcommand{\IStwo}[1]{I'({#1})}
+%\newcommand{\wt}{\mymathbf{w}}
+
+\newcommand{\lay}[2]{\mathcal{L}^{#1,#2}}
+
+\newcommand{\sur}{\mathcal{S}}
+
+%--------------------------ACD Macros--------------
+\newcommand{\mycyc}{\circlearrowright}
+\newcommand{\mycycc}{\circlearrowleft}
+\newcommand{\stare}[1]{{#1}^{*}}
+\newcommand{\starc}[1]{{#1}^{\mycyc}}
+\newcommand{\starcc}[1]{{#1}^{\mycycc}}
+\newcommand{\typec}{\starc{\mymathbf{type}}}
+\newcommand{\typecc}{\starcc{\mymathbf{type}}}
+\newcommand{\expc}{\starc{\mymathbf{Exp}}}
+\newcommand{\expcc}{\starcc{\mymathbf{Exp}}}
+\newcommand{\col}{{\mymathbf{Col}}}
+\newcommand{\colc}{\starc{\mymathbf{Col}}}
+\newcommand{\colcc}{\starcc{\mymathbf{Col}}}
+\newcommand{\ellc}{\starc{\ell}}
+\newcommand{\ellcc}{\starcc{\ell}}
+\newcommand{\rd}[1]{\mymathbf{red}({#1})}
+\newcommand{\bl}[1]{\mymathbf{blue}({#1})}
+\newcommand{\cl}{{\mymathbf{Cl}}}
+\newcommand{\clc}{\starc{\mymathbf{Cl}}}
+\newcommand{\clcc}{\starcc{\mymathbf{Cl}}}
+\newcommand{\sccx}{{\mymathbf{S}}}
+
+%------------Courcelle DFS macros---------
+\newcommand{\gaif}[1]{G_{#1}}
+\newcommand{\uod}[1]{|#1|}
+\newcommand{\struct}{\mathcal{A}}
+\newcommand{\tail}[2]{tail(#1,#2)}
+\newcommand{\head}[2]{head(#1,#2)}
+\newcommand{\nxt}{\textsf{NXT}}
+\newcommand{\nxts}{\textsf{NXT}$^*$}
+\newcommand{\ord}{O}
+\newcommand{\lord}[1]{<_{#1}}
+\newcommand{\pord}[2]{<^{#1}_{#2}}
+\newcommand{\mso}{\textsf{MSO}}
+\newcommand{\msot}{\textsf{MSO}$_2$}
+\newcommand{\phiconn}[1]{\phi_{conn}(#1)}
+\newcommand{\phiep}[2]{\phi_{ep}(#1,#2)}
+\newcommand{\phisub}[2]{\phi_{sub}(#1,#2)}
+\newcommand{\phipath}[1]{\phi_{rpath}(#1)}
+\newcommand{\philex}[2]{\phi_{lex}(#1,#2)}
+\newcommand{\phidfs}[2]{\phi_{DFS}(#1,#2)}
+\newcommand{\phiedge}[3]{\phi_{edge}(#3,#2,#1)}
+
+%---------------Tikz commands-----------
+\newlength{\ml}
+\setlength{\ml}{1cm}
+\newlength{\ld}
+\setlength{\ld}{0.5cm}
+\newlength{\hd}
+\setlength{\hd}{2cm}
+

@@ -1,0 +1,66 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%	Declaration Page                                                           %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\cmiheader}[2] {
+	\newpage
+	\thispagestyle{empty} 
+	\noindent
+
+	\begin{minipage}[b]{0.5\textwidth}
+		\begin{tabular}[b]{c|l}
+			\multirow{3}{*} {
+				\includegraphics[width=22mm]{thesis_peripherals/cmi-short-logo.jpg}
+			}
+			&\textsf{CHENNAI}\\
+			&\textsf{MATHEMATICAL}\\  %  [-1.7mm]
+			&\textsf{INSTITUTE}
+		\end{tabular}
+	\end{minipage}
+
+	\begin{minipage}{0.5\textwidth}
+		\begin{flushright}
+			\emph{#1}
+		\end{flushright}
+	\end{minipage}
+
+	\vspace{0.25cm}
+	\hrule
+	{
+		\sftiny
+		\begin{flushright}		
+			\begin{tabular}{r@{\hspace{0pt}}}
+				Plot-H1, SIPCOT IT Park \\
+				Padur Post, Siruseri \\
+				Tamil Nadu, India-603103 \\
+				E-mail:#2 
+			\end{tabular}
+		\end{flushright}
+	}
+}
+
+\newcommand{\makedeclarationpage} {
+	\newpage
+	\cmiheader{\@author}{\@emailauthor}
+	
+	\bigskip
+	\begin{center}
+		{\Huge \bf DECLARATION}
+	\end{center}
+	\bigskip 
+	{ 	
+		\large	
+		I declare that the thesis entitled {\it \bf ``\@title"} submitted by me for the degree of {\it \bf Doctor of Philosophy in Computer Science} is the record of academic work carried out by me under the guidance of Professor \supervisorname~and this work has not formed the basis for the award of any degree, diploma, associateship, fellowship or other titles in this University or any other University or Institution of Higher Learning. 
+		
+		\vspace{2in}
+		
+		\noindent
+		\begin{flushright}
+			{\emph {\@author}}\\
+			Chennai Mathematical Institute \\
+			\emph{} \sdate.
+		\end{flushright}	
+	}
+}

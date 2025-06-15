@@ -1,0 +1,793 @@
+\documentclass[12pt, a4paper]{article}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Used Packages                              %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[automata]{meksa}
+
+\usepackage{extarrows, wrapfig, xspace}
+\usepackage[normalem]{ulem}
+\usepackage{tabularx, environ}
+\usepackage[linguistics]{forest}
+\usepackage{verbatim}
+\usepackage{amsmath, amscd}
+\usepackage{dsfont}
+\usepackage{todonotes}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Common Macros                              %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Short problem names
+\newcommand{\matchingProblem}{\texttt{MTCH}}
+\newcommand{\compatibilityProblem}{\texttt{CMPT}}
+\newcommand{\typecheckingProblem}{\texttt{s-TCP}}
+\newcommand{\metaCompatibilityProblem}{\texttt{m-CMPT}}
+\newcommand{\metaTypecheckingProblem}{\texttt{TCP}}
+\newcommand{\intersectionNonemptiness}{\texttt{DINP}}
+\newcommand{\oneInThreeSat}{\texttt{1in3SAT}}
+\newcommand{\relationRealisability}{\texttt{RLRS}}
+\newcommand{\multipleRelationRealisability}{\texttt{MRLRS}}
+
+% Full problem names
+\newcommand{\matchingProblemFull}{\texttt{Matching Problem}}
+\newcommand{\compatibilityProblemFull}{\texttt{Compatibility Problem}}
+\newcommand{\typecheckingProblemFull}{\texttt{Singleton Type-Checking Problem}}
+\newcommand{\metaCompatibilityProblemFull}{\texttt{Meta Compatibility Problem}}
+\newcommand{\metaTypecheckingProblemFull}{\texttt{Type-Checking Problem}}
+\newcommand{\intersectionNonemptinessFull}{\texttt{Intersection Nonemptiness of DBTA}}
+\newcommand{\oneInThreeSatFull}{\texttt{1-in-3 SAT}}
+\newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability}}
+\newcommand{\multipleRelationRealisabilityFull}{\texttt{Multiple Relation Realisability}}
+
+% Real macros
+\newcommand{\reg}{\mathcal{R}eg}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\bigo}{\mathcal{O}}
+\newcommand{\q}{\overline{\textbf{q}}}
+\newcommand{\x}{\overline{\textbf{x}}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\tsig}{\Trees{\Alphabet}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\pink}[1]{\textcolor{magenta}{#1}}
+\newcommand{\arity}{\texttt{arity}}
+\newcommand{\extendedTransitionRelation}{ETR}
+\newcommand{\D}{\mathcal{D}}
+
+% Fake macros
+\newcommand{\Alphabet}{\ensuremath{\Sigma}}
+\newcommand{\Variables}{\texttt{Var}}
+\newcommand{\Trees}[1]{\ensuremath{\texttt{Trees}\left(#1\right)}}
+\newcommand{\Terms}[1]{\ensuremath{\texttt{Terms}\left(#1\right)}}
+\newcommand{\Contexts}[2]{\ensuremath{\texttt{Contexts}_{#2}\left(#1\right)}}
+\newcommand{\Positions}{\texttt{Positions}}
+\newcommand{\Transitions}{\ensuremath{\Delta}}
+\newcommand{\transition}{\ensuremath{\delta}}
+\newcommand{\substitution}{\ensuremath{\sigma}}
+\newcommand{\contextInducedFunction}{induced function}
+\newcommand{\contextInducedRelation}{induced relation}
+\newcommand{\result}{\texttt{result}}
+\newcommand{\Results}{\texttt{Results}}
+\newcommand{\operator}{\texttt{op}}
+\newcommand{\Functions}{\texttt{Functions}}
+\newcommand{\Relations}{\texttt{Relations}}
+\newcommand{\shape}{\texttt{Shape}}
+\newcommand{\RealisableRelations}[2]{\ensuremath{\texttt{InducedRelations}\left(#1, #2\right)}}
+\newcommand{\pattern}{\mathsf{Pat}}
+\newcommand{\action}{\ensuremath{\mathbf{A}}}
+\newcommand{\automaton}{\ensuremath{\mathcal{A}}}
+\newcommand{\automatonB}{\ensuremath{\mathcal{B}}}
+\newcommand{\Automata}[1]{\texttt{Automata}(#1)}
+\newcommand{\guardFunction}{\ensuremath{\mathcal{G}}}
+\newcommand{\guard}[1]{\ensuremath{\guardFunction(#1)}}
+\newcommand{\maction}{m-action}
+\newcommand{\seedLang}{S}
+\newcommand{\stLang}{T}
+\newcommand{\rep}{\mathit{rep}}
+\newcommand{\start}{\mathsf{start}}
+
+\newcommand{\src}{\mathit{src}}
+\newcommand{\sourcePattern}{\pattern_\src}
+\newcommand{\sourceLang}{\ensuremath{\stLang_{\src}}}
+\newcommand{\sourceAutomatonB}{\ensuremath{\automatonB_{\src}}}
+\newcommand{\sourceMap}{\ensuremath{\phi_{\src}}}
+
+\newcommand{\tgt}{\mathit{tgt}}
+\newcommand{\targetPattern}{\pattern_\tgt}
+\newcommand{\targetLang}{\ensuremath{\stLang_{\tgt}}}
+\newcommand{\targetAutomatonB}{\ensuremath{\automatonB_{\tgt}}}
+\newcommand{\targetMap}{\ensuremath{\phi_{\tgt}}}
+
+\makeatletter
+
+% https://tex.stackexchange.com/a/199244/26355
+\newcolumntype{\expand}{}
+\long\@namedef{NC@rewrite@\string\expand}{\expandafter\NC@find}
+
+\NewEnviron{problem}[2][]{%
+  \def\problem@arg{#1}%
+  \def\problem@framed{framed}%
+  \def\problem@lined{lined}%
+  \def\problem@doublelined{doublelined}%
+  \ifx\problem@arg\@empty%
+    \def\problem@hline{}%
+  \else%
+    \ifx\problem@arg\problem@doublelined%
+      \def\problem@hline{\hline\hline}%
+    \else%
+      \def\problem@hline{\hline}%
+    \fi%
+  \fi%
+  \ifx\problem@arg\problem@framed%
+    \def\problem@tablelayout{|>{\bfseries}lX|c}%0
+    \def\problem@title{\multicolumn{2}{|%
+      >{\raisebox{-\fboxsep}}%
+      p{\dimexpr\textwidth-4\fboxsep-2\arrayrulewidth\relax}%
+      |}{%
+        \textsc{\Large #2}%
+      }}%
+  \else
+    \def\problem@tablelayout{>{\bfseries}lXc}%
+    \def\problem@title{\multicolumn{2}{>%
+      {\raisebox{-\fboxsep}}%
+      p{\dimexpr\textwidth-4\fboxsep\relax}%
+      }{%
+        \textsc{\Large #2}%
+      }}%
+  \fi%
+  \bigskip\par\noindent%
+  \renewcommand{\arraystretch}{1.2}%
+  \begin{tabularx}{\textwidth}{\expand\problem@tablelayout}%
+    \problem@hline%
+    \problem@title\\[2\fboxsep]%
+    \BODY\\\problem@hline%
+  \end{tabularx}%
+  \medskip\par%
+}
+\makeatother
+
+\newcommand{\probdef}[3]{
+\begin{problem}[framed]{#1}
+Input: & #2\\
+Question: & #3
+\end{problem}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Preamble                                   %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Tree Modifications}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Abstract                                   %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+    We introduce and study pattern-based tree transformations. Consider a pair of a source pattern and a target pattern given by
+    \[ \langle +(.(x, y), .(x, z)), .(x, +(y, z)) \rangle \]
+    This source pattern matches any expression $e$ which is of the form $+(.(e_1, e_2), .(e_1, e_3))$, by substituting $e_{1}$ for $x$, $e_{2}$ for $y$ and $e_{3}$ for $z$. Note that the set of such matching expressions is not a regular tree language, since the same expression must appear in two locations where $x$ appears in the source pattern. This pair transforms the expression $e$ into the expression $.(e_1, +(e_2, e_3))$ (obtained by applying the same substitution to the target pattern). Our model finitely represents a (possibly infinite) set of such (source pattern, target pattern) pairs. The expressive power of this model comes at the cost of undecidability of checking equivalence. The type-checking problem checks whether applying a given transformation to trees having a given regular property (type) preserves the property. We show that this problem is decidable for pattern-based tree transformations. Our decision procedure is by a reduction to the emptiness problem of alternating tree automata. 
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Introduction                               %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}\label{sec:introduction}
+
+Tree transformations in various forms of machines and logics have been studied for applications such as XML processing, programming languages and HTML sanitization \cite{MSV2000, K1998, DVLM2015, H2010}. Classical formalisms for specifying tree transductions such as finite-state top-down and bottom-up tree transducers, macro tree transducers, attribute grammars and MSO (Monadic Second-Order) definable graph transductions typically aim for robustness with respect to decidability of the equivalence problem and operations involving regular tree languages.
+
+We introduce a model for tree transductions, targeting scenarios where the domain for which the transduction is defined is not necessarily regular, and undecidability of equivalence does not render the model useless. Expanding on the example from the abstract, consider expressions of the form $t.t_{1} + t.t_{2} + \cdots + t.t_{n}$, where $n$ is any number. An
+equivalent expression is $t.(t_1 + t_2 + \cdots + t_n)$. Transformations like this are routinely used in Horner's method, an efficient way to evaluate polynomials. We model this transformation by matching the source tree with a source pattern and the target tree with a target pattern. The patterns are themselves trees, which can have place holder variables to represent sub-trees like $t$ in the above example, which must repeat in multiple positions. The number $n$ can be arbitrary, so we need infinitely many pairs of patterns. We represent
+such infinite sets (of pairs of patterns) using standard tree transductions. We allow place holder variables in patterns to be substituted with any tree in a guard language associated with the variables. The guard language is a regular tree language. It allows for example to restrict the expression $t$ above to be a valid expression. In this example, the set of source trees to which the transformation is applicable need to have the same sub-tree $t$ repeat in multiple positions. Thus, the set of source trees on which transformations are defined need not be a regular tree language in general, which makes our model different from classical tree transductions. 
+
+The backbone of our model is a finite representation of the infinite set of pairs, each consisting of a source pattern and a target pattern. Such a finite representation can be any formalism for tree transductions; in this paper we have chosen to use bimorphisms for technical convenience. Bimorphisms are given by a regular seed language $\seedLang$ and two morphisms $\phi, \psi$. The transduction is defined as the relation $\{(\phi(t), \psi(t)) \mid t \in \seedLang\}$. Over words, bimorphisms are equivalent to rational transductions \cite{N1968}. Over trees, bimorphisms capture subclasses of tree transducers (cf.~\cite[Section 6.5]{tata} and \cite{E1975}).
+
+Since equivalence checking is undecidable for rational word relations \cite{G1968}, it is undecidable for our model as well. However we show that the type checking problem is decidable. Continuing with our example from above, we may want to check that applying the transformation does not increase the alternation between the operators $.$ and $+$. This can be checked by verifying that if the transformation is applied to any tree from a language $L$ consisting of trees with alternation depth bounded by a constant $c$, the resulting tree is in $L$ as well. On the other hand, for reasons of numerical stability, we may be interested in ensuring that size of sub-trees made up of only $+$ operator is bounded. It can
+be checked that this regular property is not preserved by the transformation. Instead of arithmetic expressions, if we consider Boolean expressions made up of $\land$ and $\lor$ operators, we can reason about expressions being in normal forms like conjunctive normal form, disjunctive normal form etc. We consider the type checking problem in general where the source trees have a property represented by a regular language $T_{1}$ and output trees are required to have a property represented by another (possibly different) regular language $T_{2}$.
+
+The main idea of our decision procedure for the type checking problem is the following observation: if the given instance of the type checking problem is a negative instance, a counter example is a single tree in the seed language $S$, satisfying multiple conditions under multiple transformations. On the source side, applying the morphism $\phi$ to the seed tree and then applying a substitution for the place holder variables should result in a tree in $L_{1}$. On the output side, applying the morphism $\psi$ to the same seed tree and then applying the same substitution for the placeholder variables should result in a tree in $\overline{L_{2}}$. These conditions can be checked by an alternating tree automaton running on trees in the seed language, thus reducing the type checking problem to emptiness checking of alternating tree automata.
+
+Along the way, we consider some related/simpler problems. The simple question of whether a given tree matches a given pattern is \npc, a result known already for words \cite{tata}. The special case of the type checking problem where the transformation is given by a single pair of patterns is \exptc. This generalizes the work of pattern based string transformations \cite{AMP2022} to trees.
+
+In terms of related work, pattern-based text transformations was considered for words in \cite{AMP2022}, but these consisted only of one pair of patterns. We extend this in two ways: by having  transformations of trees, and by having a formalism that consists of potentially infinitely many pairs of patterns. 
+
+\smallskip
+There are many transducer models for trees. Our transformations subsume classical top-down and bottom-up tree transducers, even without any variables, thanks to the bimorphism feature. In fact it subsumes any relation on trees definable by bimorphisms \cite[Chapter 6]{tata}. However it is incomparable to the streaming tree transducers \cite{ADA2017} or macro tree transducers \cite{EV1985}. The domain of the  transformations defined by the latter is a regular tree languages, which need not be the case in our model due to the presence of variables. On the other hand our model cannot recognize transformations which reverses a word (a tree with unary alphabet and an end marker as a leaf), while macro tree transducers and streaming tree transducers can. 
+
+\paragraph*{Organization of the paper}
+In Section~\ref{sec:preliminaries} we recall trees, contexts, alternating tree automata and regular tree languages. In Section~\ref{sec:tech-prel} we make some technical observations about the transformations of states of the automata induced by trees and contexts. This technical part is used later in our proofs. We define our model and state the problems in Section~\ref{sec:modelProblems}, and give our decision procedures in Section~\ref{sec:Results}. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Preliminaries                              %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Preliminaries}\label{sec:preliminaries}
+
+\paragraph*{Sets and Relations}\label{par:setTheory}
+
+We denote the set of positive integers by $\N$ and for $n \in \N$, we denote the set $\{1, \ldots, n\}$ by $[n]$. We also let $\N_0 := \N \cup \{0\}$. For a set $X$ and $n \in \N$, $X^n$ denotes the usual Cartesian power of $X$, consisting of all $n$-tuples of elements in $X$. As a convention, we let $X^0 := \{\natural\}$, a special singleton set.
+%\begin{definition}[Cartesian Power of a Set]\label{def:setPower}
+%    Let $X$ be a set. For a positive integer $n \in \N$, we define the %\emph{$n$-ary Cartesian power}, or just the \emph{$n$-ary power %of} $X$ to be the set $X^n := \{(x_1, x_2, \dots, x_n) \mid x_i \in X, %\forall i \in [n]\}$. As a part of convention, we also define $X^0 := %\{\natural\}$, a special singleton set, for all sets $X$. We also define %$X^* := \bigcup_{k=0}^\infty X^k$.
+%\end{definition}
+For $n \in \N_0$, an $n$-ary relation over $X$ is a subset $R \subseteq X^n$. We let $\Relations(X, n)$ denote the set of all $n$-ary relations on $X$. Finally, we define $\Relations(X) := \bigcup_{k=0}^\infty \Relations(X, k)$.
+%\begin{definition}[Relations on a Set]\label{def:relation}
+%    Let $X$ be a set. For a nonnegative integer $n \in \N\setminus\{0\}$, a \emph{relation} of arity $n$, or an \emph{$n$-ary relation} over $X$ is defined as subset $R \subseteq X^n$. We also define $\Relations(X, n)$ to be the set of all $n$-ary relations on $X$. Finally, we define $\Relations(X) := \bigcup_{k=0}^\infty \Relations(X, k)$.
+%\end{definition}
+
+\paragraph*{Trees and Automata}
+We consider automata over finite ranked trees. We broadly follow notations and definitions from \cite{tata}.
+
+\begin{definition}[Alphabet]\label{def:alphabet}
+    A finite set $\Alphabet := \{f_1/a_1, \dots, f_n/a_n\}$ is called a \emph{finite ranked alphabet} or \emph{alphabet}, where $f_1, \dots, f_n$ are called the \emph{letters}, and $a_1, \dots, a_n$ are nonnegative integers called their corresponding \emph{arities}. We define pairwise disjoint sets $\Alphabet_k := \{f_i \in \Alphabet \mid \mbox{arity of $f_i$ is $k$}\} \subseteq \Alphabet$ for all $k \in \N_0$. We require that $\Alphabet_0 \neq \emptyset$. We also define the arity of $\Alphabet := \max_{i} a_i$.
+\end{definition}
+
+\begin{definition}[Term, Tree]\label{def:tree}
+	A \emph{term} or a \emph{tree} over a ranked alphabet $\Alphabet$ is a partial function $t : \N^* \to \Alphabet$ with the domain $\Positions(t)$ satisfying the following properties:
+	\begin{itemize}
+		\item $\Positions(t)$ is nonempty and prefix-closed.
+		\item $\forall \pi \in \Positions(t), t(\pi) \in \Alphabet_n, n \geq 1 \implies \{j \mid \pi j \in \Positions(t)\} = [n]$.
+		\item $\forall \pi \in \Positions(t), t(\pi) \in \Alphabet_0 \implies \{j \mid \pi j \in \Positions(t)\} = \emptyset$.
+	\end{itemize}
+	We say that a tree is \emph{finite} is $\Positions(t)$ is finite.
+\end{definition}
+In this paper, we will only deal with finite trees, We denote the set of all finite trees over $\Alphabet$ by $\tsig$. A \emph{tree language} is any subset of $\tsig$. Regular tree languages are those recognised by tree automata.
+
+\begin{definition}[Alternating Top-down Tree Automata]\label{def:alternatingTreeAutomaton}
+    A \emph{alternating top-down tree automaton} or \emph{ATTA} over alphabet $\Alphabet$ is a tuple $\automaton := (Q, \Alphabet, I, \Transitions)$, where $Q$ is a finite set of \emph{states}, $I \subseteq Q$ is a set of initial states, and $\Transitions : Q \times \Alphabet \to \B^+(Q \times \N)$ such that $\Transitions(q, f/a) \in \B^+(Q \times [a])$, for all $q \in Q, f/a \in \Alphabet$. We denote by $\B^+(X)$ the set of all positive Boolean combinations of elements in $X$. An ATTA over $\Alphabet$ is called a \emph{nondeterministic (resp.~deterministic) top-down tree automaton} or \emph{NTTA} (resp.~\emph{DTTA}) if for all $q \in Q, f/a \in \Alphabet$, $\Transitions(q, f/a) = \bigvee_{(q_1, \dots, q_a) \in S} \bigwedge_{i=1}^{a} (q_i, i)$, for some $S \subseteq Q^n$ (resp.~$S \subseteq Q^n, |S| = 1$).
+\end{definition}
+
+The semantics of ATTA are defined using runs, which are themselves trees satisfying some conditions.
+\begin{definition}[\{Run, Acceptance\} for ATTA]\label{def:acceptanceByAtta}
+    Given a tree $t \in \tsig$ and an ATTA $\automaton$ over $\Alphabet$, we define a \emph{run} of $\automaton$ on $t$ to be a tree $\rho$ over $Q \times \N^*$ such that $\rho(\epsilon) = (q, \epsilon)$ for some state $q$ and every position $\pi \in \Positions(\rho)$ satisfies the following condition: if $\rho(\pi) = (q, x), t(x) = f/a, \Transitions(q ,f) = \phi$, then there is a subset $S := \{(q_1, i_1), \dotsm (q_n, i_n)\} \subseteq Q \times [a]$ such that $S \models \phi$, the successor positions of $\pi$ in $\rho$ are $\{\pi 1, \dots, \pi n\}$, and $\rho(\pi j) = (q_j, xi_j)$ for all $j \in [n]$. A run is \emph{successful} if $\rho(\epsilon) = (q, \epsilon)$ for some initial state $q \in I$. A tree $t$ is \emph{accepted} by ATTA $\automaton$ if there exists at least one successful run of $\automaton$ on $t$. The set of all trees accepted by ATTA $\automaton$ is called the tree language \emph{recognised} by $\automaton$, and denoted by $L(\automaton) \subseteq \tsig$. A tree language $L \subseteq \tsig$ is called \emph{regular} if there exists an ATTA $\automaton$ such that $L = L(\automaton)$. The set of all regular tree languages over $\Alphabet$ is denoted by $\reg(\Alphabet) \subseteq 2^{\tsig}$.
+\end{definition}
+
+Specifying guard languages using bottom-up tree automata turns out to be technically more convenient.
+\begin{definition}[Nondeterministic Bottom-up Tree Transition System]\label{def:nbtts}
+    Let $\Alphabet$ be a finite alphabet. A \emph{Nondeterministic Bottom-up Tree Transition System} or \emph{NBTTS} over $\Alphabet$ is defined as $\T := (Q, \Alphabet, \Transitions)$, where $Q$ is a finite set of \emph{states}, and $\Transitions : \Alphabet \to \Relations(Q)$ is a function such that $\Transitions(a/k) \in \Relations(Q, k+1)$, for all $a/k \in \Alphabet$. A \emph{Nondeterministic Bottom-up Tree Automaton} or a \emph{NBTA} is a tuple $\automaton := (Q, \Alphabet, \Transitions, F)$, where $(Q, \Alphabet, \Transitions)$ is a NBTTS over $\Alphabet$ and $F \subseteq Q$ is a set of \emph{final} states. If for each $a/k \in \Alphabet$ we have that $\Transitions(a/k)$ is such that for all $q_1, \dots, q_k \in Q$, there exists a unique $q \in Q$ such that $(q_1, \dots, q_k, q) \in \Transitions(a)$, then the corresponding NBTTS is called a \emph{Deterministic Bottom-up Tree Transition System} or \emph{DBTTS}, and the corresponding NBTA is called a \emph{Deterministic Bottom-up Tree Automaton} or \emph{DBTA}. For a given alphabet $\Alphabet$, let the set of all $NBTTS$ over $\Alphabet$ be denoted by $\Automata{\Alphabet}$.
+\end{definition}
+
+\begin{definition}[Acceptance for NBTA]\label{def:acceptanceByNbta}
+    Given a NBTTS $\T := (Q, \Alphabet, \Transitions)$ and a tree $t \in \tsig$, a \emph{run} of $\T$ on $t$ is defined as a tree $\rho : \Positions(t) \to Q$ which is `compatible' with $\Transitions$, i.e., for every position $\pi \in \Positions(t)$, if $t(\pi) = f/n, \rho(\pi) = q$ and $\rho(\pi i) := q_i$ for all $i \in [n]$, then, $(q_1, \dots, q_n, q) \in \Transitions(f)$. The \emph{result} of a run $\rho$ is $\result(\rho) := \rho(\epsilon)$. Given a NBTA $\automaton := (Q, \Alphabet, \Transitions, F)$, and a tree $t \in \tsig$, we say that $t$ is \emph{accepted} by $\automaton$ if and only if there exists a run $\rho$ of $(Q, \Alphabet, \Transitions)$ on $t$ such that $\result(\rho) \in F$. The set of all tree $t$ accepted by a NBTA $\automaton$ is called the language \emph{recognised} by $\automaton$, and is denoted by $L(\automaton) \subseteq \tsig$.
+\end{definition}
+
+Just like a word $w$ can be extended by appending another word to its end, a tree can be extended by appending other trees to designated leaves. This is formalised below, where $ \coprod$ denotes disjoint union.
+
+\begin{definition}[Context]\label{def:context}
+    A \emph{context with arity $n$} or an \emph{$n$-context} over $\Alphabet$ is a tree over the alphabet $\Alphabet \coprod \{\square_1/0, \dots, \square_n/0\}$ such that each letter $\square_i$ appears exactly once in the tree, for all $i \in [n]$. We refer to the positions occupied by $\square_i$ as the \emph{holes} of the context for all $i \in [n]$.
+\end{definition}
+In this paper, we shall only deal with finite contexts. Intuitively, the leaves labeled with $\square_1, \dots, \square_n$, or the holes of the context are the designated positions where other trees can be appended. We denote the set of all finite $n$-contexts over $\Alphabet$ by $\Contexts{\Alphabet}{n}$. We also define $\Contexts{\Alphabet}{} := \bigcup_{n=0}^\infty \Contexts{\Alphabet}{n}$, where we also set $\Contexts{\Alphabet}{0} := \tsig$.
+
+\section{Tracking State Transformations Induced by Trees}\label{sec:tech-prel}
+
+Suppose $\automaton$ is a word automaton with set of states $Q$ and transition relation $\Transitions: \Alphabet \to \Relations(Q,2)$, we can extend it to $\widetilde{\Transitions}: \Alphabet^{*} \to \Relations(Q,2)$ such that $(q_1,q_{2}) \in \widetilde{\Transitions}(w)$ iff $\automaton$ has a run on the word $w$ starting from $q_{1}$ and ending at $q_{2}$. The following definition describes a similar extension for NBTTS.
+
+\begin{definition}[Extended Transition Relation(\extendedTransitionRelation)]\label{def:extendedTransitionRelation}
+    Let $\T := (Q, \Alphabet, \Transitions)$ be a NBTTS. We extend $\Transitions$ to a larger function $\widetilde{\Transitions} : \Contexts{\Alphabet}{} \to \Relations(Q)$ which we call the \emph{Extended Transition Relation} or \emph{\extendedTransitionRelation} as follows. Let $c \in \Contexts{\Alphabet}{k}$. For a tuple $\q := (q_1, q_2, \dots, q_k)$, define the NBTTS
+    \[ \T_{\q} := (Q, \Alphabet\coprod\{\square_1/0, \square_2/0, \dots, \square_k/0\}, \Transitions\coprod\{(\square_i, \{q_i\}) \mid i \in [k] \}). \]
+    Let $\Results(\q) := \{(\q, q) \in Q^{k+1} \mid q \mbox{ is the result of a run of $\T_{\q}$ on $c$.}\}$. Then we define $\widetilde{\Transitions}(c) := \bigcup_{\q \in Q^k} \Results(\q)$. We also refer to the relation $\widetilde{\Transitions}(c)$ as the \emph{relation induced} by the context $c$ on the states of the NBTTS $\T$. Note that for $a \in \Alphabet$, we have that $\widetilde{\Transitions}(a) = \Transitions(a)$.
+\end{definition}
+
+Suppose a word $w_{1}$ is extended by appending another word $w_{2}$ to its end. Now, $\widetilde{\Transitions}(w_{1} \cdot w_{2})$ is obtained by simply composing the relations $\widetilde{\Transitions}(w_{1})$ and $\widetilde{\Transitions}(w_{2})$. For trees, it is more complicated: a tree $t_{1}$ can have multiple ``end points'' where it can be extended by appending other trees. We will need a more complicated way of composing relations.
+
+\begin{definition}[Relational Lifts]\label{def:relationalLift}
+    Let $X$ be a set and $n \in \N\setminus\{0\}$ be a nonnegative integer. Let $\operator \subseteq X^{n+1}$ be a relation. We define the \emph{relational lift} of $\operator$ as a new relation $\widetilde{\operator} \subseteq \Relations(X)^{n+1}$ given as follows: For $R_1, \dots, R_n, R \in \Relations(X)$, we say that $(R_1, R_2, \dots, R_n, R) \in \widetilde{\operator}$ if and only if
+    \begin{itemize}
+        \item $R \in \Relations\left(X, 1+\sum_{j=1}^n i_j\right)$, where $i_j \in \N\setminus\{0\}$ for all $j \in [n]$ are such that $R_j \in \Relations(X, i_j+1)$.
+        \item For all $j \in [n]$, for all $\x_j \in X^{i_j}$, we have
+            $(\x_1, \x_2, \dots, \x_n, y) \in R$ if and only if there
+            exist $y_1, y_2, \dots, y_n \in X$ such that $(\x_j, y_j)
+            \in R_j$ and $(y_1, y_2, \dots, y_n,
+            y) \in \operator$.
+    \end{itemize}    
+\end{definition}
+
+We can think about relational lift as a procedure to compose
+arbitrarily many relations. Another, more abstract way to think about it is as a way
+of ``lifting'' an operator over a set to an operator over relations
+over that same set. In case of automata running on words, for any $a
+\in \Alphabet$ and any $w_{1} \in \Alphabet^{*}$, if we set $\operator
+:= \Transitions(a)$, then $(\widetilde{\Transitions}(w_{1}),
+\widetilde{\Transitions}(w_{1}\cdot a)) \in
+\widetilde{\operator}$. In case of NBTTS running on contexts,
+suppose $c_{1}, \ldots, c_{k}$ are the children of a node labeled
+by the letter $a/k$ and we set $\operator := \Transitions(a)
+\subseteq Q^{k+1}$, then $(\widetilde{\Transitions}(c_{1}),
+\ldots, \widetilde{\Transitions}(c_{k}), R) \in
+\widetilde{\operator}$ implies that $R =
+\widetilde{\Transitions}(a(c_{1}, \ldots, c_{k}))$.
+Note that $\widetilde{\Transitions}|_{\Alphabet} = \Transitions$.
+Intuitively, $\widetilde{\Transitions}$ extends $\Transitions$ such
+that the following diagram commutes.
+   \[\begin{CD}
+       \Alphabet @>>> \Trees{\Alphabet}\\
+       @VV\Transitions V @VV\widetilde{\Transitions}V\\
+       \Relations(Q) @>\sim>> \Relations(\Relations(Q))
+   \end{CD}\]
+
+The following problem and its complexity is an important intermediate technical lemma
+used later.
+\probdef{\relationRealisabilityFull\ (\relationRealisability)}
+{NBTTS $\T := (Q, \Alphabet, \Transitions)$, relation $R \in \Relations(Q)$, NBTA $\D$.}
+{Does there exist $c \in \Contexts{\Alphabet}{} \cap L(\D)$ such that $\widetilde{\Transitions}(c) = R$?}
+As a matter of nomenclature, if the above condition holds for a given $\T, R, \D$, then we say that the relation $R$ is \emph{realisable} by $\T$ under $\D$.
+
+\begin{theorem}\label{thm:relationRealisabilityExptc}
+    \relationRealisability\ is \exptc.
+\end{theorem}
+
+\begin{proof}
+    (Lower Bound) We show a reduction from \intersectionNonemptiness\ to \relationRealisability. We recall that \intersectionNonemptiness\ is defined to be the following problem:
+    \probdef{\intersectionNonemptinessFull\ (\intersectionNonemptiness)}
+    {DBTAs $\automaton_1, \automaton_2, \dots, \automaton_n$.}
+    {Do we have that $\bigcap_{i=1}^n L(\automaton_i) \neq \emptyset$?}
+    We know from~\cite{tata} that \intersectionNonemptiness\ is \exptc. Let $\Alphabet$ be a given finite alphabet, and let $\automaton_1, \dots, \automaton_n$ be an instance of \intersectionNonemptiness, where $\automaton_i := (Q_i, \Alphabet, \Transitions_i, F_i)$ are DBTAs. If $F_i = \emptyset$ for some $i \in [n]$, we must have $L(\automaton_i) = \emptyset$ and hence the intersection $\bigcap_{i=1}^n L(\automaton_i) = \emptyset$. Hence we assume that $F_i \neq \emptyset$ for all $i \in [n]$.
+    
+    Consider a NBTA $\automatonB := \left((\coprod_{i=1}^n Q_i) \coprod \{\top\}, \Gamma := \Alphabet \coprod \{\#/2\}, \Transitions, \{\top\} \right)$, where $\Transitions : \Alphabet \coprod \{\#/2\} \to \Relations(Q)$ if defined as
+    \[ \twopartfunc{\Transitions(a)}{\coprod_{i=1}^n \Transitions_i(a)}{a \in \Alphabet}{\{(q, q', \top) \mid q, q' \in F_i \mbox{ for some } i \in [n] \}}{a = \#} \]
+    Let $R \in \Relations(Q, 2)$ be given by $R := \{(f_i, \top) \mid i \in [n]\}$, where each $f_i$ is an arbitrarily chosen but fixed final state in $F_i$ for each $i \in [n]$. Also consider DBTA \shape\ which recognises all contexts of the form $\#(t, \square)$ where $t \in \Trees{\Alphabet}$. Consider the instance of the realisability problem given by $(\automatonB, R, \shape)$.
+    
+    We can see that $R$ is realisable by $\automatonB \cap \shape$ if and only if there exists a tree $t \in L(\automaton_1) \cap \dots \cap L(\automaton_n)$. Clearly, $R$ is realisable by $\automatonB \cap \shape$ $\iff$ there exists a context $c := \#(t, \square)$ which induces the relation $R$ on the states of $\automatonB$ under $\D$ $\iff$ for each $i \in [n]$ and the labelling of the hole $\square$ with $f_i$, the result of a run of $\automatonB$ on $t$ yields a final state $f_i' \in F_i$ $\iff$ $t$ is recognised by $\automaton_i$ for each $i \in [n]$ $\iff$ $t \in \bigcap_{i=1}^n L(\automaton_i)$. Since we know that \intersectionNonemptiness\ is \expth, we conclude that the realisability problem is also \expth.
+    
+    \medskip
+    
+    (Upper Bound) Let NBTTS $\T := (Q, \Alphabet, \Transitions)$, relation $R \in \Relations(Q, k+1) \subseteq \Relations(Q)$, and NBTA $\D$ be a given instance of \relationRealisability. We reduce the problem of finding a context $c \in \Contexts{\Alphabet}{k} \cap L(\D)$ such that $\widetilde{\Transitions}(c) := R$ to the problem of NBTA nonemptiness. We will define an NBTA $\automaton$ with relations over $Q$ as states such that for any context $c$, the result of a run of $\automaton$ on $c$ is precisely the relation induced by $c$. More formally, we define a NBTA $\automaton$ as: $\automaton := (\bigcup_{i=1}^{k+1} \Relations(Q, i), \Alphabet \coprod \{\square_i/0 \mid i \in [k]\}, \Transitions', \{R\})$, where for all $a/p \in \Alphabet$ we set $\Transitions'(a) := \widetilde{\Transitions(a)}$, the relational lift of $\Transitions(a)$. We also set $\Transitions'(\square_i) := Q$ for all $i \in [k]$.
+    
+    A straight-forward induction on the height of a tree gives us that for a context $c \in \Contexts{\Alphabet}{k} \cap L(\D)$, we have $\widetilde{\Transitions}(c) := R$ if and only if $c \in L(\automaton) \cap L(\D)$. Hence to find a context which `realises' the relation $R$, all we need to do is check $\automaton \cap \D$ for nonemptiness. Let automaton $\D$ have $m$ states. We know from \cite{tata} that checking this NBTA for nonemptiness can be performed in time which is a polynomial in $|Q|$. Since we have that $m|Q| := m|\bigcup_{i=1}^{k+1} \Relations(Q, i)| = m\sum_{i=1}^{k+1}|\Relations(Q, i)| = m\sum_{i=1}^{k+1}2^{|Q|^i}$, we see that given $\T, R, \D$, the problem of \relationRealisabilityFull\ can be solved in \expt.
+\end{proof}
+
+We also observe in the above proof that when we check $\automaton$ for nonemptiness, we actually get a context in the language of the automaton. This means that for each relation which we are checking for realisability, we can also get, in \expt, a context over the alphabet which realises it(if it is realisable). In such a case, we will say that the relation $R$ is \emph{realised} by the context $c$ on the NBTTS $\T$, under $\D$. We also say that $c$ \emph{induces} $R$ on $\T$ under $\D$. 
+For a given pair $(\T, \D)$ with NBTTS $\T$ and NBTA $\D$, we define the set
+\[ \RealisableRelations{\T}{\D} := \{(R, c) \mid \mbox{ $R$ is realised by $c$ on $\T$ under $\D$}\} \]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Model & Problem                            %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Pattern-Based Tree Transformations}\label{sec:modelProblems}
+
+In this section, we define the model we wish to study and describe some problems associated with it. We let $\Alphabet$ be a finite ranked alphabet.
+
+\paragraph*{Model}\label{par:model}
+
+We will need trees, some parts of which are not completely specified and we use variables to denote those parts. A countable set $\Variables := \{ x_i/b_i \mid i \in \N \}$ is called a set of \emph{ranked variables} or \emph{variables}, where the symbols $x_i, i \in \N$ are called the \emph{variables}, and $b_i \in \N, i \in \N$ are called their corresponding \emph{arities}. We define pairwise disjoint sets $\Variables_k := \{x_i \in \Variables \mid \mbox{arity of $x_i$ is $k$}\} \subseteq \Variables$ for all $k \in \N$. We require that each $\Variables_k$ is infinite.
+
+\begin{definition}[Pattern]\label{def:pattern}
+    A \emph{tree pattern} or simply a \emph{pattern} over $\Alphabet$ is defined to be an element $\alpha \in \Trees{\Alphabet \coprod \Variables}$. We also let \emph{$\Variables(\alpha)$} to be the set of all variables appearing in $\alpha$. Note that $\Variables(\alpha) \subseteq \Variables$ is necessarily finite.
+\end{definition}
+
+A pattern can represent multiple trees by substituting contexts for variables contained in the pattern.
+\begin{definition}[Substitution]\label{def:substitution}
+    A \emph{substitution} over the alphabet $\Alphabet$ is a partial function $\substitution : \Variables \to \Contexts{\Alphabet}{}$ such that for all $x/b \in \dom(\substitution)$ we have that $\substitution(x) \in \Contexts{\Alphabet}{b}$.
+\end{definition}
+ Given a $\substitution$, we can naturally extend it to the set of patterns over $\Alphabet$ as follows. Define a tree homomorphism $\widetilde{\substitution} : \Trees{\Alphabet \coprod \dom(\substitution)} \to \Trees{\Alphabet}$ by setting
+\[\twopartfunc{\widetilde{\substitution}(x)}{x}{x \in \Alphabet}{\substitution(x)}{x \in \dom(\substitution)}\]
+and extending it homomorphically. Since $\widetilde{\substitution}|_{\dom(\substitution)} = \substitution$, by abuse of notation we shall write $\widetilde{\substitution}$ as $\substitution$ in places where the distinction is not relevant to the subject.
+
+We would like to control the set of contexts that can be substituted for variables in patterns, for which we use guards. A \emph{guard} over a finite alphabet  $\Alphabet$ is a partial function $\guardFunction : \Variables \to \Automata{\Alphabet}$, which assigns to each variable in its domain, an NBTA over $\Alphabet$. The following formally defines when a pattern matches a tree.
+
+\begin{definition}[Match]\label{def:match}
+    Let $\alpha$ be a pattern over $\Alphabet$, let $t \in \Trees{\Alphabet}$ be a tree. Let $\guardFunction$ be a guard such that $\Variables(\alpha) \subseteq \dom(\guardFunction)$. We say that $t$ \emph{matches} pattern $\alpha$ under $\guardFunction$ if and only if there exists a substitution $\substitution$ with $\Variables(\alpha) \subseteq \dom(\substitution)$ such that:
+    \begin{itemize}
+        \item $\substitution(x) \in L(\guard{x})$ for each $x \in \Variables(\alpha)$.
+        \item $\substitution(\alpha) = t$.
+    \end{itemize}
+    In such a case, $\substitution$ is called a \emph{matching substitution}, and we say $\substitution$ \emph{matches} $t$ to $\alpha$ under $\guardFunction$.
+\end{definition}
+There may exist more than one matching substitution for a given match, for instance, if $a/1, b/1, c/0$ are letters and $x/1, y/0$ are variables, the tree $a-b-b-c$ matches the pattern $x-b-y$ with 2 distinct substitutions $\substitution_1, \substitution_2$ given by $\substitution_1(x) := a, \substitution_1(y) := b-c$ whereas $\substitution_2(x) := a-b, \substitution_2(y) := c$.
+
+The following formalises the tree transformations defined by our model.
+\begin{definition}[Atomic Action]\label{def:atomicAction}
+    Let $\Alphabet$ be a finite alphabet and $\Variables$ be a countable set of variables. An \emph{atomic tree action} or simply, an \emph{atomic action} is an ordered triple $\action := (\sourcePattern, \targetPattern, \guardFunction)$, where $\sourcePattern, \targetPattern$ are patterns over $\Alphabet$ called the \emph{source pattern} and \emph{target pattern} respectively, and $\guardFunction$ is a guard over $\Alphabet$ such that $\Variables(\sourcePattern) \cup \Variables(\targetPattern) \subseteq \dom(\guardFunction)$. For $t \in \Trees{\Alphabet}$, we define the \emph{effect of an atomic action} on $t$ as
+   % \[ \action(t) := \{\substitution(\targetPattern) \mid t \mbox{ matches } \sourcePattern \mbox{ under } \guardFunction \mbox{ with matching substitution } \substitution\} \]
+    \[ \action(t) := \{t' \mid \exists \substitution \mbox{ s. t. } \substitution \mbox{ matches } t  \mbox{ to } \sourcePattern \mbox{ under } \guardFunction \mbox{ and } \substitution \mbox{ matches } t'  \mbox{ to } \targetPattern \mbox{ under } \guardFunction   \} \]
+\end{definition}
+Note that $\action(t) \subseteq \Trees{\Alphabet}$. We naturally extend the effect of $\action$ to tree languages $L$ by setting $\action(L) := \cup_{t \in L}\action (t)$. Our model consists of a possibly infinite set of atomic actions, represented by a bimorphism.
+
+\begin{definition}[Action]\label{def:action}
+    Let $\Alphabet, \Gamma$ be two finite alphabets. Let $\Variables$ be a countable set of variables. An \emph{action} $\action$ is defined as an ordered tuple $\action := (\seedLang, \sourceMap, \targetMap, \guardFunction)$ where
+    \begin{itemize}
+        \item $\seedLang \subseteq \Trees{\Gamma}$ is called the \emph{seed language}.
+        \item $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet \coprod \Variables}$ are tree homomorphisms.
+        \item $\guardFunction$ is a guard over $\Alphabet$.
+    \end{itemize}
+    We define the effect of an action $\action := (\seedLang, \sourceMap, \targetMap, \guardFunction)$ on a tree $t$ as follows: For each $s \in \seedLang$, we define the atomic action $\action_s := (\sourceMap(s), \targetMap(s), \guardFunction)$. Then
+    \[ \action(t) := \bigcup_{s \in \seedLang}\action_s(t) \]
+\end{definition}
+By abuse of notation, we can also extend this effect to tree languages by setting $\action(L) := \bigcup_{t \in L}\action(t)$.
+
+\begin{example}\label{exmp:distributivity1}
+    Expanding further on the example mentioned in the introduction, let $\Alphabet := \{+/2, \times/2, 1/0, 0/0\}$ and $\Gamma := \Alphabet \coprod \{\oplus/2, R/1\}$ be finite ranked alphabets. Let $z/0 \in \Variables$. We define tree homomorphisms $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet \coprod \{z\}}$ by defining
+    \begin{eqnarray*}
+        +(u, v) \xleftarrow{\sourceMap} & +(u, v) & \xrightarrow{\targetMap} +(u, v)\\
+        \times(u, v) \xleftarrow{\sourceMap} & \times(u, v) & \xrightarrow{\targetMap} \times(u, v)\\
+        1 \xleftarrow{\sourceMap} & 1 & \xrightarrow{\targetMap} 1\\
+        0 \xleftarrow{\sourceMap} & 0 & \xrightarrow{\targetMap} 0\\
+        \epsilon(u) \xleftarrow{\sourceMap} & R(u) & \xrightarrow{\targetMap} \times(z, u)\\
+        +(\times(z, u), v) \xleftarrow{\sourceMap} & \oplus(u, v) & \xrightarrow{\targetMap} +(u, v)
+    \end{eqnarray*}
+    and extending the functions to $\Trees{\Gamma}$ tree-homomorphically. This action performs the transformations of arithmetic expressions of the form $t.t_{1} + t.t_{2} + \cdots + t.t_{n}$ into expressions of the form $t.(t_{1} + t_{2} + \cdots + t_{n})$. In the appendix, we give more details of how exactly this is done.
+\end{example}
+
+\begin{example}\label{exmp:distributivity2}
+	We wish to consider a transformation of the form $t_\ell \cdot t_1 \cdot t_r + \dots  + t_\ell \cdot t_n \cdot t_r  \to t_\ell \cdot (t_1 + \dots + t_n) \cdot  t_r$  which provides us with computationally optimal arithmetic expression. 
+	We can achieve this result by considering a pair of patterns $\langle \sourceMap, \targetMap \rangle$ as demonstrated in Figure~\ref{fig:bimorphismExample}. Notice that the variable $z$ captures the context $t_\ell \cdot \square \cdot t_r$.  Notice also that, this transformation is not necessarily correct if $t_\ell$ or $t_r$ contains a $+$. Hence we will impose a guard language which prevents $z$ from containing a $+$. 
+
+	Formally, let $\Alphabet := \{+/2, \times/2, 1/0, 0/0, 2/0, 3/0, 5/0, 7/0\}$ which contains the unary prime numbers also as constants,  and $\Gamma := \Alphabet \coprod \{\oplus/2, R/1\}$ be finite ranked alphabets. Let $z/1 \in \Variables$. We define tree homomorphisms $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet \coprod \{z\}}$ by defining
+    \begin{eqnarray*}
+        +(u, v) \xleftarrow{\sourceMap} & +(u, v) & \xrightarrow{\targetMap} +(u, v)\\
+        \times(u, v) \xleftarrow{\sourceMap} & \times(u, v) & \xrightarrow{\targetMap} \times(u, v)\\
+        1 \xleftarrow{\sourceMap} & 1 & \xrightarrow{\targetMap} 1\\
+        0 \xleftarrow{\sourceMap} & 0 & \xrightarrow{\targetMap} 0\\
+        2 \xleftarrow{\sourceMap} & 2 & \xrightarrow{\targetMap} 2\\
+        3 \xleftarrow{\sourceMap} & 3 & \xrightarrow{\targetMap} 3\\
+        5 \xleftarrow{\sourceMap} & 5 & \xrightarrow{\targetMap} 5\\
+        7 \xleftarrow{\sourceMap} & 7 & \xrightarrow{\targetMap} 7\\
+        \epsilon(u) \xleftarrow{\sourceMap} & R(u) & \xrightarrow{\targetMap} z(u)\\
+        +(z[u], v) \xleftarrow{\sourceMap} & \oplus(u, v) & \xrightarrow{\targetMap} +(u, v)
+    \end{eqnarray*}
+    and extending the functions to $\Trees{\Gamma}$ tree-homomorphically.
+%    This action performs the same task as earlier, except that for this example to work, we require that $z$ be a completely multiplicative context. We can achieve this by specifying a guard language for $z$. 
+    We let $\guard{z}$ to be an NBTA which recognises the language $\Contexts{\times/2, 0/0, 1/0, 2/0, 3/0, 5/0, 7/0}{1}$.
+  %  If we consider an seed example element $s$ given 
+    \begin{figure}
+    \[
+        \begin{forest}
+            for tree={fit=band}
+            [$+$[$z$[$u_1$]][$+$[$z$[$u_2$]][$+$[$z$[$u_3$]][$\vdots$[$+$[$z$[$u_n$]][$0$]]]]]]
+        \end{forest} \xleftarrow{\sourceMap}
+        s := \begin{forest}
+            for tree={fit=band}
+            [$R$[$\oplus$[$u_1$][$\oplus$[$u_2$][$\vdots$[$\oplus$[$u_n$][$0$]]]]]]
+        \end{forest} \xrightarrow{\targetMap}
+        \begin{forest}
+            for tree={fit=band}
+            [$z$[$+$[$u_1$][$+$[$u_2$][$+$[$u_3$][$\vdots$[$+$[$u_n$][$0$]]]]]]]
+        \end{forest}
+    \]
+    \caption{Example of bimorphism}\label{fig:bimorphismExample}
+\end{figure}
+%    where $u_i\in \Trees{\Alphabet}$ for all $i \in [n]$. We see that given an element $s \in \seedLang$, as depicted in Figure~\ref{fig:bimorphismExample}, the pair of patterns $\langle \sourceMap(s), \targetMap(s) \rangle$ will be used to transform an arithmetic expression of the form $t\cdot t_1 + \dots t\cdot t_n$ into the more computationally optimal expression $t \cdot(t_1 + \dots + t_n)$
+\end{example}
+
+\paragraph*{Problems}\label{par:problems} We consider the following problems.
+
+\probdef{\matchingProblemFull\ (\matchingProblem)}
+{Pattern $\pattern$, tree $t$.}
+{Does $t$ match $\pattern$?}
+
+\probdef{\metaTypecheckingProblemFull\ (\metaTypecheckingProblem)}
+{NBTA $\automaton$ over $\Gamma$, NBTAs $\automatonB_1, \automatonB_2$ over $\Alphabet$, tree homomorphisms $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet \coprod \Variables}$, guard $\guardFunction$ over $\Alphabet$.}
+{Does there exist $\tau \in L(\automaton)$ such that $\action_\tau[L(\automatonB_1)]\cap L(\automatonB_2) \neq \emptyset$, where $\action_\tau := (\sourceMap(\tau), \targetMap(\tau), \guardFunction)$.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Results                                    %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Results}\label{sec:Results}
+
+\begin{theorem}[Matching, \cite{MS2019}]\label{thm:matching}
+    \matchingProblem\ is \npc.
+\end{theorem}
+
+\begin{proof}
+    (Upper Bound) Let $(\pattern, t)$ be an instance of \matchingProblem, where $\pattern$ is a pattern over $\Alphabet$ and $t \in \Trees{\Alphabet}$. Let the size of the input be $N := |\pattern| + |t|$. Given a certificate, which is a particular substitution, we can verify whether $\substitution(\pattern) = t$ in $\bigo(|t|)$ time, which is linear in the size of the input $N$. Since there exists a polynomial-time verifier algorithm for the problem, we see that \matchingProblem\ is in \np.
+    \medskip
+
+    (Lower Bound) For this proof, we refer to~\cite{MS2019}, which gives the proof in the case of words. The proof proceeds by obtaining a reduction from \oneInThreeSat. For the sake of completeness we include a version of the proof in the appendix.
+\end{proof}
+
+\begin{definition}[Destination Function]\label{def:destinationFunction}
+    Let $\seedLang, \stLang$ be tree languages over finite ranked alphabets $\Gamma, \Alphabet$ respectively and let $\phi : \Trees{\Gamma} \to \Trees{\Alphabet}$ be a tree homomorphism. For each letter $\gamma/k \in \Gamma$ with $m := \arity(\phi(\gamma))$, we define a function $D_{\phi}(\gamma) : [k] \to 2^{[m]}$ as follows. Since $\phi(\gamma)$ is a context of arity $m$, we label the holes of $\phi(\gamma)$ by the set $[m]$ according to the precedence in the inorder traversal of $\phi(\gamma)$. Then, $D_{\phi}(\gamma)(i) := \{j \in [m] \mid \mbox{ $j^{th}$ hole of $\phi(\gamma)$ is labelled $u_i$}\}$ for all $i \in [k]$. 
+\end{definition}
+
+We illustrate this with an example. Let $\gamma/5 \in \Gamma$ be a letter and let $\phi(\gamma/5)$ be given as in Figure~\ref{fig:destinationFunctionExample}. The numbers in blue denote the order of the vertex in the inorder traversal of $\phi(\gamma)$.
+\begin{figure}
+\[
+    \begin{forest}
+        for tree={fit=band}
+        [$\gamma$[$u_1$][$u_2$][$u_3$][$u_4$][$u_5$]]
+    \end{forest} \xrightarrow{\phi}
+    \begin{forest}
+        for tree={fit=band}
+        [$a$[$x$[$u_1\blue{(1)}$][$u_3\blue{(2)}$]][$b$[$y$[$u_1\blue{(3)}$][$x$[$u_2\blue{(4)}$][$u_4\blue{(5)}$]][$u_1\blue{(6)}$]][$a$[$c$][$u_3\blue{(7)}$]]]]
+    \end{forest}
+\]
+\caption{Example computation of $D_{\phi}(\gamma)$}\label{fig:destinationFunctionExample}
+\end{figure}
+
+Then $D_{\phi}(\gamma) : [5] \to [7]$ would be given by
+
+\begin{tabular}{|c||c|c|c|c|c|}
+    \hline
+    $i$ & 1 & 2 & 3 & 4 & 5 \\\hline
+    $D_{\phi}(\gamma)(i)$ & $\{1, 3, 6\}$ & $\{4\}$ & $\{2, 7\}$ & $\{5\}$ & $\emptyset$ \\\hline
+\end{tabular}
+
+Note that as demonstrated by this example, in each case we must necessarily have that $\{D_{\phi}(\gamma)(i) \mid i \in [k]\}$ is a partition of $[\arity(\phi(\gamma))]$. Intuitively, we also consider the function $D_{\phi}(\gamma)$ as a kind of ``inverse'' of the origin function as mentioned in \cite{B2014}.
+
+\begin{theorem}[Upper Bound]\label{thm:metaTypecheckingUpperBound}
+    \metaTypecheckingProblem\ can be solved in time $2^{\mathsf{polynomial}(\mathsf{input})}$, where the degree of the polynomial also depends on the input. 
+\end{theorem}
+
+\begin{proof}
+    Let $(\automaton, \sourceAutomatonB, \targetAutomatonB, \sourceMap, \targetMap, \guardFunction)$ be a given instance of \metaTypecheckingProblem, where
+    \begin{itemize}
+        \item $\automaton := (P, \Gamma, \Theta, E)$, $\automatonB_i := (Q_i, \Alphabet, \Transitions_i, F_i)$ are NBTAs for $i \in \{\src, \tgt\}$.
+        \item $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet\coprod\Variables}$ are tree homomorphisms.
+        \item $\guardFunction$ is a guard over $\Alphabet$ such that $\Variables(\sourceMap) \cup \Variables(\targetMap) \subseteq \dom(\guardFunction)$, where we define(by abuse of notation) $\Variables(\sourceMap) := \bigcup_{\gamma \in \Gamma} \Variables(\sourceMap(\gamma))$ and $\Variables(\targetMap) := \bigcup_{\gamma \in \Gamma} \Variables(\targetMap(\gamma))$.
+    \end{itemize}
+    Let us define regular languages $\seedLang := L(\automaton), \stLang_i := L(\automatonB_i)$ for $i \in \{\src, \tgt\}$. We see that solving \metaTypecheckingProblem\ is equivalent to finding whether there exists $\tau \in \seedLang$ and a substitution $\substitution$ such that $\substitution(\phi_i(\tau)) \in \stLang_i$ for $i \in \{\src, \tgt\}$. Let $J \subseteq \seedLang$ be given by $J := \{\tau \in \seedLang \mid \exists\substitution\mbox{ such that }\substitution(\phi_i(\tau)) \in \stLang_i, i \in \{\src, \tgt\}\}$. We will construct a number of ATTAs such that the union of the languages they recognise will be equal to $J$. This will imply that solving \metaTypecheckingProblem\ will be a matter of checking each of the correspondingly constructed ATTAs for nonemptiness.
+
+    For each $x \in \Variables(\sourceMap) \setminus \Variables(\targetMap)$, using Theorem~\ref{thm:relationRealisabilityExptc} we compute a priori, the set $\RealisableRelations{\sourceAutomatonB}{\guard{x}}$ of all the relations and corresponding contexts realisable by $\sourceAutomatonB$ under $\guard{x}$. Similarly for each variable $y \in \Variables(\targetMap) \setminus \Variables(\sourceMap)$, we compute $\RealisableRelations{\targetAutomatonB}{\guard{y}}$.
+    For all variables $z \in \Variables(\sourceMap) \cap \Variables(\targetMap)$, we compute the set
+    \[ \RealisableRelations{\sourceAutomatonB \cap \targetAutomatonB}{\guard{z}} \subseteq \Relations(Q_\src \times Q_\tgt) \times \Contexts{\Alphabet}{} \]
+    
+    From this set, we obtain a set $\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}$ of pair of relations that are \emph{simultaneously} realisable by $\sourceAutomatonB$ and $\targetAutomatonB$ along with a context $c \in L(\guard{z})$ that realises both. The idea  is that given an element $((q_\src^{(1)}, q_\tgt^{(1)}), (q_\src^{(2)}, q_\tgt^{(2)}), \dots, (q_\src^{(k+1)}, q_\tgt^{(k+1)})) \in R$, we `split' it into two components $(q_\src^{(1)}, q_\src^{(2)}, \dots, q_\src^{(k+1)})$ and $(q_\tgt^{(1)}, q_\tgt^{(2)}, \dots, q_\tgt^{(k+1)})$. We do this for all elements in $R$ to get a pair of relations $R_\src, R_\tgt$ over $Q_\src, Q_\tgt$ respectively. Then we define $\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}} := \{((R_\src, R_\tgt), c) \mid (R, c) \in \RealisableRelations{\sourceAutomatonB \cap \targetAutomatonB}{\guard{z}}\}$. In other words, we have
+    \[ \RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}} := \{((R_\src, R_\tgt), c) \mid c \in L(\guard{z}), \widetilde{\Transitions_i}(c) = R_i, i \in \{\src, \tgt\}\} \]
+
+    Let us fix a pair of choice functions of realisable relations $R_\src, R_\tgt$ over $\Variables(\sourceMap), \Variables(\targetMap)$ respectively such that
+    \[ \twopartfunc{R_\src(z)}{R \in \pi_1[\RealisableRelations{\automatonB_s}{\guard{z}}]}{z \in \Variables(\sourceMap) \setminus \Variables(\targetMap)}{R' \in \pi_1[\pi_1[\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]]}{z \in \Variables(\sourceMap) \cap \Variables(\targetMap)} \]
+    \[ \twopartfunc{R_\tgt(z)}{R \in \pi_1[\RealisableRelations{\targetAutomatonB}{\guard{z}}]}{z \in \Variables(\targetMap) \setminus \Variables(\sourceMap)}{R'' \in \pi_2[\pi_1[\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]]}{z \in \Variables(\sourceMap) \cap \Variables(\targetMap)} \]
+    and $(R', R'') \in \pi_1[\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]$ for all $z \in \Variables(\sourceMap) \cap \Variables(\targetMap)$. Note that this also provides us with corresponding contexts which realise the chosen relations. Let $C_{R_\src, R_\tgt}$ be a function which assigns to each variable $x$, a context which induces the relation $R_i(x)$ for some $i \in \{\src, \tgt\}$, for the fixed pair $R_\src, R_\tgt$.
+
+    Armed with this, we compute the \extendedTransitionRelation s\ $\widetilde{\Transitions_i}(\phi_i(\gamma))$ for all $\gamma \in \Gamma$ and $i \in \{\src, \tgt\}$ by simply considering each $x \in \Variables(\sourceMap) \cup \Variables(\targetMap)$ as a separate letter with the `transition relation' given by the corresponding $R_i(x)$ and running the corresponding automaton on it.
+
+    For each pair of choice functions $R_\src, R_\tgt$, we define ATTA $\Z_{R_\src, R_\tgt}$ given by
+    \[ \Z_{R_\src, R_\tgt} := \left((P \coprod Q_\src \coprod Q_\tgt \coprod \{\start\}), \Gamma, I := \{\start\}, \Transitions'\right) \]
+    where we define $\Transitions'$ as follows. For a fixed letter $\gamma \in \Gamma$,
+    \begin{itemize}
+        \item For a state $p \in P$, we set
+        \[ \Transitions'(p, \gamma/k) := \bigvee_{(p_1, p_2, \dots, p_k, p) \in \Theta(\gamma)}(p_1, 1) \land (p_2, 2) \land \dots \land (p_k, k) \]
+        This transition basically ensures that the ATTA $\Z_{R_\src, R_\tgt}$ simulates $\automaton$.
+        \item For a state $q \in Q_\src$, we set
+        \[ \Transitions'(q, \gamma/k) := \bigvee_{(q_1, \dots, q_m, q) \in \widetilde{\Transitions_\src}(\sourceMap(\gamma))} \bigwedge_{i \in [k]} \left[\bigwedge_{j \in D_{\sourceMap}(i)}(q_j, i)\right] \]
+        Intuitively, this transition simulates the running of $\sourceAutomatonB$ on $\sourceMap(\tau)$.
+        \item Similarly, for a state $q \in Q_\tgt$, we set
+        \[ \Transitions'(q, \gamma/k) := \bigvee_{(q_1, \dots, q_m, q) \in \widetilde{\Transitions_\tgt}(\targetMap(\gamma))} \bigwedge_{i \in [k]} \left[\bigwedge_{j \in D_{\targetMap}(i)}(q_j, i)\right] \]
+        Intuitively, this transition simulates the running of $\targetAutomatonB$ on $\targetMap(\tau)$.
+        \item Finally, we have an $\epsilon$-transition $\Transitions'(\start, \epsilon/1) := \bigvee_{p \in E, q_\src \in F_\src, q_\tgt \in F_\tgt}((p, 1) \land (q_\src, 1) \land (q_\tgt, 1))$
+    \end{itemize}
+
+    We illustrate this with an example. Let $q \in Q_\src$, and $\gamma/5 \in \Gamma$, i.e., $\gamma$ is a letter with arity 5. Also let $\sourceMap(\gamma)$ be defined as in Figure~\ref{fig:destinationFunctionExample}. Note that we have already completely computed the extended transition relation $\widetilde{\Transitions_\src}(\sourceMap(\gamma))$ given the choice function $R_\src$. In such a case we define $        \Transitions'(q, \gamma/5) :=$
+    \[
+    \bigvee_{(q_1, \dots, q_7, q) \in \widetilde{\Transitions_\src}(\sourceMap(\gamma))} \left[ \underbrace{(q_1, 1) \land (q_3, 1) \land (q_6, 1)}_{D_{\sourceMap}(1) = \{1, 3, 6\}} \land \underbrace{(q_4, 2)}_{D_{\sourceMap}(2) = \{4\}} \land \underbrace{(q_2, 3) \land (q_7, 3)}_{D_{\sourceMap}(3) = \{2, 7\}} \land \underbrace{(q_5, 4)}_{D_{\sourceMap}(4) = \{5\}} \right]
+    \]
+    With this ATTA, we see that an element $\tau \in L(\Z_{R_\src, R_\tgt})$ if and only if $\substitution(\sourceMap(\tau)) \in \sourceLang$ under $\guardFunction$ and $\substitution(\targetMap(\tau)) \in \targetLang$ under $\guardFunction$ where the substitution is given by $\substitution(x) := C_{R_\src, R_\tgt}(x)$ for all $x \in \Variables(\sourceMap) \cup \Variables(\targetMap)$. We see this as follows:
+
+    ($\Leftarrow$) Let $\substitution := C_{R_\src, R_\tgt}$ such that $\substitution(\sourceMap(\tau)) \in \sourceLang$ and $\substitution(\targetMap(\tau)) \in \targetLang$ for some $\tau \in \Trees{\Gamma}$. This implies that for an accepting run of $\sourceAutomatonB$ on $\substitution(\sourceMap(\tau))$, the result of that run is some final state $f_\src \in F_\src$. Similarly for an accepting run of $\targetAutomatonB$ on $\substitution(\targetMap(\tau))$, the result of that run is some final state $f_\tgt \in F_\tgt$. Also, since $\tau \in \seedLang$, there is an accepting run of $\automaton$ on $\tau$ such that the result of that run is $e \in E$. Then we can see that the set $\{e, f_\src, f_\tgt\} \models I$, the starting formula for $\Z_{R_\src, R_\tgt}$. From here the run of $\Z_{R_\src, R_\tgt}$ simulates the run of $\automaton$ on $\tau$, and the runs of $\automatonB_i$ on $\phi_i(\tau)$ for $i \in \{\src, \tgt\}$ conforming to the transition $C_{R_\src, R_\tgt}$. Since all of these are successful runs, the run of $\Z_{R_\src, R_\tgt}$ we described on $\tau$ is also a successful run, and hence $\tau \in L(\Z_{R_\src, R_\tgt})$.
+
+    ($\Rightarrow$) Conversely, let $\tau \in L(\Z_{R_\src, R_\tgt})$. This implies that there is an accepting run of $\Z_{R_\src, R_\tgt}$ on $\tau$. Given the nature of the starting formula $I$, we must have a $e \in E, f_\src \in F_\src, f_\tgt \in F_\tgt$ such that $\{e, f_\src, f_\tgt\} \models I$. Since $\Z_{R_\src, R_\tgt}$ simulates $\automaton$ on $\tau$ and $e \in E$, we see that $\tau \in L(\automaton)$. Since $\Z_{R_\src, R_\tgt}$ also simulates $\automatonB_i$ on $\phi_i(\tau)$ conforming to $C_{R_\src, R_\tgt}$ for all $i \in \{\src, tgt\}$, we see that $\substitution(\phi_i(\tau)) \in \stLang_i$ for $i \in \{\src, \tgt\}$. This completes the proof.
+
+    We know from \cite{tata} that the emptiness problem for ATTA is \exptc\ in the size of the automaton. Note that this computation has been performed for a specific choice of $R_\src, R_\tgt$. Let $\mathcal{R}$ be the set of all pairs of choice functions. To complete the solution of the problem, we need to perform this computation for each pair of choice functions $(R_\src, R_\tgt) \in \mathcal{R}$. We know that $|\mathcal{R}|$ is bounded above by $\prod_{x/k \in \Variables(\sourceMap)}2^{|Q_\src|^{k+1}} \cdot \prod_{y/m \in \Variables(\targetMap)}2^{|Q_\tgt|^{m+1}}$. Let $M_Q := \max\{|Q_\src|, |Q_\tgt|\}$ and $M_\arity := 1+\max\{\arity(x) \mid x \in \Variables(\sourceMap) \cup \Variables(\targetMap)\}$. This gives us that $|\R| \leq \prod_{x/k \in \Variables(\sourceMap)}2^{M_Q^{M_\arity}} \cdot \prod_{y/m \in \Variables(\targetMap)}2^{M_Q^{M_\arity}}$ which eventually gives $|\R| \leq \left(2^{M_Q^{M_\arity0}}\right)^{|\Variables(\sourceMap) \cup \Variables(\targetMap)|}$. We also know that each nonemptiness check requires time given by $2^{\bigo(M_Q)}$. Hence the total time required for all the nonemptiness checks is given by
+    \[ \mbox{Total running time } = 2^{\bigo(M_Q)} \cdot \left(2^{M_Q^{M_\arity}}\right)^{|\Variables(\sourceMap) \cup \Variables(\targetMap)|} \]
+    On simplifying the above, we get that the running time of the algorithm we have provided is $2^{p(M_Q)}$, where $p$ is a polynomial of degree which is also dependent on the size of the input.
+\end{proof}
+
+\paragraph*{Special Case}
+
+We explore a special case of the above theorem, where the seed language $K$ is singleton. For this particular case, we establish a tighter bound.
+
+\probdef{\typecheckingProblemFull\ (\typecheckingProblem)}
+{Atomic action $\action := (\sourcePattern, \targetPattern, \guardFunction)$, NBTAs $\sourceAutomatonB, \targetAutomatonB$.}
+{Do we have that $\action[L(\sourceAutomatonB)] \cap L(\targetAutomatonB) \neq \emptyset$?}
+It is easy to see that this is indeed a case of \metaTypecheckingProblem\ when the seed language is singleton. Clearly if $\automaton$ is such that $L(\automaton) = \{\tau\}$, then we just define/rename patterns $\pattern_\src := \sourceMap(\tau), \pattern_\tgt := \targetMap(\tau)$.
+
+\begin{theorem}[Type Checking]\label{thm:typecheckingProblem}
+    \typecheckingProblem\ is \exptc.
+\end{theorem}
+
+\begin{proof}
+    (Upper Bound) Let $\action := (\sourcePattern, \targetPattern, \guardFunction)$ be an atomic action, and let $\sourceAutomatonB, \targetAutomatonB$ be NBTAs with  
+    $\sourceLang := L(\sourceAutomatonB)$ and $\targetLang := L(\targetAutomatonB)$.
+    To determine whether $\action[\sourceLang] \cap \targetLang \neq \emptyset$, we need to find a substitution $\substitution$ such that $\substitution(\sourcePattern) \in \sourceLang$ and $\substitution(\targetPattern) \in \targetLang$ under $\guardFunction$. We further simplify the problem at hand. Consider a bigger alphabet $\Gamma := \Alphabet \coprod \{\#/2\}$. Let $\pattern$ be a pattern over $\Gamma$ given by $\pattern := \#(\sourcePattern, \targetPattern)$. Let $\automatonB$ be an NBTA over $\Gamma$ which recognises all trees of the form $\#(p_{\mathit{src}}, p_{\mathit{tgt}})$ with $p_{\mathit{src}} \in \sourceLang, p_{\mathit{tgt}} \in \targetLang$. Then \typecheckingProblem\ now reduces to finding a substitution $\substitution$ over $\Gamma$ conforming to $\guardFunction$ such that $\substitution(\pattern) \in \stLang := L(\automatonB)$.
+
+    Let $M := \max \{\arity(x_i) \mid x_i \in \Variables(\pattern)\}$. Let us assume that each variable $x/k \in \Variables(\pattern)$ appears $b(x)$ number of times in $\pattern$. By Theorem~\ref{thm:relationRealisabilityExptc}, for each variable $x$, we choose a pair $(R(x), c(x))$ such that $R(x) \subseteq Q^{k+1}$ is a relation realised by context $c(x) \in \Contexts{\Gamma}{k}$ on $\automatonB$ under $\guard{x}$ with the added condition that $|R(x)| \leq b(x)$. Once we have all such ordered pairs for individual variables, we simply use the substitution $\substitution := c$ and check whether the resulting tree belongs to $T$. This can be done in time given by
+    \[ \bigo(|\automatonB| \cdot \max_x|\guard{x}| + |\pattern| \cdot 2^{|\automatonB| \cdot \max_x|\guard{x}|}) \]
+    The number of times we have to perform this check operation is bounded above by $\left(\max_x\left| \binom{Q^{\arity(x)+1}}{b(x)} \right|\right)^{|\Variables(\pattern)|}$. Hence the total time required for this is given by
+    \[ \left(\max_x\left| \binom{Q^{\arity(x)+1}}{b(x)} \right|\right)^{|\Variables(\pattern)|} \cdot \bigo(|\automatonB| \cdot \max_x|\guard{x}| + |\pattern| \cdot 2^{|\automatonB| \cdot \max_x|\guard{x}|}) \]
+    which we can see is exponential in the size of the input.
+
+    (Lower Bound) We show a reduction from \intersectionNonemptiness\ to \typecheckingProblem. Since \intersectionNonemptiness\ is \expth, we will conclude that \typecheckingProblem is also \expth. Let $\automaton_1, \dots, \automaton_n$ be an instance of \intersectionNonemptiness, where $\automaton_i := (Q_i, \Alphabet, \Transitions_i, F_i)$ are DBTA over the alphabet $\Alphabet$ for all $i \in [n]$. We construct a corresponding instance of \typecheckingProblem\ as follows. Let $\Gamma := \Alphabet \coprod \{\#/n, \flat/0\}$ be a larger alphabet. Consider the atomic action $\action := (\#(\underbrace{x, x, \dots, x}_{n}), \flat, \guardFunction)$ with $\guard{x} := \Trees{\Alphabet}$. Let $\automatonB_{src}$ be a NBTA such that $L_{src} := L(\automatonB_{src}) := \{\#(t_1, t_2, \dots, t_n) \mid t_i \in \Trees{\Alphabet},~\forall i \in [n]\}$. Let $\automatonB_{tgt}$ be an NBTA such that $L_{tgt} := L(\automatonB_{tgt}) := \{\flat\}$.
+
+    We can see that $\action[L_{src}] \cap L_{tgt} \neq \emptyset$ if and only if there exists $t \in \Trees{\Alphabet}$ such that $t \in L(\automaton_i)$ for all $i \in [n]$. This completes the reduction, and thus the proof.
+\end{proof}
+
+Note that this also provides us with a lower bound for \metaTypecheckingProblem.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Conclusion                                 %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusion}\label{sec:Conclusion}
+
+We can think of our model as a black box, which takes as input a formalism of tree transduction and outputs another possibly more powerful formalism of tree transduction. Here we use bimorphisms as input. It would be interesting to study how other transductions like macro tree transducers, streaming tree transducers are affected.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Appendix                                   %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\appendix
+
+\section{Detailed Example}
+
+We work out all details related to Example~\ref{exmp:distributivity1}, As given earlier, let $\Alphabet := \{+/2, \times/2, 1/0, 0/0\}$ and $\Gamma := \Alphabet \coprod \{\oplus/2, R/1\}$ be finite ranked alphabets. Let $z/0 \in \Variables$. We define tree homomorphisms $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet \coprod \{z\}}$ by defining
+\begin{eqnarray*}
+    +(u, v) \xleftarrow{\sourceMap} & +(u, v) & \xrightarrow{\targetMap} +(u, v)\\
+    \times(u, v) \xleftarrow{\sourceMap} & \times(u, v) & \xrightarrow{\targetMap} \times(u, v)\\
+    1 \xleftarrow{\sourceMap} & 1 & \xrightarrow{\targetMap} 1\\
+    0 \xleftarrow{\sourceMap} & 0 & \xrightarrow{\targetMap} 0\\
+    \epsilon(u) \xleftarrow{\sourceMap} & R(u) & \xrightarrow{\targetMap} \times(z, u)\\
+    +(\times(z, u), v) \xleftarrow{\sourceMap} & \oplus(u, v) & \xrightarrow{\targetMap} +(u, v)
+\end{eqnarray*}
+and extending the functions to $\Trees{\Gamma}$ tree-homomorphically. We let seed language $\seedLang \in \reg(\Gamma)$ be the set of all tree $s$ of the form
+\[
+    s := \begin{forest}
+        for tree={fit=band}
+        [$R$[$\oplus$[$u_1$][$\oplus$[$u_2$][$\dots$[$\oplus$[$u_n$][$0$]]]]]]
+    \end{forest}
+\]
+where $u_i\in \Trees{\Alphabet}$ for all $i \in [n]$. We see that given an element $s \in \seedLang$, we have
+\[
+    \sourceMap(s) := \begin{forest}
+        for tree={fit=band}
+        [$+$[$\times$[$z$][$u_1$]][$+$[$\times$[$z$][$u_2$]][$+$[$\times$[$z$][$u_3$]][$\dots$[$+$[$\times$[$z$][$u_n$]][$0$]]]]]]
+    \end{forest}
+    \targetMap(s) := \begin{forest}
+        for tree={fit=band}
+        [$\times$[$z$][$+$[$u_1$][$+$[$u_2$][$+$[$u_3$][$\dots$[$+$[$u_n$][$0$]]]]]]]
+    \end{forest}
+\]
+We also set the guard $\guard{z}$ to be the NBTA such that $L(\guard{z}) := \Trees{\Alphabet}$
+We see that using this action $\action := (\seedLang, \sourceMap, \targetMap, \guardFunction)$, we can can convert a arithmetic expression of the form $t\cdot t_1 + t\cdot t_2 + \dots + t\cdot t_n$ to an expression of the form $t\cdot(t_1 + t_2 + \dots + t_n)$. This is important since multiplication is an expensive operation in terms of processing power, and we would like to optimise the number of multiplications for a given arithmetic expression.
+
+\section{Proof of Lower Bound for \matchingProblem}
+
+\probdef{\matchingProblemFull\ (\matchingProblem)}
+{Pattern $\pattern$, tree $t$.}
+{Does $t$ match $\pattern$?}
+
+\begin{theorem}[Matching, \cite{MS2019}]\label{thm:matchingSngltn}
+    \matchingProblem\ is \nph.
+\end{theorem}
+
+\begin{proof}
+    We present a version of the proof adapted from \cite{MS2019}. The proof proceeds by establishing a reduction from \oneInThreeSatFull, which is defined below.
+    \probdef{\oneInThreeSatFull\ (\oneInThreeSat)}
+    {3CNF formula $\phi$ without negated variables.}
+    {Is there a truth assignment to the variables of $\phi$ such that every clause contains exactly one literal that is true and $\phi$ evaluates to true?}
+    We know from~\cite{S1978} that \oneInThreeSat\ is \npc.    
+    Let $\{J(v_{f(3i-2)}, v_{f(3i-1)}, v_{f(3i)}) \mid i \in [n]\}$ be an instance of \oneInThreeSat, where $V := \{v_1, \dots, v_k\}$ is a finite set of variables and $f : [3n] \to [k]$. We also have $J$ to be a function which evaluates to true iff exactly one of its arguments is set to true, and false otherwise.
+    
+    Let $\Alphabet := \{a/1, \#/1, \lambda/0\}$ be a ranked alphabet and $\Variables := \{x_i/1 \mid i \in \N\}$ be a set of ranked variables. Consider a pattern $\pattern$ over $\Alphabet$ given by
+    \[ \pattern := x_{f(1)}x_{f(2)}x_{f(3)}\#\dots\#x_{f(3i-2)}x_{f(3i-1)}x_{f(3i)}\#\dots\#x_{f(3n-2)}x_{f(3n-1)}x_{f(3n)}\lambda. \]
+    and a tree over $\Alphabet$ given by $t := a\#a\#\dots\#a\#\dots\#a$, where the number of $a$'s in the tree is $n$. We see that the only substitution $\substitution : V \to \{a, \epsilon\}$ which matches $t$ to $\alpha$ is the one which assigns each true variable to $a$ and every false variables to $\epsilon$. Hence we get that a solution for the original instance of \oneInThreeSat\ exists if and only if a solution for the corresponding \matchingProblem\ has a solution. This completes the reduction.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Bibliography                               %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\bibliographystyle{plainurl}
+\bibliography{../references}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Storage                                    %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% % List of different predefined enumeration styles:
+% % itemize, enumerate, alphaenumerate, romanenumerate, bracketenumerate, description
+
+% % List of different predefined enumeration styles:
+% % theorem, lemma, corollary, proposition, conjecture, observation, exercise, definition, example, note, note*, remark, remark*, claim, claim*, proof, claimproof.
+
+% \begin{comment}
+
+% \begin{lemma}\label{findSubstitutionWithDinp}
+%     Let $\automaton := (Q, \Alphabet, \Transitions, F)$ be a NBTA\@. Let $K := \{\q_1, \q_2, \dots, \q_n\}$ be a set of $k$-conditions. Then we can find a $t \in \Contexts{\Alphabet}{k}$ such that $t$ satisfies $\q_i$ for all $i \in [n]$ in $\bigo(2^{n})$ time.
+% \end{lemma}
+
+% \begin{proof}
+%     Let $\Gamma := \Alphabet \coprod \{x_1/0, x_2/0, \dots, x_k/0\}$. For the condition $\q_i$, we define DBTA $\automaton_i := (Q, \Gamma, \Transitions \coprod \{x_j \to q_{ij} \mid j \in [k]\}, \{q_{i(k+1)}\})$. We can see that a context $t \in \Contexts{\Alphabet}{k}$ satisfies $\q_i$ if and only if $L(\automaton_i)$ is nonempty. Consider the DBTAs $\automaton_1, \automaton_2, \dots, \automaton_n$. We will have that a context $c \in \Contexts{\Alphabet}{k}$ satisfies all the conditions in $K$ if and only if the intersection $L(\automaton_1) \cap \dots \cap L(\automaton_n) \neq \emptyset$. This is exactly an instance of \intersectionNonemptiness, and just like \intersectionNonemptiness, we can also find a tree belonging to the intersection in by performing a BFS but this time also keeping a track of the letters encountered instead of just keeping a track of whether a certain node has been reached or not. This can be done in $\bigo(2^n)$ time, thus completing the proof.
+% \end{proof}
+
+% \begin{theorem}[Upper Bound]
+%     \metaCompatibilityProblem\ is in.
+% \end{theorem}
+
+% \begin{proof}
+%     Let $\automaton := (P, \Gamma, \Theta, E), \automaton_1 := (Q, \Alphabet, \Transitions, F), \phi : \Trees{\Gamma} \to \Trees{\Alphabet \coprod \Variables}, G$ be an instance of \metaCompatibilityProblem. Let $L := L(\automaton), L_1 := L(\automaton_1)$. Let $J \subseteq L$ be defined by $J := \{\tau \in L \mid \mbox{ Some tree in $L_1$ matches $\phi(\tau)$ under $G$}\}$. We will construct an ATTA $\Z$ such that $L(\Z) = J$. This would imply that solving \metaCompatibilityProblem\ will be a matter of checking the nonemptiness of the correspondingly constructed ATTA.
+
+%     By abuse of notation, we define $\Variables(\phi) := \bigcup_{\gamma \in L}\Variables(\phi(\gamma))$, the set of all variables occurring in the image of $\phi$. Note that $\Variables(\phi) \subseteq \Variables$ is a necessarily finite set. For each $x \in \Variables(\phi)$, let $\G(x)$ be a DBTA recognising the regular language $G(x)$. For each $x \in \Variables(\phi)$, let $\RealisableRelations{\automaton_1}{G(x)}$ be the set of all relations \red{realisable under $G(x)$}, which we can compute a priori using Theorem \ref{thm:relationRealisabilityExptc}.
+
+%     Let us fix a choice function of realisable relations $R$, which assigns, to each variable $x \in \Variables(\phi)$, a realisable relation $R(x) \in \RealisableRelations{A_1}{G(x)}$ \red{under $G(x)$}. Note that this also provides us with contexts $c(x) \in \Contexts{\Alphabet}{}$ such that $\widetilde{\Transitions}(c(x)) = R(x)$ for all $x$. Armed with this, \red{we compute the \extendedTransitionRelation\ $\widetilde{\Transitions}(\phi(\gamma))$ for all $\gamma \in \Gamma$}. Also, for each choice function $R$, we define ATTA $\Z_R := (P\coprod Q \coprod \{i\}, \Gamma, \{i\}, \Transitions')$ where we define $\Transitions'$ as follows. For a state $p \in P$ and a letter $\gamma \in \Gamma$, we set
+%     \[ \Transitions'(p, \gamma/k) := \bigvee_{(p_1, p_2, \dots, p_k, p) \in \Theta(\gamma)}(p_1, 1) \land (p_2, 2) \land \dots \land (p_k, k) \]
+%     This transition basically ensures that the ATTA $\Z$ `simulates'
+%     $\automaton$. For $q/k \in Q, \gamma \in \Gamma$ we consider the
+%     following example from Definition~\ref{def:destinationFunction}: let $\phi(\gamma)$ be defined as follows:
+%     \[
+%         \begin{forest}
+%             for tree={fit=band}
+%             [$\gamma$[$u_1$][$u_2$][$u_3$][$u_4$][$u_5$]]
+%         \end{forest} \xrightarrow{\phi}
+%         \begin{forest}
+%             for tree={fit=band}
+%             [$a$[$x$[$u_1$][$u_3$]][$b$[$y$[$u_1$][$x$[$u_2$][$u_4$]][$u_1$]][$a$[$c$][$u_3$]]]]
+%         \end{forest},~~~~~~~~~~
+%     \]
+%     In such a case, we define 
+%     \[
+%         \Transitions'(q, \gamma/5) := \bigvee_{(q_1, \dots, q_7, q) \in \widetilde{\Transitions}(\phi(\gamma))} \left[ (q_1, 1) \land (q_2, 3) \land (q_3, 1) \land (q_4, 2) \land (q_5, 4) \land (q_6, 1) \land (q_7, 3) \right]
+%     \]
+%     In general, for an arbitrary $\phi$ we define
+
+%     Finally, we add the $\epsilon$-transition
+%     \[ \Transitions'(i, \epsilon) := \bigvee_{p \in E, q \in F} (p \land q) \]
+%     With this ATTA, we see that \red{an element $\tau \in L(\Z_R)$ if and only if $\substitution(\phi(\tau)) \in L_1$ under $G$, where the substitution is given by $\substitution(x) := c(x)$ for all $x$.} We know from \cite{tata} that the emptiness problem for ATTA is \exptc. Note that this computation has been performed for a specific choice of $R$. Let $\R$ be the set of all choice functions. To complete the solution of the problem, we need to perform this computation for each choice function $R \in \R$, which was chosen at the start of the proof. We know that $|\RealisableRelations{\automaton_1}{G(x/k)}|$ is bounded above by $2^{|Q|^{k+1}}$. Hence $|\R|$ is bounded above by $\prod_{x/k \in \Variables(\phi)} 2^{|Q|^{k+1}}$. If we set $m := \max_{x \in \Variables(\phi)}\arity(x)$, then we have $|\R| \leq 2^{m|Q|^{k+1}}$. \red{WIP}.
+% \end{proof}
+
+% \begin{theorem}[Upper Bound]
+%     \compatibilityProblem\ is in \expt.
+% \end{theorem}
+
+% \begin{proof}
+%     Let $\alpha, L, G$ be a given instance of \compatibilityProblem.
+%     Let $\automaton := (Q, \Alphabet, \Transitions, F)$ be a NBTA that
+%     recognises $L$. For each variable $x$ appearing in $\alpha$, let
+%     $\G_x$ be a DBTA recognising $G(x)$. Let $\Variables_\alpha :=
+%     \{x_1/a_1, \dots, x_m/a_m\}$ be the set of variables occurring in
+%     $\alpha$, with each $x_i$ appearing $b_i$ times, for all $i \in
+%     [m]$. Let $M := \max_i a_i$ be defined as the \emph{arity of
+%     $\Variables_\alpha$}. For each $x_i \in \Variables_\alpha$, and
+%     each set $K_i \subseteq Q^{a_i+1}$ with $|K_i| = b_i$, we find, by
+%     Lemma~\red{WIP}, a $t \in \Contexts{\Alphabet}{a_i}$ such that $t$ satisfies all the conditions in $K_i$ with respect to the DFTA $\automaton \times \G_{x_i} \times \C_{a_i}$, where $\C_p$ is a DFTA recognising all contexts with arity $p$. Once we have all such substitutions for individual variables in place, we simply substitute the corresponding trees in place of variables and check whether the resulting tree belongs to $L$. This can be done in XXX time. Also, the number of times we have to perform this membership check is given by ${\left(\max_i\left|\binom{Q^{a_i+1}}{b_i}\right|\right)}^m$. We know that $|\C_p| = \bigo(p)$. If we let the size of the input be $N := |\alpha| + |L| + |G|$. We see that \compatibilityProblem\ can be solved in time 
+%     \[ \bigo(|\automaton| \cdot \max_i|\G_{x_i}| \cdot \bigo(M) + |\alpha|\cdot 2^{|\automaton| \cdot \max_i|\G_{x_i}| \cdot \bigo(M)}) \cdot {\left(\max_i\left|\binom{Q^{a_i+1}}{b_i}\right|\right)}^m \cdot \bigo(2^{b_i}) \]
+%     which after simplification yields $\bigo(2^{\bigo(N^2)})$. Hence, we get that \compatibilityProblem\ is in \expt, thus completing the proof.
+% \end{proof}
+
+% \end{comment}

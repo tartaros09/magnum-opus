@@ -1,0 +1,30 @@
+\newcommand{\HRule}{\rule{\linewidth}{2.5mm}}  %  New command to make the lines in the title page.
+
+\renewcommand\maketitle {
+	\begin{titlepage}\begin{spacing}{1.5} {
+		\fontsize{12pt}{1em}
+		\begin{center}
+			\HRule \\[1cm]  %  Horizontal line.
+			{\Huge \bfseries \@title}\\[0.8cm]  %  Thesis title.
+			\HRule \\  %  Horizontal line.
+			
+			\vspace{1cm}
+			\emph{\bf \large{By}} \\
+			\vspace{1cm}
+			\emph{\bf \LARGE{\@author}}
+			
+			\vspace{3cm}
+			\large{\textit{A synopsis of thesis submitted in partial fulfilment of the requirements\\ for the degree of Doctor of Philosophy}} \\[0.4cm]  %  University requirement.
+		    \large{\textit{to}} \\[0.4cm]
+			
+		    \large{Chennai Mathematical Institute}\\  %  University name.
+		    \large{\sdate} \vfill \vspace{1cm}
+		    \includegraphics[width=7.5cm]{thesis_peripherals/cmi-full-logo.png}
+		    \begin{center}\large{
+				% Chennai Mathematical Institute \\
+				Plot-H1, SIPCOT IT Park, \\ Siruseri, Kelambakkam, \\ Tamilnadu - 603103 \\ India}
+			\end{center}
+		\end{center}
+	}
+    \end{spacing}\end{titlepage}
+}

@@ -1,0 +1,638 @@
+\documentclass[12pt, a4paper]{article}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Used Packages                              %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[automata]{meksa}
+
+\usepackage{extarrows, wrapfig, xspace}
+\usepackage[normalem]{ulem}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Common Macros                              %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*\pa[1]{\textsf{A}{#1}}
+\newcommand{\sn}{\ensuremath{\mathfrak{S}_n}}
+\newcommand{\eac}{\ensuremath{\e}-\textsf{ACCEPT}}
+\newcommand{\sts}{\ensuremath{\textsf{start}_\textsf{src}}}
+\newcommand{\stt}{\ensuremath{\textsf{start}_\textsf{tgt}}}
+\newcommand{\eds}{\ensuremath{\textsf{end}_\textsf{src}}}
+\newcommand{\edt}{\ensuremath{\textsf{end}_\textsf{tgt}}}
+\newcommand{\len}{\textsf{len}}
+
+% Macros for Complexity classes
+
+\newcommand{\nin}{\textsf{INT}}
+\newcommand{\uln}{\textsf{ULN}}
+\newcommand{\scsr}{\ensuremath{\mathcal{S}}-\textsf{CSR}}
+\newcommand{\tvs}{\mbox{\textvisiblespace}}
+\newcommand{\A}{\aut}
+\newcommand{\reg}{\mathcal{R}eg}
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\undo}{\textsf{undo}}
+\newcommand{\Beta}{\mathrm{B}}
+\newcommand{\var}{\textsf{var}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\T}{\textsf{transd}}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+\newcommand{\post}{\textsf{post}}
+\newcommand{\ssub}{\sigma} %\textsf{sourcevaluation}}
+\newcommand{\tsub}{\textsf{targetvaluation}}
+\newcommand{\spat}{\textsf{srcPat}}
+\newcommand{\tpat}{\textsf{tgtPat}}
+\newcommand{\VARpat}{\textsf{pat}}
+\newcommand{\guardL}{\textsf{guardLang}}
+
+\newcommand{\undoa}{\textsf{undo}}
+\newcommand{\type}{\textsf{type}}
+\newcommand{\rewind}{\textsf{rewind}}
+\newcommand{\ff}{\textsf{fastForward}}
+\newcommand{\addc}{\textsf{addC}}
+\newcommand{\removec}{\textsf{removeC}}
+\newcommand{\pto}{\rightharpoonup}
+
+\newcommand{\dfa}{\textsf{DFA}}
+\newcommand{\nfa}{\textsf{NFA}}
+
+\newcommand{\alphabet}{\Sigma}
+\newcommand{\mm}{M}
+\newcommand{\mmstate}{Q}
+\newcommand{\mminitial}{q_0}
+\newcommand{\mmtrans}{\delta}
+\newcommand{\mmout}{\textsf{out}}
+\newcommand{\fmm}[1]{[\![#1]\!]}
+\newcommand{\mmtransstar}{\widehat{\mmtrans}}
+\newcommand{\mmoutstar}{\widehat{\mmout}}
+
+\renewcommand{\aut}{A}
+\newcommand{\autstate}{Q}
+\newcommand{\autinitial}{Q_\textsf{in}}
+\newcommand{\auttrans}{\Delta}
+\newcommand{\autfin}{Q_\textsf{fin}}
+\newcommand{\Aut}{\aut}
+\newcommand{\actionset}{\textsf{ActionSet}}
+\newcommand{\action}{\alpha}
+\newcommand{\transducer}{T}
+\newcommand{\matrixSet}{\mathbb M}
+\newcommand{\Id}{\textsf{Id}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Preamble                                   %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{String Modifications}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Abstract                                   %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+	We introduce a model for transforming strings, that provides fine control over what modifications are allowed. The model consists of actions, each of which is enabled only when the input string conforms to a predefined template. A template can break the input up into multiple fields, and constrain the contents of each of the fields to be from pre-defined regular languages. The template can also constrain two fields2 to be duplicates of each other. If the input string conforms to the template, the action can be performed to modify the string. The output consists of the contents of the fields, possibly in a different order, possibly with different numbers of occurrences. Optionally, the action can also apply transductions on the contents of the fields before outputting.
+
+	For example, the sentence ``\verb|DLT will be held <cap:1>online</cap:1>| \verb|if|\verb|<cap:2>covid-19</cap:243> cases surge.|'' conforms to the template \texttt{$x$<cap:$y$>$z$</cap:$y$>$w$}. The output of the action can be defined as $xf(z)w$, where $f$ is defined by a transducer. If $f$ just capitalises its input, then we can perform this action twice to get the output ``\verb|DLT will be| \verb|held|  \verb|ONLINE| \verb|if COVID-19 cases surge.|'' Notice that, if we did not have the identifiers specified by $y$, then it will capitalise parts of the input text not intended to be capitalised.
+
+	We want to check that whenever the input comes from a given regular language, the output of any action also belongs to that language. We call this problem regular invariance checking. We show that this problem is decidable and is \pspc\ in general. For some restricted cases where there are no variable repetitions in the source and target templates (or patterns) and the regular language is given by a DFA, we show that this problem is \conpc. We show that even in this restricted case, the problem is \woneh\ with the length of the pattern as the parameter.
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Introduction                               %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+We consider systems maintaining information in text format in scenarios where changes to the textual information should be tightly controlled. Often the textual information that is maintained conforms to some syntactic structure, such as that provided by context-free or regular languages. One of the desirable properties of such systems is that if the modification is applied to textual information that belongs to a specified language, the modified text should still belong to that language. In other words, the specified language should be invariant under the modifications allowed by the system. A typical example of such systems is maintaining configuration information in data centers, a task for which there are dedicated softwares such as  Apache ZooKeeper \cite{Zookeeper}. Resources such as GPUs can be allocated to processes running on the service and we would want to move GPUs from one process to another. Suppose we want to ensure that GPUs are not moved from high priority processes to low priority ones. Such tight control over the kind of modifications that are allowed is the main purpose of the formal model we introduce here. We study the complexity of checking whether a given regular language is invariant under the modifications allowed by a given system. Currently our model is for strings, for which the invariance-checking problem is already intractable.
+
+One way to organise such information is to use models for business artifact systems \cite{AAAMR2016, HCDGDM2013, DHLV2018, DHPV2009, DLV2016}. These use databases to store information and have predefined actions that can modify this information. There are two issues with using database-driven systems as a model for maintaining configuration information. First, databases are an overkill for such applications. Even configuration management softwares are using more economical text files or simple data structures like trees for this purpose. Second, while these database-driven systems allow unbounded data domain, the domain is often uninterpreted and the only operation permitted on data is equality checking. Some works have considered numerical domains \cite{AAAM2019, DDV2012}, however string domains have not been considered yet. Hence, transformations on strings such as the ones implemented by Mealy machines would not be supported in database-driven system models. 
+ 
+For modelling transformations on text files, another alternative one would think of are the traditional models of transducers. However, the main limitation of these is that they cannot restrict a transduction to be enabled at some non-regular set of strings. This is indeed needed for the configuration file example, as we may need to check that the text entered in two different fields are equal in order to enable a transformation. 
+ 
+We propose a formal model that is inspired by the database-driven systems and has the power of simple transducers(Mealy machines) inside. Like the database-driven systems, our model has a set of actions, that transform a text to another one. In the database-driven systems, actions are guarded by queries with free variables, which also serve as handles in the database for manipulation. In our model, actions are guarded by templates, and for an action to be enabled at a text, the text should fit the template. A template is simply a pattern over variables. 
+
+An action matches the input string to a source pattern over variables, storing parts of the input string in variables. Then it performs transductions on the strings stored in the variables, and outputs the (transduced) strings in a possibly different order, according to a target pattern over variables. 
+
+We study the following problem: Given an action and a regular language, whether the regular language is invariant under the action. Invariance-check is a basic safety check. Regularity is powerful enough to express many sanity conditions and non-existence of some bugs.
+
+We study the complexity of regular invariance-checking and show that it is \pspc. For a subclass of actions, where there are no variable repetitions in the source and target patterns and where the regular language is given by a deterministic finite-state automaton, we show it is \conpc. We further show that the problem is \woneh\ even with the length of the pattern as the parameter. Hence, the problem is unlikely to be fixed-parameter tractable with this parameter. 
+
+\paragraph*{Comparison with Transducers: }Our model of actions is incomparable to classical models of transducers. For instance an action can match the entire input text to a single variable $x$ and after an identity transduction, it can rewrite it as $xx$. After performing this action once, the text files will be of the form $ww$, indicating that regularity is not preserved. In another example, the input can be scanned into a pattern of the form $xx$, thus enabling the action only at a non-regular  set of strings. 
+
+Our model of actions is orthogonal to some of the expressive transducer models such as a streaming string transducers(SST) \cite{A2011}. Indeed, an SST can convert a text to a concatenation of projection to odd positions followed by projections to even positions. Our actions cannot do this. On the other hand we can enable actions at some non-regular inputs, which even a two-way SST cannot do. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Preliminaries                              %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Preliminaries}
+
+The set of all finite strings or words over a finite alphabet $\alphabet$ is denoted $\alphabet^\ast$. The empty string is denoted $\epsilon$. For a string $w$, $|w|$ is its length and $w[i]$ is its $i$\textsuperscript{th} letter.
+
+\paragraph*{Mealy Machines} We consider functions from words to words defined by Mealy Machines as a basic ingredient for our text-transforming actions. These functions are also called pure sequential functions. We recall the definition of Mealy Machines here, slightly simplified to our setting. 
+
+A Mealy machine defining a transduction from $\Sigma^\ast$ to $\Sigma^\ast$ is given by a tuple $\mm = (\mmstate, \mminitial, \mmtrans, \mmout)$ where $\mmstate$ is a finite set of states, $\mminitial \in \mmstate$ is the initial state, $\mmtrans : \mmstate \times \alphabet \to \mmstate$ is the state transition function, and $\mmout : \mmstate \times \alphabet \to \alphabet^\ast$ is the output function.
+%
+We naturally extend the functions $\mmtrans$ and $\mmout$ to words instead of letters as follows. We let $\mmtransstar(q,\epsilon) = q$, and  $\mmtransstar(q, wa) = \mmtrans(\mmtransstar(q,w), a)$, where $q \in \mmstate$, $w \in \alphabet^\ast$ and $a \in \alphabet$. Similarly $\mmoutstar(q,\epsilon) = \epsilon$ and $\mmoutstar(q,wa) = \mmoutstar(q,w)\mmout(\mmtransstar(q,w),a)$.
+%
+ The function defined by $\mm$ is denoted $\fmm{\mm}$. $\fmm{\mm}: \alphabet^\ast \to \alphabet^\ast$ is given by $\fmm{\mm}(w) = \mmoutstar(\mminitial, w)$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Model                                      %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Model}
+
+Let \var{} be a countable set of \emph{variables}. A \emph{pattern} is a string in $(\var \cup \Sigma)^*$. For a pattern $\VARpat$, $\var_\VARpat$ is the set of elements from $\var$ appearing in $\VARpat$, the elements of which will be called \emph{variables of \VARpat}. A \emph{valuation} is a morphism $\sigma : \var \to \Sigma^*$. By abuse of notation, we extend this to a function $\sigma : (\var \cup \Sigma)^* \to \Sigma^*$ by setting it to identity on $\Sigma$, and then naturally extending it to the asterate.  We now define \textit{actions} that transform an input text to an output text.
+
+An \emph{action} $\alpha$ is a 4-tuple $ \alpha := (\spat, \guardL, \T, \tpat)$, where $\spat$, $\tpat$ are (source and target) patterns, $\guardL: \var_\alpha \to \reg(\Sigma)$, $\T :\var_\alpha \to \set{T : T \mbox{ is a transduction over $\alphabet$}}$ are functions. Here $\var_\alpha := \var_\spat \cup \var_\tpat$ and $\reg(\Sigma)$ is the set of regular languages over $\Sigma$.
+
+An action $\alpha = (\spat, \guardL, \T, \tpat)$ is \emph{enabled} at a string $w$ if there exists a valuation $\ssub$ such that $\sigma(\spat) = w$ and $\sigma(x) \in \guardL(x)$ for all $x$ in  $\var_\spat$. We call $\ssub$ an \emph{enabling} valuation of $\alpha$ at $w$. We denote by $\sigma_\alpha$ the valuation defined by $\sigma_\alpha(x)=\T(x)(\sigma(x))$ for all $x$ in $\var$ (recall that $\T(x)$ is a transduction associated with $x$). The action $\alpha$ acts on $w$ using $\alpha$, resulting in the string $\sigma_\alpha(\tpat)$; we denote it by $w\cdot (\alpha, \ssub)$.
+
+\begin{example}\label{example:gpu}
+Suppose configuration information about GPUs allocated to processes are maintained in a text file. One part of  the file stores priorities of processes, using strings of the form ``process 1 : high'', ``process 2 : low'' etc. Another part of the file tracks GPUs allocated to processes, with strings of the form ``process 1 : gpu 1, gpu 2,'', ``process 2 : gpu 3,'' and so on. We describe an action that allows to move a GPU from a low priority process to a high priority one, provided there is still at least one GPU left for the low priority process. The source and target patterns are as follows:\\
+
+\noindent
+\begin{flushright}
+\textbf{Source Pattern:} $x_1 \text{ process }x_2:\text{low }~x_3 
+	\text{ process }x_4:\mathrm{high}~x_5~\text{ process 
+}x_2:~x_6 $ ~ $ \text{ gpu } x_7 ~x_8 ~\text{ process }x_4: x_9 ~ x_{10}.$\\
+%
+\textbf{Target Pattern:} $x_1 \text{ process }x_2:\text{low }~x_3 
+\text{ process }x_4:\mathrm{high}~x_5~\text{ process 
+}x_2:~x_6 $ ~ $ x_8 ~\text{ process }x_4: x_9  \text{ gpu } x_7 ~ x_{10}$.\\
+\end{flushright}
+
+\begin{table}[t]
+	\centering
+\begin{tabular}{|c | l  | p{9cm}|}
+	\hline
+	$\var$ & $\guardL$ & Comments\\
+	\hline
+	\hline
+	$x_1$ & $\Sigma^*$ & filler to match the prefix up to the 
+	position where 	changes are to be made\\
+	\hline
+	$x_2$ & $[0-9]^+$ & Id of the low priority process\\
+	\hline
+	$x_3$ & $\Sigma^*$ & filler\\
+	\hline
+	$x_4$ & $[0-9]^+$ & Id of the high priority process\\
+	\hline
+	$x_5$ & $\Sigma^*$ & filler\\
+	\hline
+	$x_6$ & $(\text{gpu }[0-9]^+,)^+$ &IDs of GPUs currently allocated 
+		to 	process $x_2$,  not to be transferred\\
+		\hline
+			$x_7$ & $[0-9]^*$ &ID of the GPU currently allocated 
+		to 	process $x_2$,   to be transferred to $x_4$\\
+		\hline
+			$x_8$ & $\Sigma^*$ & filler\\
+			\hline
+				$x_9$ & $(\text{gpu }[0-9]^+,)^*$ &IDs of GPUs currently allocated 
+			to 	process $x_4$\\
+			\hline
+			$x_{10}$ & $\Sigma^*$ & filler\\
+\hline			
+\end{tabular}
+\caption{The variables and their guard languages from Example~\ref{example:gpu}.}\label{table:gpu}
+\end{table}
+The guard languages assigned and the intended purpose of the variables 
+are given in Table~\ref{table:gpu}.
+This action will move the gpu $x_7$ from the low priority process $x_2$ to 
+the high priority process $x_4$. If changes to the configuration file 
+are only allowed through this action, then GPUs cannot be moved 
+from high priority to low priority processes.	
+\end{example}
+\smallskip
+
+While changing strings as above, we would like to ensure that the 
+syntactical structure of the strings is not broken. Suppose the 
+contents of the file in the above example belong to the language 
+$(\mathrm{process [0-9]^+}:(\mathrm{high}+\mathrm{low}), )^* 
+(\mathrm{process}[0-9]^+:(\mathrm{gpu}[0-9]^+,)^*)^*$. We want to verify that after applying the actions, the resulting string is still in the 
+language. We formalise this next.
+
+Let $\Sigma$ be a finite alphabet, $L \subseteq \Sigma^*$ be a language and $\alpha$ be an action over $\Sigma$. We denote by
+$\post(L, \alpha)$ the set $\{w \cdot (\alpha, \ssub) \mid  w \in L, \ssub \text{ enables } \alpha \text{ at } w\}$ of results of $\alpha$ acting on strings in $L$. We study the following problem:
+\medskip
+
+\uline{\emph{Invariance-checking Problem}}
+
+\textbf{Input:} Action $\action$, regular language $L$.
+
+\textbf{Question:} $\post(L, \action) \subseteq L$?
+
+\begin{example}
+	Consider an action $\alpha$  with $\spat := xy, \tpat := yx$, $\guardL$ assigns $\Sigma^*$  and $\T$ assigns the identity transduction
+	to all variables. Note that $\post(L,\alpha)=\set{uv \mid vu \in L, u, v \in \Sigma^*}$ is the \emph{rotational closure} of $L$. A
+	given language $L$ is invariant under $\alpha$ only if $L$ is closed under rotations.
+\end{example}
+
+We study the complexity of the invariance-checking problem in the rest of the paper.
+
+%%%%%%%%%%%%%%%%%%%% Invariant Checking PSPACE [INVC-P] %%%%%%%%%%%%%%%%%%%%
+
+\section{Complexity of the Invariance-checking Problem}
+
+\begin{theorem}
+	The invariance-checking problem is in \psp\ if the regular language L is given by an NFA A, and the transduction $\T(x)$ is given by a
+	Mealy machine for each variable $x$.
+\end{theorem}
+%
+\begin{proof}
+	It is sufficient to show that checking whether $\post(L(\Aut), \action) \not\subseteq L(\Aut)$ is in \psp. Let
+	$\action := (\spat, \guardL, \T, \tpat)$ be an action. For every $x \in \var_\alpha$, let  $\Aut_x$ be an NFA for $\guardL(x)$. For ease
+	of use in this proof, let $P$ denote $\spat$ and $P'$ denote $\tpat$. 
+	
+	Let  $\ssub: \var_\alpha \to \Sigma^\ast$ be a valuation and $\ssub_\alpha: \var_\alpha \to \Sigma^\ast$ be the valuation defined by
+	$\ssub_\alpha(x) = \T(x)(\ssub(x))$ for every $x \in \var_\alpha$. Checking if $\post(L(\Aut), \action) \not\subseteq L(\Aut)$ is
+	equivalent to checking the existence of a valuation $\ssub$ satisfying the following conditions.
+  	\begin{enumerate}
+  		\item $\ssub(x)\in \guardL(x) $ for all $x \in \var$,
+ 		\item $\ssub(P) \in L(\Aut)$ and
+ 		\item $\ssub_\alpha(P') \not\in L(\Aut)$.
+ 	\end{enumerate}
+	
+	Let $\Aut = (Q, \alphabet, \auttrans, \autinitial, \autfin)$ be the input NFA describing the potential invariant language. Let
+	$\matrixSet(\Aut) = \{0,1\}^{Q \times Q}$ be the set of transformation matrices of $\Aut$. Suppose $\Id $ denotes the identity matrix.
+	The set $\matrixSet(\Aut)$ along with matrix multiplication (over the Boolean semiring) forms a monoid, with $\Id$ as the identity
+	element. Let $h: \Sigma^\ast \to \matrixSet(\Aut)$ be the homomorphism given by $h(a) = \mu_a$ where  $\mu_a \in \matrixSet(\Aut)$
+	denotes the transition matrix for the letter $a$ in $\Aut$.  Note that $h(w)$ is the state transformation induced by the word
+	$w$ --- the $(q, q')$ entry is $1$ in $h(w)$ if and only if there is a path from $q$ to $q'$ in $\Aut$ on the word $w$. Let
+	$e \in \{0,1\}^Q$ be the  row vector whose $q$\textsuperscript{th} entry is $1$ if and only if $q \in Q_\textsf{in}$ and
+	$f^T \in \{0,1\}^Q$ be the column vector whose $q$\textsuperscript{th} entry is $1$ if and only if $q \in Q_\textsf{fin}$. The string
+	$w$ is in $L(\Aut)$ iff $eh(w) f =1$.
+	
+	To check whether $\post(L(\Aut),\alpha) \not\subseteq (L(\Aut))$, in place of checking for the existence of a valuation $\ssub$ as
+	above, we can equivalently check for the existence of functions $g,g' : \alphabet \cup \var_\alpha \to \matrixSet(\Aut)$ satisfying
+	the following conditions.
+	\begin{enumerate}
+		\setcounter{enumi}{3}
+		\item $g(a) = h(a) = g'(a)$ for all $a \in \Sigma$,
+		\item for all $x \in var$, there exists $w_x \in h^{-1}(g(x)) \cap \guardL(x)$ such that $g'(x) = h(\T(x)(w_x))$,
+		\item $e g(P) f = 1$ and
+		\item $e g'(P') f = 0$.
+	\end{enumerate}
+
+	Suppose there is a valuation $\sigma$ satisfying conditions 1---3. Setting $w_x=\sigma(x)$, $g(x)=h(w_x)$ and $g'(x)=h(\T(x)(w_x))$ for
+	all $x\in \var$ will satisfy conditions 4---7. Conversely, suppose there exist functions $g,g'$ satisfying conditions 4---7. Setting
+	$\sigma(x)=w_x$ for all $x \in \var$ will satisfy conditions 1---3.
+
+	Now we give a non-deterministic \psp{} procedure for the invariant checking problem. It will guess functions $g,g'$ and check that they
+	satisfy conditions 4---7. Checking conditions 4, 6 and 7 can be easily done in \psp{}. We will next prove that if there exists a string
+	$w_x$ satisfying condition 5, there exists such a string of length at most exponential in the size of the input, so that its existence can
+	be verified in \psp{}.
+
+	Suppose there exists a string $w_x$ satisfying condition 5. For every $i$ in the set $\set{0,\ldots,|w_x|}$, let $e_i$ be a vector over
+	$\set{0,1}$ defined as follows. The vector $e_i$ is indexed by $Q\times Q\times Q_x\times Q_x\times T_x\times T_x \times Q\times Q$,
+	where $Q$ is the set of states of $\Aut$, $Q_x$ is the set of states in the NFA $\Aut_x$ recognising $\guardL(x)$ and $T_x$ is the set of
+	states in the Mealy machine $M_x$ for $\T(x)$. Let $w[1,i]$ be the restriction of $w$ to positions $1 \ldots i$, with $w[1,0] := \e$, the empty word.
+	The entry of $e_i$ at the index $(q_s^{},q'_s, q_x^{},q'_x,t_x^{},t'_x,q_t^{},q'_t)$ is $1$ iff the following four conditions are
+	satisfied: 1) there is a path from $q_s$ to $q_s'$ on $w[1,i]$ in $\Aut$, 2) there is a path from $q_x$ to $q'_x$ on $w[1,i]$ in $\Aut_x$,
+	3) there is a path from $t_x$ to $t'_x$ on $w[1,i]$ in $M_x$ and 4) there is a path from $q_t$ to $q'_t$ on $\T(x)(w[1,i])$ in $\Aut$.
+	Let $n=|Q|^4 |Q_x|^2|T_x|^2$ and $N=2^n$ be the number of distinct vectors over $\set{0,1}$ indexed by
+	$Q\times Q\times Q_x\times Q_x\times T_x \times T_x \times Q\times Q$ that can exist. If $|w_x| > N$, then there are distinct positions
+	$i,j$ such that $e_i = e_j$. We can drop the portion of $w_x$ between $i$ and $j$ and the resulting string will still satisfy condition 5.
+	We can continue this until we get a string of length at most $N$ that satisfies condition 5. Hence a non-deterministic \psp{} procedure can
+	guess and verify the existence of a string satisfying condition 5, using space linear in $\log N=|Q|^4 |Q_x|^2|T_x|^2$. By Savitch's
+	theorem, there is a \psp\ procedure that does the same.
+
+	Hence, the invariance-checking problem is in \npsp\,, and again by Savitch's theorem, it is in \psp{}.\qed
+\end{proof}
+
+We give complexity lower bounds for the invariance-checking problem under some restrictions on the kind of patterns that are allowed and the
+representation used to specify the invariant language.
+\begin{definition}
+	A pattern $\VARpat$ over $(\var ~ \cup \Sigma)$ is called \emph{copyless} if every variable in \VARpat\ occurs at most once. A pattern
+	is called \emph{copyful} if it is not copyless.
+\end{definition}
+
+\begin{theorem}
+	The invariance-checking problem is \psph\ even if $\T$ is the constant identity transduction function, $\guardL$ is the constant
+	$\Sigma^*$ function and at least one of the following is true: 1) the candidate language is given as an NFA, 2) $\spat$ is copyful
+	or 3) $\tpat$ is copyful.
+\end{theorem}
+
+The proof of the above theorem is split into the following three lemmas. 
+They all give reductions from the following DFA Intersection Problem, which is known to be \pspc\ \cite{K1977}.
+\medskip
+
+\uline{\emph{DFA Intersection Problem}}
+
+\textbf{Input:} DFAs $A_1,A_2, \ldots, A_n$.
+
+\textbf{Question:} $L(A_1) \cap L(A_2) \cap \cdots \cap L(A_n) \neq \emptyset$?
+
+%
+\begin{lemma}
+	Let $A$ be an \textbf{NFA}  and  $\alpha$ be an action 
+	 with a copyless \spat\ and a copyless \tpat. Then the 
+	problem of deciding whether $\post(L(A), \alpha) \not\subseteq L(A)$ 
+	is \psph. 
+\end{lemma}
+%
+\begin{proof}
+	Let $A_1, A_2, \dots, A_n$ be a given instance of the DFA intersection problem. Let $A$ be an NFA over $\{\#\} \cup \alphabet$ recognising
+	the language $\set{\#} \cup \overline{L(A_1)} \cup \overline{L(A_2)} \cup \cdots \cup \overline{L(A_n)}$. Since $A_1, A_2, \dots, A_n$ are
+	DFAs, the NFA $A$ can be constructed in polynomial time. For the action $\alpha$, let the source pattern be \#, and the target pattern be
+	$x$. The guard languages are given by $\guardL(x) := \Sigma^*$, and finally, the function $\T$ assigns the identity transduction to each
+	variable $x$.
+
+	For any string  $w \in L(A)$, the action $\alpha$ is enabled at $w$ using a valuation $\sigma$ iff $\sigma(x)\in \Sigma^*$ and $w = \#$.
+	For such a valuation $\sigma$, $w \cdot(\alpha,\sigma)=\sigma(x)$. Hence $\post(L(A), \alpha) = \Sigma^*$. Also,
+	$\Sigma^* \cap \set{\#} = \emptyset$ which gives us that $\post(L(A), \alpha) \subseteq L(A)$ iff
+	$\Sigma^* \subseteq \overline{L(A_1)} \cup \overline{L(A_2)} \cup \dots \cup \overline{L(A_n)} \iff \bigcap_{i=1}^n L(A_i) = \emptyset$.
+	This completes the reduction.\qed
+\end{proof}
+
+% INT < A010
+\begin{lemma}
+	Let $A$ be a DFA. Let $\alpha$ be an action with a \textbf{copyful} \spat\ and a copyless \tpat. Then the problem of deciding whether
+	$\post(L(A), \alpha) \not\subseteq L(A)$ is \psph.
+\end{lemma}
+%
+\begin{proof}
+	Let $A_1, A_2, \dots, A_n$ be a given instance of the DFA intersection problem. Let $\aut$ be a DFA over  $\{\# \} \cup \alphabet$ for the
+	language $\Sigma^*\#L(A_1)\#L(A_2)\#\dots\#L(A_n).$ Since $A_i$ are all DFAs, the DFA $\aut$ can be constructed in polynomial time. For
+	the action $\alpha$, let the source pattern be $y\#x\#x\#\dots\#x$, where we have $n$ occurrences of the variable $x$, and the target
+	pattern be $x$. Let \guardL\ be the constant $\Sigma^*$ function, and finally, the function $\T$ assigns the identity transduction to each
+	variable $x$.
+	\medskip
+
+	Notice that the target pattern (and hence any result of applying $\alpha$ on any input string) does not contain the symbol \#, but every
+	string in the invariant language contains at least one occurrence of \#. Hence $\post(L(A), \alpha) \subseteq L(A)$ iff
+	$\post(L(A), \alpha) = \emptyset$ iff $\alpha$ is never enabled on $L(A)$ iff $\bigcap_{i=1}^n L(A_i) = \emptyset$. This completes the
+	reduction.\qed
+\end{proof}
+
+% INT < A001
+\begin{lemma}
+	Let $A$ be a DFA. Let $\alpha$ be an action with a copyless \spat\ and a \textbf{copyful} \tpat. Then the problem of deciding whether
+	$\post(L(A), \alpha) \not\subseteq L(A)$ is \psph.
+\end{lemma}
+%
+\begin{proof}
+	Let $A_1, A_2, \dots, A_n$ be a given instance of the DFA intersection problem. Let $A$ be a DFA over the alphabet
+	$\set{\natural} \cup \set{\#} \cup \alphabet$ for the language
+	$\set{\natural} \cup \overline{\left(L(A_1)\#L(A_2)\#\dots\#L(A_n)\right)}$.For the action $\alpha$, let the source pattern be $\natural$,
+	and the target pattern be $x\#x\#\dots\#x$. The guard languages are given by\\ $\guardL(x) := \Sigma^*,~ \forall x$, and finally, the function $\T$
+	assigns the identity transduction to each variable $x$.
+\medskip
+
+	For any string in $w \in L(A)$, the action $\alpha$ is enabled at $w$ using a valuation $\sigma$ iff $\sigma(x)\in \Sigma^*$ and
+	$w = \natural$. For such a valuation $\sigma$, $w \cdot(\alpha,\sigma)=\sigma(x)$. Hence
+	$\post(L(A), \alpha) := \set{w\#w\#\dots\#w \mid w \in \Sigma^*}$. Since $\natural$ is not in $\post(L(A), \alpha)$, we have that
+	$\post(L(A), \alpha) \not\subseteq L(A) \iff$ there exists $w_1 \in \Sigma^*$ such that
+	$w_1\#w_1\#\dots\#w_1 \not\in L(A) \iff w_1 \in L(A_i),\forall i\leq n \iff \bigcap_{i=1}^nL(A_i) \neq \emptyset$. This completes the
+	reduction.\qed
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%% Invariant-Checking Special [INVC-S] %%%%%%%%%%%%%%%%%%%%
+
+\section{Invariance-checking : Special case}
+
+It turns out that if the candidate language is specified using a DFA and both $\spat$ and $\tpat$ are copyless, there is a better upper bound
+for the invariance-checking problem.
+%
+\begin{theorem}
+	Let $\A$ be a DFA and let $\alpha := (\spat, \guardL, \T, \tpat)$ be an action such that $\spat, \tpat$ are copyless patterns. In this case, the problem of deciding whether $\post(L(\A), \alpha) \subseteq L(\A)$ is in \conp.
+\end{theorem}
+%
+\begin{proof}
+	We will show that deciding whether $\post(L(\A), \alpha) \cap \overline{L(\A)} \neq \emptyset$ is in \np, by proving a short witness 
+	property. Suppose $\ssub$ is a valuation such that $\ssub(\spat)\cdot (\alpha,\ssub) \not\in L(A)$. Then we will prove that there exists
+	a valuation $\ssub'$ such that $\ssub'(\spat)\cdot (\alpha,\ssub') \not\in L(A)$ and $|\ssub'(x)|$ is bounded by a polynomial in the
+	size of the input for all variables $x$. This suffices, since the presence of such a $\ssub'$ can be guessed and verified in
+	polynomial time.
+
+	For a valuation $\ssub$ such that $\ssub(\spat)\cdot (\alpha,\ssub) \not\in L(A)$ and for a variable $x$, suppose $\ssub(x)=w$.
+	We will show how to drop portions of $w$ to get a shorter string $w'$ that still has all the following desirable properties of $w$. Let
+	$M_x$ be the Mealy machine for $\T(x)$.
+	\begin{enumerate}
+		\item The run of $A$ on $\ssub(\spat)$ enters $w$ at state $p$ and leaves at state $p'$.
+		\item The run of $A_x$ (an automaton for $\guardL(x)$) on $w$ starts at state $q$ and ends at state $q'$.
+		\item The run of $M_x$ on $w$ starts at state $r$ and ends at state $r'$.
+		\item The run of $A$ on $\ssub_\alpha(\tpat)$ enters $\T(x)(w)$ at state $s$ and leaves at $s'$.
+	\end{enumerate}
+	Let the first three runs above be in states $p_i, q_i, r_i$ respectively just before reading $w[i]$, the $i$\textsuperscript{th}
+	letter of $w$. Let the fourth run be in state $s_i$ just before reading $w_i^t$, the string output by $M_x$ at position $i$
+	while reading $w$. For some $i, j$ with $i \ne j$,  if the tuple $\langle p_i, q_i, r_i, s_i\rangle$ is equal to the tuple
+	$\langle p_j, q_j, r_j, s_j\rangle$, then we can drop the portion of $w$ between $i$ and $j$ and the shorter string will still have
+	all the four properties of $w$. We can continue this till we get a string of length at most $|\A_x||\A|^2|M_x|$. For every variable
+	$x$, the desired valuation $\ssub'$ maps $x$ to a short string as described above, thus proving the small model property.\qed
+\end{proof}
+
+The above technique fails if $\A$ is an NFA. In that case, it is not enough to ensure that fourth run in the above proof is a rejecting
+run --- we will have to prove that \emph{all} runs of $A$ on $\ssub_\alpha(\tpat)$ are rejecting. The above technique fails if $\spat$
+is copyful. If a variable $x$ occurs more than once, then the first run in the proof above will pass through $w$ more than once and we
+will have to take care of all those passes. Hence, in place of checking that the four tuple $\langle p_i, q_i, r_i, s_i\rangle$ repeats,
+we will have to consider tuples whose dimension depends on the input and we will not get a small model property. Similarly, the above
+technique breaks down if $\tpat$ is copyful.
+
+Next we prove a matching lower bound for this case.
+\begin{lemma}
+	Let $\alpha$ be an action with copyless source and target patterns. Then the problem of checking whether a given DFA describes an
+	invariant for $\alpha$ is \conph.
+\end{lemma}
+\begin{proof}
+	We will give a reduction from the complement of the problem of finding a clique in a graph. Given a number $k$ and a graph over $n$
+	vertices, the problem is to check if the graph contains a $k$-clique as a subgraph. We know that this problem is \npc\ \cite{K1972}.
+
+Suppose we are given a graph $G$  with vertex set $V := \set{v_1, v_2, \dots, v_n}$ and  a number $k \leq 
+n$. We will design an action $\action$ and the candidate invariant language $L$  with the following goal: The action $\action$  is enabled on an input string from $L$ only if it is of the form $ I a_{i_1} \underbrace{v_{i_1}v_{i_1}\dots 
+v_{i_1}}_{k} a_{i_2} \underbrace{v_{i_2}v_{i_2}\dots 
+v_{i_2}}_{k}\dots a_{i_k} \underbrace{v_{i_k}v_{i_k}\dots v_{i_k}}_{k}$  
+with $1 \le i_1 < i_2 < \dots i_k \le n$.  That is, it guesses $k$ 
+vertices, repeating each of them $k$ times in the string. This action 
+will produce the output string $$\theta ~ a_{i_1} ~ v_{i_1} v_{i_2} 
+v_{i_3} \dots v_{i_k} ~ a_{i_2} ~ v_{i_1}v_{i_2} v_{i_3} \dots  v_{i_k} ~ 
+a_{i_3}~ \dots ~ a_{i_k} ~ v_{i_1}v_{i_2} \dots v_{i_k}. $$ Note that this 
+output string has all the $k$ guessed vertices in every block 
+(delimited by $a_i$). The output string will belong to $L$ only if at 
+least two of these vertices do not have an edge between them, i.e., 
+these $k$ vertices do not form a clique. The output string will not 
+belong to $L$ (that is, $L$ is not an invariant) if the $k$ guessed 
+vertices form a clique. 
+
+We require the source and target patterns of the action to be copyless. For this we will use $k^2$ variables of the form $x_i^j$ to represent the vertices in the string. Further there are variables $S_i$ to represent the delimiters. Let us describe the action $\action$ formally.
+
+
+Let $\Sigma = V \cup \set{a_1,a_2,\ldots, a_n, \theta, 
+	I}$ and $\var=\set{S_1, \ldots, S_k} \cup \{x_i^j \mid  1 \le i \le k, 1 \le j 
+\le k\}$. 
+The  action $\action$ is given by
+\begin{itemize}
+	\item \textbf{Source pattern:} $I~S_1~x_1^1~x_1^2\dots x_1^{k}~ S_2~x_2^1~x_2^2\dots x_2^{k} ~S_3 \dots S_k~x_k^1~x_k^2\dots x_k^{k}$.
+	\item \textbf{Guard languages:} $x_i^j \mapsto \set{v_1, v_2, \dots, v_n}, S_i \mapsto \set{a_1, a_2, \dots, a_n}$
+	\item \textbf{Transduction} $\T$ maps every variable to the identity transduction.
+	\item \textbf{Target Pattern:} $\theta ~ S_1 ~x_1^1 ~x_2^1 \dots  x_k^1~ 
+	S_2 ~x_1^2 ~ x_2^2  \dots  x_k^2 ~S_3
+	\dots
+	S_k~x_1^{k}~x_2^{k}\dots x_k^k$.
+\end{itemize}
+
+\begin{figure}[t]
+	\centering
+	\begin{tikzpicture}
+		\tikzset{every state/.style={fill=blue!10,minimum size=15pt,inner sep = 1pt}}
+		\tikzset{every state/.style={draw, fill=blue!10,minimum size=15pt,inner sep = 1pt}}
+		\tikzset{gadget/.style={draw, thick,rectangle,  fill=red!10,minimum size=20pt,inner sep = 1pt}}
+		% Input Vertices
+		\node[initial, state] (n0) at (1.5,-6.2) {0};
+		\node[state, accepting] (n1) at (1.5,-4.4) {in};
+		\node[state, accepting] (ig1) at (3,-4.4) {$i_1$};
+		\node[state, accepting] (ig2) at (4.5,-4.4) {$i_2$};
+		\node[state, accepting] (ig3) at (6,-4.4) {$i_3$};
+		\node (e) at (7.5,-4.4) {\ldots};
+		\node[state, accepting] (ign) at (9,-4.4) {$i_n$};
+		\node [state] (inSink) at (10.5, -5.6) {$X_i$};
+		% Input Edges
+		\path [-stealth, thick]
+		(n0) edge node {$I$} (n1)
+		(n1) edge node[below] {$a_1$} (ig1)
+		(ig1) edge node[below] {$a_2$} (ig2)
+		(ig2) edge node[below] {$a_3$} (ig3)
+		(ig3) edge node[below] {$a_4$} (e)
+		(e) edge node[below] {$a_n$} (ign)
+		(n1) edge[bend left=30, inner sep = 1pt  ] node[above] {$a_2$} (ig2)
+		(n1) edge[bend left = 40,] node[above, ] {$a_3$} (ig3)
+		(n1) edge[bend left =50,inner sep = 1pt] node[pos = 0.75] {$a_n$} (ign)
+		(ig1) edge[bend left = 30, inner sep = 1pt] node {$a_3$} (ig3)
+		(ig1) edge[bend left = 40,  near end, inner sep = 1pt] node[pos = 0.7] {$a_n$} (ign)
+		(ig2) edge[bend left = 30,   inner sep = 1pt] node[pos = 0.6] {$a_n$} (ign)
+		(ig3) edge[bend left = 20, inner sep = 1pt] node[pos = 0.45] {$a_n$} (ign)
+		(ig1) edge[loop below] node {$v_1$} (ig1)
+		(ig2) edge[loop below] node {$v_2$} (ig2)
+		(ig3) edge[loop below] node {$v_3$} (ig3)
+		(ign) edge[loop below] node {$v_n$} (ign)	
+		(n0) edge[color=gray, dotted] node {} (inSink)
+		(n1) edge[color=gray, dotted, out = -40, in = 175] node {} (inSink)	
+		(ig1) edge[color=gray, dotted, out = -35, in = 170] node {} (inSink)
+		(ig2) edge[color=gray, dotted, out = -30, in = 160] node {} (inSink)
+		(ig3) edge[color=gray, dotted, out = -20, in = 150] node {} (inSink)
+		(ign) edge[color=gray, dotted] node {} (inSink);
+		
+		\tikzset{every state/.style={draw, fill=blue!10,minimum size=15pt,inner sep = 1pt}}
+		\tikzset{gadget/.style={draw, thick,rectangle,  fill=red!10,minimum size=20pt,inner sep = 1pt}}
+		% Vertices
+		\node[state] (n1) at (1.5,-8) {out};
+		\node[state] (og1) at (3,-8) {$o_1$};
+		\node[state] (og2) at (4.5,-8) {$o_2$};
+		\node[state] (og3) at (6,-8) {$o_3$};
+		\node (e) at (7.5,-8) {\ldots};
+		\node[state] (ogn) at (9,-8) {$o_n$};
+		\node [state, accepting] (outSink) at (10.5, -6.8) {$X_o$};
+		% Edges
+		\path [-stealth, thick]
+		(n0) edge[left] node {$\theta$} (n1)
+		(n1) edge node {$a_1$} (og1)
+		(og1) edge node {$a_2$} (og2)
+		(og2) edge node {$a_3$} (og3)
+		(og3) edge node {$a_4$} (e)
+		(e) edge node {$a_n$} (ogn)
+		(n1) edge[bend right = 30, below, inner sep = 1pt] node {$a_2$} (og2)
+		(n1) edge[bend right = 40, below] node {$a_3$} (og3)
+		(n1) edge[bend right = 50, below] node[pos = 0.78] {$a_n$} (ogn)
+		(og1) edge[bend right = 30, inner sep = 1pt] node[below] {$a_3$} (og3)
+		(og1) edge[bend right = 40, below, inner sep = 3pt] node[pos = 0.75] {$a_n$} (ogn)
+		(og2) edge[bend right = 30, below, inner sep = 2pt] node[pos = 0.68] {$a_n$} (ogn)
+		(og3) edge[bend right = 20, below, inner sep = 1pt] node {$a_n$} (ogn)				
+		(og1) edge[loop above] node[above]{$\textsf{N}_1$} (og1)
+		(og2) edge[loop above] node[above]{$\textsf{N}_2$} (og2)
+		(og3) edge[loop above] node[above]{$\textsf{N}_3$} (og3)		
+		(ogn) edge[loop above] node[above]{$\textsf{N}_n$} (ogn)
+		(n1) edge[color=gray, dotted, out = 60, in =180 ] node {} (outSink)
+		(og1) edge[color=gray, dotted, out = 50, in = 185] node {} (outSink)
+		(og2) edge[color=gray, dotted, out = 40, in = 190] node {} (outSink)
+		(og3) edge[color=gray, dotted, out = 30, in = 195] node {} (outSink)
+		(outSink) edge[loop right, color=gray, dotted] node {} (outSink)
+		(inSink) edge[loop right, color=gray, dotted] node {} (inSink)
+		(ogn) edge[color=gray, dotted] node {} (outSink);
+	\end{tikzpicture}
+	\caption{The automaton $\aut$ used in the polynomial reduction from the problem of finding a clique in a graph. Here  $\textsf{N}_i$ denotes the set of  nodes at a distance at most one  from $v_i$. That is, it includes $v_i$ and all the neighbours of $v_i$. The transitions on unspecified letters go to the respective sink states, as depicted by the dotted edges.}\label{fig:conp}
+\end{figure}
+
+Now let us define the DFA  for  the potential invariant $L$. The automaton $A$ is depicted in Figure~\ref{fig:conp}. It has a top part and a bottom part. Any string that starts with the letter $I$, and hence could potentially match the input pattern, runs in the top part. Any string that starts with $\theta$, and hence all the output strings, runs in the bottom part. 
+All the states in the top part are accepting, except for the sink state $X_i$. All the states in the bottom part are rejecting, except for the sink state $X_o$. 
+
+The top part of the DFA makes sure that in a block following $a_i$, it is the same vertex $v_i$ that gets repeated. The length of each block and the number of blocks are taken care of by the source pattern. 
+Thus the source pattern together with this automaton $A$ ensures that the input string is of the required form. Notice that this part does not look at the edges in the graph, and in particular does not verify that these vertices form a clique. 
+
+The bottom part of the automaton reads strings that start with a $\theta$ and in particular the potential output strings of action $\action$. This part of the automaton makes sure that in the block following $a_i$, all the vertices appearing in the block are neighbours of $v_i$ or $v_i$ itself. The set of permitted vertices is denoted $\textsf{N}_i$, the set of all vertices at a distance at most 1 from $v_i$. Note that if the block after $a_i$ contains a vertex $v_j$ which is not in $N_i$ then it goes into the accepting sink state $X_o$.  Thus if the guessed vertices do not form a clique, the output string will be accepted by $A$. On the other hand, if the guessed vertices form a clique, then in every block the vertices encountered belong to the respective $N_i$ and the run remains in the bottom part where all states are rejecting. 
+
+Notice that the automaton $A$ depends only on the input graph $G$, and not on the number $k$. 
+
+If the input graph $G$ has a clique of size $k$, then there is an input string that matches the input pattern, and that produces the output string which is rejected by the automaton $A$. Thus $L(A)$ is not an invariant in this case. If the input graph does not have a clique of size $k$, then for every input string that enables the action $\action$, the output string will have a block starting at some $a_i$ containing a vertex that does not belong to the neighbour set $N_i$, and the run of $A$ on the output string will end up in the accepting sink state. Thus $L(A)$ will be an invariant in this case. \qed
+\end{proof}
+
+The $k$-clique problem is unlikely to be fixed-parameter tractable with the clique-size $k$ as the parameter, as it is \woneh\ \cite{DF1995}. Thus we get:
+
+\begin{corollary}
+Let $\alpha$ be an action with copyless source and target patterns. Then the problem of checking whether a given DFA describes an invariant for $\alpha$ is \woneh\ with the length of the patterns being the parameter.
+\end{corollary}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Conclusions                                %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusions and Future work}
+
+We have introduced a formal model for fine-controlled text modifications.
+We have shown that the regular invariance-checking problem is \pspc.
+For a restriction, the problem is shown to be \conpc.
+
+It is interesting to see whether we can lift our results to other
+transducer models inside an action, instead of Mealy machines. 
+An important next step is to see whether we can have actions that act 
+on trees or structured text instead of simple texts. Trees are the main 
+structures used to store configuration data by Apache ZooKeeper, one 
+of our motivations for the work. Further it could also serve as a syntax 
+checker for code translators etc., if we have structured text (source 
+codes, XML). It is worth investigating whether we can lift the actions to 
+form a sort of  visibly pushdown transducer \cite{FRRST2018}, and 
+whether visibly pushdown languages \cite{AM2004} can be checked for 
+invariance.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                %
+%     Bibliography                               %
+%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\bibliographystyle{plainurl}
+\bibliography{../references}
+
+\end{document}
