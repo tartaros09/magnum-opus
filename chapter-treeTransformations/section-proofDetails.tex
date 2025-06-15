@@ -1,0 +1,123 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Tree Transformation - Proof Details                                        %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Proof Details}\label{sec:proofDetails}
+
+\begin{definition}[Destination Function]\label{def:destinationFunction}
+  Let $\seedLang, \stLang$ be tree languages over finite ranked alphabets $\Gamma, \Alphabet$ respectively and let $\phi : \Trees{\Gamma} \to \Trees{\Alphabet}$ be a tree homomorphism. For each letter $\gamma/k \in \Gamma$ with $m := \arity(\phi(\gamma))$, we define a function $D_{\phi}(\gamma) : [k] \to 2^{[m]}$ as follows. Since $\phi(\gamma)$ is a context of arity $m$, we label the holes of $\phi(\gamma)$ by the set $[m]$ according to the precedence in the inorder traversal of $\phi(\gamma)$. Then, $D_{\phi}(\gamma)(i) := \{j \in [m] \mid \mbox{ $j^{th}$ hole of $\phi(\gamma)$ is labelled $u_i$}\}$ for all $i \in [k]$. 
+\end{definition}
+
+We illustrate this with an example. Let $\gamma/5 \in \Gamma$ be a letter and let $\phi(\gamma/5)$ be given as in Figure~\ref{fig:destinationFunctionExample}. The numbers in blue denote the order of the vertex in the inorder traversal of $\phi(\gamma)$.
+
+\begin{figure}
+\scalebox{.6}{\begin{tikzpicture}
+    [level distance=3em]
+    \begin{scope}[yshift=-2cm]
+        
+        \node [sibling distance=1em] (root) {$\gamma$}
+        child { node {$u_{1}$} }
+        child { node {$u_{2}$} }
+        child { node {$u_{3}$} }
+        child { node {$u_{4}$} }
+        child { node {$u_{5}$} };
+        \node at ([xshift=3cm]root) {$\xrightarrow{\phi}$};
+    \end{scope}
+\begin{scope}[xshift=6cm]
+\node {$a$}
+child[grow=south west] { 
+  node{$x$}
+  child { node{$u_1\blue{(1)}$} }
+  child { node{$u_3\blue{(2)}$} }
+}
+child[grow=south] {
+  node {$b$}
+  child[grow=south] {
+    node{$y$}
+    child { node{$u_1\blue{(3)}$} }
+    child {
+      node{$x$}
+      child { node{$u_2\blue{(4)}$} }
+      child { node{$u_4\blue{(5)}$} }
+    }
+    child { node{$u_1\blue{(6)}$} }
+  }
+child[grow=south east] {
+  node{$a$}
+  child[grow=south east] { node{$c$} }
+  child[grow=east] { node{$u_3\blue{(7)}$} }
+  }
+};
+\end{scope}
+\end{tikzpicture}}
+\caption{Example computation of $D_{\phi}(\gamma)$}\label{fig:destinationFunctionExample}
+\Description{Example computation of $D_{\phi}(\gamma)$}
+\end{figure}
+
+Then $D_{\phi}(\gamma) : [5] \to [7]$ would be given by
+
+\begin{tabular}{|c||c|c|c|c|c|}
+  \hline
+  $i$ & 1 & 2 & 3 & 4 & 5 \\\hline
+  $D_{\phi}(\gamma)(i)$ & $\{1, 3, 6\}$ & $\{4\}$ & $\{2, 7\}$ & $\{5\}$ & $\emptyset$ \\\hline
+\end{tabular}
+
+Note that as demonstrated by this example, in each case we must necessarily have that $\{D_{\phi}(\gamma)(i) \mid i \in [k]\}$ is a partition of $[\arity(\phi(\gamma))]$. Intuitively, we also consider the function $D_{\phi}(\gamma)$ as a kind of ``inverse'' of the origin function as mentioned in \cite{BojanOrigin14}.
+
+\begin{proof}[Proof of Theorem~\ref{thm:metaTypecheckingUpperBound}]
+  Let $(\automaton, \sourceAutomatonB, \targetAutomatonB, \sourceMap, \targetMap, \guardFunction)$ be a given instance of \metaTypecheckingProblemFull, where
+  \begin{itemize}
+    \item $\automaton := (P, \Gamma, \Theta, E)$, $\automatonB_i := (Q_i, \Alphabet, \Transitions_i, F_i)$ are NBTAs for $i \in \{\src, \tgt\}$.
+    \item $\sourceMap, \targetMap : \Trees{\Gamma} \to \Trees{\Alphabet\uplus\Variables}$ are tree homomorphisms.
+    \item $\guardFunction$ is a guard over $\Alphabet$ such that $\Variables(\sourceMap) \cup \Variables(\targetMap) \subseteq \dom(\guardFunction)$, where we define(by abuse of notation) $\Variables(\sourceMap) := \bigcup_{\gamma \in \Gamma} \Variables(\sourceMap(\gamma))$ and also $\Variables(\targetMap) := \bigcup_{\gamma \in \Gamma} \Variables(\targetMap(\gamma))$.
+  \end{itemize}
+  Let us define regular languages $\seedLang := L(\automaton), \stLang_i := L(\automatonB_i)$ for $i \in \{\src, \tgt\}$. We see that solving \metaTypecheckingProblemFull\ is equivalent to finding whether there exists $\tau \in \seedLang$ and a substitution $\substitution$ such that $\substitution(\phi_i(\tau)) \in \stLang_i$ for $i \in \{\src, \tgt\}$. Let $J \subseteq \seedLang$ be given by $J := \{\tau \in \seedLang \mid \exists\substitution\mbox{ such that }\substitution(\phi_i(\tau)) \in \stLang_i, i \in \{\src, \tgt\}\}$. We will construct a number of ATTAs such that the union of the languages they recognise will be equal to $J$. This will imply that solving \metaTypecheckingProblemFull\ will be a matter of checking each of the correspondingly constructed ATTAs for nonemptiness.
+
+  For each $x \in \Variables(\sourceMap) \setminus \Variables(\targetMap)$, using Theorem~\ref{thm:relationRealisabilityExptc} we compute a priori, the set {of relations} $\RealisableRelations{\sourceAutomatonB}{\guard{x}}$ of all the relations and corresponding contexts realisable by $\sourceAutomatonB$ under $\guard{x}$. Similarly for each variable $y \in \Variables(\targetMap) \setminus \Variables(\sourceMap)$, we compute $\RealisableRelations{\targetAutomatonB}{\guard{y}}$.
+  For all variables $z \in \Variables(\sourceMap) \cap \Variables(\targetMap)$, we compute the set
+  \[ \RealisableRelations{\sourceAutomatonB \cap \targetAutomatonB}{\guard{z}} \subseteq \Relations(Q_\src \times Q_\tgt) \times \Contexts{\Alphabet}{} \]
+  
+  From this set, we obtain another set $\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}$ of pair of relations that are \emph{simultaneously} realisable by $\sourceAutomatonB$ and $\targetAutomatonB$ along with a context $c \in L(\guard{z})$ that realises both of them. The idea  is that given an element $((q_\src^{(1)}, q_\tgt^{(1)}), (q_\src^{(2)}, q_\tgt^{(2)}), \dots, (q_\src^{(k+1)}, q_\tgt^{(k+1)})) \in R$, we `split' it into two components $(q_\src^{(1)}, q_\src^{(2)}, \dots, q_\src^{(k+1)})$ and $(q_\tgt^{(1)}, q_\tgt^{(2)}, \dots, q_\tgt^{(k+1)})$. We do this for all elements in $R$ to get a pair of relations $R_\src, R_\tgt$ over $Q_\src, Q_\tgt$ respectively. Then, we define
+  \[ \RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}} := \{((R_\src, R_\tgt), c) \mid (R, c) \in \RealisableRelations{\sourceAutomatonB \cap \targetAutomatonB}{\guard{z}}\}. \]
+  In other words, we have
+  \[ \RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}} := \{((R_\src, R_\tgt), c) \mid c \in L(\guard{z}), \widetilde{\Transitions_i}(c) = R_i, i \in \{\src, \tgt\}\} \]
+
+  Let us fix a pair of choice functions of realisable relations $R_\src, R_\tgt$ over $\Variables(\sourceMap), \Variables(\targetMap)$ respectively such that
+  \[ \twopartfunc{R_\src(z)}{R \in \pi_1[\RealisableRelations{\automatonB_s}{\guard{z}}]}{z \in \Variables(\sourceMap) \setminus \Variables(\targetMap)}{R' \in \pi_1[\pi_1[\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]]}{z \in \Variables(\sourceMap) \cap \Variables(\targetMap)} \]
+  \[ \twopartfunc{R_\tgt(z)}{R \in \pi_1[\RealisableRelations{\targetAutomatonB}{\guard{z}}]}{z \in \Variables(\targetMap) \setminus \Variables(\sourceMap)}{R'' \in \pi_2[\pi_1[\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]]}{z \in \Variables(\sourceMap) \cap \Variables(\targetMap)} \]
+  and $(R', R'') \in \pi_1[\RealisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]$ for all $z \in \Variables(\sourceMap) \cap \Variables(\targetMap)$. Note that this also provides us with corresponding contexts which realise the chosen relations. Let $C_{R_\src, R_\tgt}$ be a function which assigns to each variable $x$, a context which induces the relation $R_i(x)$ for some $i \in \{\src, \tgt\}$, for the fixed pair $R_\src, R_\tgt$.
+
+  Armed with this, we compute the \extendedTransitionRelation s\ $\widetilde{\Transitions_i}(\phi_i(\gamma))$ for all $\gamma \in \Gamma$ and $i \in \{\src, \tgt\}$ by simply considering each $x \in \Variables(\sourceMap) \cup \Variables(\targetMap)$ as a separate letter with the `transition relation' given by the corresponding $R_i(x)$ and running the corresponding automaton on it.
+
+  For each pair of choice functions $R_\src, R_\tgt$, we define ATTA $\Z_{R_\src, R_\tgt}$ given by
+  \[ \Z_{R_\src, R_\tgt} := \left((P \biguplus Q_\src \biguplus Q_\tgt \biguplus \{\start\}), \Gamma, I := \{\start\}, \Transitions'\right) \]
+  where we define $\Transitions'$ as follows. For a fixed letter $\gamma \in \Gamma$,
+  \begin{itemize}
+    \item For a state $p \in P$, we set
+    \[ \Transitions'(p, \gamma/k) := \bigvee_{(p_1, p_2, \dots, p_k, p) \in \Theta(\gamma)}(p_1, 1) \land (p_2, 2) \land \dots \land (p_k, k) \]
+    This transition basically ensures that the ATTA $\Z_{R_\src, R_\tgt}$ simulates $\automaton$.
+    \item For a state $q \in Q_\src$, we set
+    \[ \Transitions'(q, \gamma/k) := \bigvee_{(q_1, \dots, q_m, q) \in \widetilde{\Transitions_\src}(\sourceMap(\gamma))} \bigwedge_{i \in [k]} \left[\bigwedge_{j \in D_{\sourceMap}(i)}(q_j, i)\right] \]
+    Intuitively, this transition simulates the running of $\sourceAutomatonB$ on $\sourceMap(\tau)$.
+    \item Similarly, for a state $q \in Q_\tgt$, we set
+    \[ \Transitions'(q, \gamma/k) := \bigvee_{(q_1, \dots, q_m, q) \in \widetilde{\Transitions_\tgt}(\targetMap(\gamma))} \bigwedge_{i \in [k]} \left[\bigwedge_{j \in D_{\targetMap}(i)}(q_j, i)\right] \]
+    Intuitively, this transition simulates the running of $\targetAutomatonB$ on $\targetMap(\tau)$.
+    \item Finally, we have an $\epsilon$-transition $\Transitions'(\start, \epsilon/1) := \bigvee_{p \in E, q_\src \in F_\src, q_\tgt \in F_\tgt}((p, 1) \land (q_\src, 1) \land (q_\tgt, 1))$
+  \end{itemize}
+
+  We illustrate this with an example. Let $q \in Q_\src$, and $\gamma/5 \in \Gamma$, i.e., $\gamma$ is a letter with arity 5. Also let $\sourceMap(\gamma)$ be defined as in Figure~\ref{fig:destinationFunctionExample}. Note that we have already completely computed the extended transition relation $\widetilde{\Transitions_\src}(\sourceMap(\gamma))$ given the choice function $R_\src$. In such a case we define $        \Transitions'(q, \gamma/5) :=$
+  \[
+  \bigvee_{(q_1, \dots, q_7, q) \in \widetilde{\Transitions_\src}(\sourceMap(\gamma))} \left[ \underbrace{(q_1, 1) \land (q_3, 1) \land (q_6, 1)}_{D_{\sourceMap}(1) = \{1, 3, 6\}} \land \underbrace{(q_4, 2)}_{D_{\sourceMap}(2) = \{4\}} \land \underbrace{(q_2, 3) \land (q_7, 3)}_{D_{\sourceMap}(3) = \{2, 7\}} \land \underbrace{(q_5, 4)}_{D_{\sourceMap}(4) = \{5\}} \right]
+  \]
+  With this ATTA, we see that an element $\tau \in L(\Z_{R_\src, R_\tgt})$ if and only if we have $\substitution(\sourceMap(\tau)) \in \sourceLang$ under $\guardFunction$ and $\substitution(\targetMap(\tau)) \in \targetLang$ under $\guardFunction$ where the substitution is given by $\substitution(x) := C_{R_\src, R_\tgt}(x)$ for all $x \in \Variables(\sourceMap) \cup \Variables(\targetMap)$. We see this as follows:
+
+  ($\Leftarrow$) Let $\substitution := C_{R_\src, R_\tgt}$ such that $\substitution(\sourceMap(\tau)) \in \sourceLang$ and $\substitution(\targetMap(\tau)) \in \targetLang$ for some $\tau \in \Trees{\Gamma}$. This implies that for an accepting run of $\sourceAutomatonB$ on $\substitution(\sourceMap(\tau))$, the result of that run is some final state $f_\src \in F_\src$. Similarly for an accepting run of $\targetAutomatonB$ on $\substitution(\targetMap(\tau))$, the result of that run is some final state $f_\tgt \in F_\tgt$. Also, since $\tau \in \seedLang$, there is an accepting run of $\automaton$ on $\tau$ such that the result of that run is $e \in E$. Then we can see that the set $\{e, f_\src, f_\tgt\} \models I$, the starting formula for $\Z_{R_\src, R_\tgt}$. From here the run of $\Z_{R_\src, R_\tgt}$ simulates the run of $\automaton$ on $\tau$, and the runs of $\automatonB_i$ on $\phi_i(\tau)$ for $i \in \{\src, \tgt\}$ conforming to the transition $C_{R_\src, R_\tgt}$. Since all of these are successful runs, the run of $\Z_{R_\src, R_\tgt}$ we described on $\tau$ is also a successful run, and hence $\tau \in L(\Z_{R_\src, R_\tgt})$.
+
+  ($\Rightarrow$) Conversely, let $\tau \in L(\Z_{R_\src, R_\tgt})$. This implies that there is an accepting run of $\Z_{R_\src, R_\tgt}$ on $\tau$. Given the nature of the starting formula $I$, we must have a $e \in E, f_\src \in F_\src, f_\tgt \in F_\tgt$ such that $\{e, f_\src, f_\tgt\} \models I$. Since $\Z_{R_\src, R_\tgt}$ simulates $\automaton$ on $\tau$ and $e \in E$, we see that $\tau \in L(\automaton)$. Since $\Z_{R_\src, R_\tgt}$ also simulates $\automatonB_i$ on $\phi_i(\tau)$ conforming to $C_{R_\src, R_\tgt}$ for all $i \in \{\src, tgt\}$, we see that $\substitution(\phi_i(\tau)) \in \stLang_i$ for $i \in \{\src, \tgt\}$. This completes the proof.
+
+  We know from \cite{tata} that the emptiness problem for ATTA is \exptc\ in the size of the automaton. Note that this computation has been performed for a specific choice of $R_\src, R_\tgt$. Let $\mathcal{R}$ be the set of all pairs of choice functions. To complete the solution of the problem, we need to perform this computation for each pair of choice functions $(R_\src, R_\tgt) \in \mathcal{R}$. We know that $|\mathcal{R}|$ is bounded above by $\prod_{x/k \in \Variables(\sourceMap)}2^{|Q_\src|^{k+1}} \cdot \prod_{y/m \in \Variables(\targetMap)}2^{|Q_\tgt|^{m+1}}$. Let $M_Q := \max\{|Q_\src|, |Q_\tgt|\}$ and $M_\arity := 1+\max\{\arity(x) \mid x \in \Variables(\sourceMap) \cup \Variables(\targetMap)\}$. This gives us the upper bound $|\R| \leq \prod_{x/k \in \Variables(\sourceMap)}2^{M_Q^{M_\arity}} \cdot \prod_{y/m \in \Variables(\targetMap)}2^{M_Q^{M_\arity}}$ which eventually simplifies to the bound $|\R| \leq \left(2^{M_Q^{M_\arity}}\right)^{|\Variables(\sourceMap) \cup \Variables(\targetMap)|}$. We also know that each nonemptiness check requires time given by $2^{\bigo(M_Q)}$. Hence the total time required for all the nonemptiness checks is given by
+  \[ \mbox{Total running time } = 2^{\bigo(M_Q)} \cdot \left(2^{M_Q^{M_\arity}}\right)^{|\Variables(\sourceMap) \cup \Variables(\targetMap)|} \]
+  On simplifying the above, we get that the running time of the algorithm we have provided is $2^{p(M_Q)}$, where $p$ is a polynomial of degree which is also dependent on the size of the input.
+\end{proof}

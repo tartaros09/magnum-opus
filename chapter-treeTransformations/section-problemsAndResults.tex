@@ -1,0 +1,71 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Tree Transformations - Problems and Results                                %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Problems and Results}\label{sec:problemsAndResults}
+
+A simple question is to check whether there is a matching.  This problem is already NP complete. \\
+\noindent
+\probdef{\matchingProblemFull\ }
+{Pattern $\pattern$, tree $t$, guard $\guardFunction$. {\color{gray} \slash\slash The guard languages are represented by NBTA }}
+{Does $t$ match $\pattern$ under $\guardFunction$?}
+
+\begin{theorem}[\cite{mtchLBound}]\label{thm:matching}
+    \matchingProblemFull\ is \nptc. %, provided the guard languages are
+    specified as NBTA.
+\end{theorem}
+\begin{proof}
+        \textbf{(Upper Bound)} Let $(\pattern, t)$ be an instance of
+        \matchingProblemFull, where $\pattern$ is a pattern over
+        $\Alphabet$ and
+        $\Variables$, $t \in
+        \Trees{\Alphabet}$ and $\guardFunction : \Variables \to 2^{\Trees{\Alphabet}}$ where each value of the function is given by an NBTA. Let the size of the input be $N :=
+        |\pattern| + |t| + |\guardFunction|$. Given a certificate, which is a particular
+        substitution whose size is bounded by $|t|$, we can verify whether $\substitution(\pattern) =
+        t$ in $\bigo(|t|)$ time, which is linear in the size of the
+        input $N$. We can also verify that for every $x \in
+        \Variables(\pattern)$, $\substitution(x) \in
+        \guard{x}$. Since there exists a polynomial-time verifier
+        algorithm for the problem, we see that \matchingProblemFull\
+        is in \np.
+	
+	\textbf{(Lower Bound)} For this proof, we refer to~\cite{mtchLBound},
+        which gives the proof in the case of words. The proof proceeds
+        by obtaining a reduction from \oneInThreeSatFull. For the sake
+        of completeness we include a version of the proof in the Appendix~\ref{sec:mtchLB}.
+\end{proof}
+
+A problem which we consider for atomic transformations is the following:
+
+\probdef{\typecheckingProblemFull}
+{Atomic transformation $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, source language $\sourceLang$,  target language $\targetLang$. {\color{gray} \slash\slash The  languages are represented by NBTA }}
+{Do we have that $\atomicTransform[\sourceLang] \cap \targetLang \neq \emptyset$?}
+
+For this, we have the following results:
+\begin{theorem}\label{thm:typecheckingProblem}
+    \typecheckingProblemFull\ is \exptc.
+\end{theorem}
+
+A detailed proof can be found in Appendix~\ref{sec:atomicTypeCheckingProof}. 
+
+We next turn to the main focus of study, the type-checking problem:\\
+\probdef{\metaTypecheckingProblemFull\ }{ Transformation  $\fullTransform := (\seedLang,
+	\sourceMap, \targetMap, \guardFunction)$, source language $\sourceLang$,  target language $\targetLang$. {\color{gray} \slash\slash The  languages are represented by NBTA }}
+{Do we have that $\fullTransform[\sourceLang] \cap \targetLang \neq \emptyset$?}
+%\ais{Ideally input should be transformation, L1, L2}
+%
+%%\subsection{Results}\label{subsec:results}
+%\aisinline{say that why our example of type-checking from before fits into this definition.}
+
+Following is the main result of this paper.
+\begin{theorem}\label{thm:metaTypecheckingUpperBound}
+  \metaTypecheckingProblemFull\ is in 2-EXPTime. In particular,  it can be solved in time
+  $2^{\mathsf{polynomial}(\mathsf{input})}$, where the degree of the
+  polynomial is linear in the size of the input. 
+\end{theorem}
+%\ais{poly instead of polynomial ?}
+%\ais{this sounds dishonest. why do not we say double exponential?}
+
+Our decision procedure for the type-checking problem is automata theoretic. In fact, we reduce the type-checking problem to the non-emptiness-checking of an alternating tree-automata that we construct

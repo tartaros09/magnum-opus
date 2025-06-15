@@ -1,10 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
-%	Chapter 03, Section 02 - Introduction                                      %
+%	String Transformations - Introduction                                      %
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Introduction}\label{sec:c03-introduction}
+\section{Introduction}\label{sec:introduction-strings}
 
 We consider systems maintaining information in text format in scenarios where changes to the textual information should be tightly controlled. Often the textual information that is maintained conforms to some syntactic structure, such as that provided by context-free or regular languages. One of the desirable properties of such systems is that if the modification is applied to textual information that belongs to a specified language, the modified text should still belong to that language. In other words, the specified language should be invariant under the modifications allowed by the system. A typical example of such systems is maintaining configuration information in data centers, a task for which there are dedicated softwares such as  Apache ZooKeeper \cite{Zookeeper}. Resources such as GPUs can be allocated to processes running on the service and we would want to move GPUs from one process to another. Suppose we want to ensure that GPUs are not moved from high priority processes to low priority ones. Such tight control over the kind of modifications that are allowed is the main purpose of the formal model we introduce here. We study the complexity of checking whether a given regular language is invariant under the modifications allowed by a given system. Currently our model is for strings, for which the invariance-checking problem is already intractable.
 

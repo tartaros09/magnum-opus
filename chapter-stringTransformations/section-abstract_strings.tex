@@ -1,10 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
-%	Chapter 03, Section 01 - Abstract                                          %
+%   String Transformations - Abstract                                          %
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Abstract}\label{sec:c03-abstract}
+\section{Abstract}\label{sec:abstract-strings}
 
 We introduce a model for transforming strings, that provides fine control over what modifications are allowed. The model consists of actions, each of which is enabled only when the input string conforms to a predefined template. A template can break the input up into multiple fields, and constrain the contents of each of the fields to be from pre-defined regular languages. The template can also constrain two fields2 to be duplicates of each other. If the input string conforms to the template, the action can be performed to modify the string. The output consists of the contents of the fields, possibly in a different order, possibly with different numbers of occurrences. Optionally, the action can also apply transductions on the contents of the fields before outputting.
 

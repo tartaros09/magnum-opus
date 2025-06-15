@@ -1,0 +1,248 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Tree Transformations - Motivating Example                                  %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Motivating Example}\label{sec:motivatingExample}
+
+As a motivating example, we consider the a piece of code, written in a language like C++ or Java, containing a certain bounded number of \textbf{for} loops. We would like to transform this into a corresponding piece of code with \textbf{while} loops. A concrete example is depicted in Figure~\ref{fig:code-snippets}.
+\begin{figure}
+	{\footnotesize
+		\begin{tabular}{p{0.3\textwidth}} 
+			Source code \\ \hline
+			\texttt{int[] A = randomIntArray();}\\
+			\texttt{int minIndex = 0;}\\
+			\texttt{int minValue = A[minIndex];}\\
+			\texttt{for(int i=1;i<A.length;i++) \{}\\
+			\texttt{	\quad if(A[i] < minValue) \{ }\\
+			\texttt{	\quad  \quad 	minIndex = i; }\\
+			\texttt{	\quad  \quad	minValue = A[i];}\\
+			\texttt{	\quad	\} }\\
+			\texttt{ \} }\\
+			\texttt{ return minIndex, minValue;}\\
+			\\
+			\\
+		\end{tabular}
+		\hfil
+		\begin{tabular}{p{0.3\textwidth}} 
+			Target code \\
+			\hline
+			
+			\texttt{  int[] A = randomIntArray();}\\
+			\texttt{      int minIndex = 0; }\\
+			\texttt{ int minValue = A[minIndex];}\\
+			\texttt{      int i=1;}\\
+			\texttt{  while(i<A.length) \{ }\\
+			\texttt{  \quad if(A[i] < minValue) \{ }\\
+			\texttt{ \quad \quad       minIndex = i; }\\
+			\texttt{ \quad \quad      minValue = A[i]; }\\
+			\texttt{ \quad  \} } \\
+			\texttt{ \quad i++; }\\
+			\texttt{      \} }\\
+			\texttt{     return minIndex, minValue;}\\
+		\end{tabular}
+	}
+	\caption{The source and target code snippets before and after transforming \texttt{for} loops to \texttt{while} loops.}\label{fig:code-snippets}
+    \Description{}
+\end{figure}
+
+Let us bound the number of $\examplePatLangFor$ loops in our programs by some fixed $n \in \N$. Consider the alphabet $\Alphabet := \coreAlphabet \uplus \set{\examplePatLangFor/5, \examplePatLangWhile/3, \examplePatLangNull/0}$ where the unary $\coreAlphabet$ refers to the alphabet used for programming, which for instance, could be all the characters appearing on a standard keyboard. With this alphabet, the source and target codes are seen as trees, as depicted in Figure~\ref{fig:code-snippets-as-trees}. Long chains of characters from $\coreAlphabet$ are written as mere sequences wrapped in box for the sake of readability and space. 
+
+We would like to capture these codes with  patterns  containing variables, which will allow us to move around the  sections of code as needed.  Let $\Variables := \set{x^\examplePatLangInit_i/1, x^\examplePatLangCond_i/1, x^\examplePatLangIncr_i/1 \mid i \in [n]}$ be the set of variables. Recall that $n$, bound on the number of $\examplePatLangFor$ loops in our programs, is a constant and hence we have only a fixed finite number of variables. 
+
+\begin{figure}
+	\begin{tikzpicture}[node distance = 2mm]
+		\node[draw, align = left,  ] (s1){	\footnotesize\texttt{int[] A = randomIntArray();}\\
+			\footnotesize{int minIndex = 0;}\\
+			\footnotesize\texttt{int minValue = A[minIndex];} }; 
+			
+		\node[draw, align = left, below  = 2mm  of s1] (s2) {\footnotesize \texttt{ for}};
+		
+		\node [draw, align = left, below left = of s2] (s3) {\footnotesize \texttt{   int i=1;} };
+				\node [draw, align = left, below left  =2mm and -10mm of s3] (n3) {\footnotesize \texttt{   null} };
+		\node [draw, align = left, below right = 2mm and -8mm of n3] (s4) {\footnotesize \texttt{   i<A.length; } };	
+						\node [draw, align = left, below left  =2mm and -10mm of s4] (n4) {\footnotesize \texttt{   null} };
+				\node [draw, align = left, below right = 2mm and -3mm of n4] (s5) {\footnotesize \texttt{   i++} };		
+								\node [draw, align = left, below left  =2mm and -10mm of s5] (n5) {\footnotesize \texttt{   null} };
+		\node[draw, align = left, below right = 2mm and -8mm of n5  ] (s6){	\footnotesize	\texttt{	 if(A[i] < minValue) \{\}  }\\
+		\footnotesize	\texttt{ 	minIndex = i; }\\
+		\footnotesize	\texttt{		minValue = A[i]; \}}  }; 	
+		\node [draw, align = left, below left  =2mm and -10mm of s6] (n6) {\footnotesize \texttt{   null} };			
+				\node[draw, align = left, below right = 2mm and -8mm of n6  ] (s7){	\footnotesize		\texttt{ return minIndex, minValue;}
+		  }; 	
+		  		\node [draw, align = left, below left  =2mm and -10mm of s7] (n7) {\footnotesize \texttt{   null} };			
+		  		
+		  		
+		  		\draw[->]
+		  		(s1) edge (s2)
+		  		(s2) edge (s3)
+		  		(s3) edge (n3)
+		  		(s2) edge (s4)
+		  		(s4) edge (n4)
+		  		(s2) edge[bend left = 50] (s5)
+		  		(s5) edge (n5)
+		  		(s2)  edge[bend left = 40] (s6)
+                (s6) edge (n6)	
+               	(s2)  edge[bend left = 80] (s7)
+                (s7) edge (n7)		  		
+		  		;
+	\end{tikzpicture}
+	\hfill 
+		\begin{tikzpicture}[node distance = 2mm]
+		\node[draw, align = left,  ] (s1){	\footnotesize\texttt{int[] A = randomIntArray();}\\
+			\footnotesize{int minIndex = 0;}\\
+			\footnotesize\texttt{int minValue = A[minIndex];} }; 
+			
+					\node [draw, align = left, below  = of s1] (s3) {\footnotesize \texttt{   int i=1;} };
+		
+		\node[draw, align = left, below  = 2mm  of s3] (s2) {\footnotesize \texttt{ while}};
+		
+
+		\node [draw, align = left, below left = 2mm and -8mm of s2] (s4) {\footnotesize \texttt{   i<A.length; } };	
+		\node [draw, align = left, below left  =2mm and -10mm of s4] (n4) {\footnotesize \texttt{   null} };
+		\node[draw, align = left, below right = 2mm and -8mm of n4  ] (s6){	\footnotesize	\texttt{	 if(A[i] < minValue) \{ }\\
+			\footnotesize	\texttt{ 	minIndex = i; }\\
+			\footnotesize	\texttt{		minValue = A[i]; \}}  }; 	
+		\node [draw, align = left, below  = of s6] (s5) {\footnotesize \texttt{   i++} };		
+	\node [draw, align = left, below left  =2mm and -10mm of s5] (n5) {\footnotesize \texttt{   null} };		
+		\node[draw, align = left, below right = 2mm and -8mm of n5  ] (s7){	\footnotesize		\texttt{ return minIndex, minValue;}
+		}; 	
+		\node [draw, align = left, below left  =2mm and -10mm of s7] (n7) {\footnotesize \texttt{   null} };			
+		
+		
+		\draw[->]
+		(s1) edge (s3)
+		(s3) edge (s2)
+		(s2) edge (s4)
+		(s4) edge (n4)
+		(s6) edge (s5)
+		(s2)  edge[bend left = 40] (s6)
+				(s5) edge (n5)
+		(s2)  edge[bend left = 40] (s7)
+		(s7) edge (n7)		  		
+		;
+	\end{tikzpicture}
+	\caption{Source and target code  snippet from Fig~\ref{fig:code-snippets} as trees.}\label{fig:code-snippets-as-trees}
+    \Description{}
+\end{figure}
+
+
+\begin{figure}
+	
+	\scalebox{.8}{	\begin{tikzpicture}[node distance = 2mm]
+		\node[draw, align = left,  ] (s1){	\footnotesize\texttt{int[] A = randomIntArray();}\\
+			\footnotesize{int minIndex = 0;}\\
+			\footnotesize\texttt{int minValue = A[minIndex];} }; 
+		
+		\node[draw, align = left, color = blue, below  = 2mm  of s1] (s2) {\footnotesize \texttt{ for}};
+		
+		\node [draw, align = left, below left = of s2, color = blue,] (s3) {\footnotesize \texttt{   $x^\examplePatLangInit_1$ } };
+		\node [draw, align = left, color = blue, below left  =2mm and -10mm of s3] (n3) {\footnotesize \texttt{   null} };
+		\node [draw, align = left, color = blue, below right = 2mm and -8mm of n3] (s4) {\footnotesize \texttt{    $x^\examplePatLangCond_1$ } };	
+		\node [draw, align = left, color = blue, below left  =2mm and -10mm of s4] (n4) {\footnotesize \texttt{   null} };
+		\node [draw, align = left,  color = blue, below right = 2mm and -3mm of n4] (s5) {\footnotesize \texttt{  $x^\examplePatLangIncr_1$ } };		
+		\node [draw, align = left, color = blue, below left  =2mm and -10mm of s5] (n5) {\footnotesize \texttt{   null} };
+		\node[draw, align = left, below right = 2mm and -28mm of n5  ] (s6){	\footnotesize	\texttt{	 if(A[i] < minValue) \{ }\\
+			\footnotesize	\texttt{ 	minIndex = i; }\\
+			\footnotesize	\texttt{		minValue = A[i]; \}}  }; 	
+		\node [draw, align = left, below left  =2mm and -10mm of s6] (n6) {\footnotesize \texttt{   null} };			
+		\node[draw, align = left, below right = 2mm and -8mm of n6  ] (s7){	\footnotesize		\texttt{ return minIndex, minValue;}
+		}; 	
+		\node [draw, align = left, below left  =2mm and -10mm of s7] (n7) {\footnotesize \texttt{   null} };			
+		
+		
+		\draw[->]
+		(s1) edge (s2)
+		(s2) edge[color = blue,] (s3)
+		(s3) edge[color = blue,] (n3)
+		(s2) edge[color = blue,] (s4)
+		(s4) edge[color = blue,] (n4)
+		(s2) edge[bend left = 30, color = blue,] (s5)
+		(s5) edge[color = blue,] (n5)
+		(s2)  edge[bend left = 50] (s6)
+		(s6) edge (n6)	
+		(s2)  edge[bend left = 60] (s7)
+		(s7) edge (n7)		  		
+		;
+	\end{tikzpicture}} 
+\scalebox{.8}{	\begin{tikzpicture}[node distance = 2mm]
+		\node[draw, align = left,  ] (s1){	\footnotesize\texttt{int[] A = randomIntArray();}\\
+			\footnotesize{int minIndex = 0;}\\
+			\footnotesize\texttt{int minValue = A[minIndex];} }; 
+		
+		\node [draw, align = left, color = blue, below left = 2mm and -8mm of s1] (s3) {\footnotesize \texttt{   $x^\examplePatLangInit_1$ }};
+
+		\node[draw, align = left, color = blue, below  = 2mm  of s3] (s2) {\footnotesize \texttt{ while}};
+		
+		
+		\node [draw, align = left, color = blue, below left = 2mm and -8mm of s2] (s4) {\footnotesize \texttt{  $x^\examplePatLangCond_1$ } };	
+		\node [draw, align = left, color = blue, below left  =2mm and -10mm of s4] (n4) {\footnotesize \texttt{   null} };
+		\node[draw, align = left, below right = 2mm and -8mm of n4  ] (s6){	\footnotesize	\texttt{	 if(A[i] < minValue) \{ }\\
+			\footnotesize	\texttt{ 	minIndex = i; }\\
+			\footnotesize	\texttt{		minValue = A[i]; \}}  }; 	
+		\node [draw, align = left, color = red, below left =2mm and -8mm of s6] (s5) {\footnotesize \texttt{    $x^\examplePatLangIncr_1$} };		
+		\node [draw, align = left, color = red, below left  =2mm and -10mm of s5] (n5) {\footnotesize \texttt{   null} };		
+		\node[draw, align = left, below right = 2mm and -8mm of n5  ] (s7){	\footnotesize		\texttt{ return minIndex, minValue;}
+		}; 	
+		\node [draw, align = left, below left  =2mm and -10mm of s7] (n7) {\footnotesize \texttt{   null} };			
+		
+		
+		\draw[->]
+		(s1) edge (s3)
+		(s3) edge[color = blue,] (s2)
+		(s2) edge[color = blue,] (s4)
+		(s4) edge[color = blue,] (n4)
+		(s6) edge (s5)
+		(s2)  edge[bend left = 15] (s6)
+		(s5) edge[color = red,] (n5)
+		(s2)  edge[bend left = 90] (s7)
+		(s7) edge (n7)		  		
+		;
+	\end{tikzpicture}} 
+	\scalebox{0.8}{	\begin{tikzpicture}[node distance = 2mm]
+		\node[draw, align = left,  ] (s1){	\footnotesize\texttt{int[] A = randomIntArray();}\\
+			\footnotesize{int minIndex = 0;}\\
+			\footnotesize\texttt{int minValue = A[minIndex];} }; 
+	
+		
+		\node[draw, color = blue,  align = left, below right  = 2mm  and -10mm of s1] (s2) {\footnotesize \texttt{$ \exampleSeedLangLoop_1$}};
+	
+
+		\node[draw, align = left, below left = 2mm and -3mm of s2  ] (s6){	\footnotesize	\texttt{	 if(A[i] < minValue) \{ }\\
+			\footnotesize	\texttt{ 	minIndex = i; }\\
+			\footnotesize	\texttt{		minValue = A[i]; \}}  }; 	
+		\node [draw, align = left, color = red, below  = of s6] (s5) {\footnotesize \texttt{  $\exampleSeedLangEndLoop_1$ } };		
+		\node[draw, align = left, below  =  of s5  ] (s7){	\footnotesize		\texttt{ return minIndex, minValue;}
+		}; 	
+		\node [draw, align = left, below left  =2mm and -10mm of s7] (n7) {\footnotesize \texttt{   null} };			
+		
+		
+		\draw[->]
+		(s1) edge  (s2)
+
+		(s2)  edge[bend left = 0] (s6)
+				(s6) edge (s5)
+		(s2)  edge[bend left = 50] (s7)
+		(s7) edge (n7)		  		
+		;
+	\end{tikzpicture}
+}
+	\caption{Source pattern, target pattern and the seed tree. The source and target morphisms are identity everywhere, except for $\exampleSeedLangLoop_1$ and $\exampleSeedLangEndLoop_1$,  which  are indicated by colors blue and red respectively.}
+    \Description{}
+\end{figure}
+ 
+ 
+ The source and target patterns and a seed tree  generating these patterns is given in Figure~\ref{fig:code-snippets-as-trees}. 
+
+Note that the  seed alphabet is given by $\Gamma := \coreAlphabet \uplus \set{\exampleSeedLangLoop_i/2, \exampleSeedLangEndLoop_i/0 \mid i \in [n]} \uplus \set{\examplePatLangNull/0}$. 
+
+
+In general, the seed language will contain all  trees in $T_{\Gamma}$ which contain each of the letters $\exampleSeedLangLoop_i$ and $\exampleSeedLangEndLoop_i$ at most once and are well-bracketed. We can observe that this is a regular tree language since $n$ is a constant.
+
+
+In general, we see that for any program with no more than $n$ $\examplePatLangFor$ loops, we will be able to find a seed tree, which will give us a source pattern and a target pattern through homomorphisms $\sourceMap, \targetMap$ respectively. The source pattern will match the program code with not more than $n$ $\examplePatLangFor$ loops with a substitution, which when applied to the target pattern will give us the transformed version of the program code which has all $\examplePatLangFor$ loops transformed into $\examplePatLangWhile$ loops. 
+
+We may want to verify that applying a transformation to source trees belonging to some regular language (such as syntactically correct programs that use for loops) will never result in target trees violating desired properties (such as syntactically correct programs that use while loops). This motivates the problem we consider for our model, defined in the following section.
+
+We have one more motivating example on retrieving latex preamble from the pdf of a journal, in Appendix~\ref{sec:reverseEngineeringPdfs}.
