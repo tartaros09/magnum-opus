@@ -30,50 +30,51 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage[useregional]{datetime2}
-\usepackage{setspace}
-\usepackage{vmargin}
-\usepackage{fancyhdr}
 \usepackage{amsmath,amssymb,amscd,amsthm,xspace,mathrsfs}
-\usepackage[centerlast,small,sc]{caption}
-\usepackage{tikz}
-%\usepackage{tikz-cd}
-\usepackage{verbatim}
-\usepackage[all,2cell]{xy}
-\usetikzlibrary{matrix,arrows,decorations.markings,decorations.pathmorphing}
-\RequirePackage[utf8]{inputenc}  %  Allows the use of international characters (e.g. Umlauts)
-\usepackage{mathrsfs}
-\usepackage{xcolor}
-%\usepackage{algorithmicx}
-%\usepackage{algpseudocode}
-\usepackage{algorithm2e}
-\usepackage{tikz-cd}
-\usepackage{enumitem}
-\usepackage{xcolor}
-\usepackage{thm-restate}
-
-\usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
-bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
-colorlinks,linkcolor={red},citecolor={blue},urlcolor={green},
-pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
-%\usepackage[bookmarksnumbered,linktocpage,hypertexnames=false,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue,anchorcolor=green,pdfusetitle]{hyperref}
-\usepackage{mathtools}
-\usepackage{graphicx}
-\usepackage{datetime}
+\usepackage{stmaryrd}
 \usepackage{fancyhdr}
-\usepackage{bm}
-\usepackage[mathscr]{euscript}
-\usepackage[capitalise]{cleveref}
-\usepackage{epstopdf}
-\usepackage{young}
-\usepackage{listings}
-%\usepackage{lstpatch}
-\usepackage{geometry}
-\usepackage{libertine}  %  This will set your document to use the font for text
-\usepackage{lipsum}
-\usepackage{titlesec}
-\usepackage{multirow}
-\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{vmargin}
+
+% \usepackage[useregional]{datetime2}
+% \usepackage{setspace}
+% \usepackage[centerlast,small,sc]{caption}
+% \usepackage{tikz}
+% %\usepackage{tikz-cd}
+% \usepackage{verbatim}
+% \usepackage[all,2cell]{xy}
+% \usetikzlibrary{matrix,arrows,decorations.markings,decorations.pathmorphing}
+% \RequirePackage[utf8]{inputenc}  %  Allows the use of international characters (e.g. Umlauts)
+% \usepackage{mathrsfs}
+% \usepackage{xcolor}
+% %\usepackage{algorithmicx}
+% %\usepackage{algpseudocode}
+% \usepackage{algorithm2e}
+% \usepackage{tikz-cd}
+% \usepackage{xcolor}
+% \usepackage{thm-restate}
+
+% \usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
+% bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
+% colorlinks,linkcolor={red},citecolor={blue},urlcolor={green},
+% pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
+% %\usepackage[bookmarksnumbered,linktocpage,hypertexnames=false,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue,anchorcolor=green,pdfusetitle]{hyperref}
+% \usepackage{mathtools}
+% \usepackage{graphicx}
+% \usepackage{datetime}
+% \usepackage{bm}
+% \usepackage[mathscr]{euscript}
+% \usepackage[capitalise]{cleveref}
+% \usepackage{epstopdf}
+% \usepackage{young}
+% \usepackage{listings}
+% %\usepackage{lstpatch}
+% \usepackage{geometry}
+% \usepackage{libertine}  %  This will set your document to use the font for text
+% \usepackage{lipsum}
+% \usepackage{titlesec}
+% \usepackage{multirow}
+% \usepackage{multicol}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

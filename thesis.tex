@@ -3,7 +3,7 @@
 \usepackage{macros}
 
 \begin{document}
-\maketitle
+% \maketitle
 \pagenumbering{roman}
 
 % \makedeclarationpage
@@ -16,13 +16,24 @@
 \pagenumbering{arabic}
 \pagestyle{fancy}
 
-\input{chapter-introduction}
-\input{chapter-preliminaries}
-% \input{chapter-stringTransformations}
-% \input{chapter-treeTransformations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Main Chapters                                                              %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{chapter-treeTransformations}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Appendix Chapters                                                          %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \appendix
-\input{appendix-fullProof}
+% \input{appendix-fullProof}
 
 \bibliography{references}
 \bibliographystyle{alpha}
