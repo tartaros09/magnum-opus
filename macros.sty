@@ -13,28 +13,32 @@
 
 % \newcommand{\matrixSet}{\ensuremath{\mathbb{M}}}
 % \newcommand{\field}{\ensuremath{\mathbb{F}}}
-
-\newcommand{\e}{\varepsilon}
+\newcommand{\B}{\ensuremath{\mathcal{B}}}
 
 % %  Word-related
 % \newcommand{\words}[1]{\ensuremath{\texttt{Words}\left(#1\right)}}  %  Set of all words over an alphabet #1.
-% \newcommand{\regular}[1]{\texttt{Regular}(#1)}
 
-% %  Tree-related
-% \newcommand{\trees}[1]{\ensuremath{\texttt{Trees}\left(#1\right)}}  %  Set of all trees over an alphabet #1.
-% \newcommand{\contexts}[2]{\ensuremath{\texttt{Contexts}_{#2}\left(#1\right)}}  %  Set of all contexts with #2 holes over alphabet #1.
-% \newcommand{\positions}{\texttt{Positions}}  %  Set of all positions in a tree. Subset of \N*.
+%  Tree-related
+\newcommand{\trees}[1]{\ensuremath{\texttt{Trees}\left(#1\right)}}  %  Set of all trees over an alphabet #1.
+\newcommand{\contexts}[2]{\ensuremath{\texttt{Contexts}_{#2}\left(#1\right)}}  %  Set of all contexts with #2 holes over alphabet #1.
+\newcommand{\positions}{\texttt{Positions}}  %  Set of all positions in a tree. Subset of \N*.
+\newcommand{\relations}[2]{\ensuremath{\texttt{Relations}_{#2}\left(#1\right)}}  %  Set of all relations of arity #2 over set #1.
+
+%  Miscellaneous
+\newcommand{\e}{\varepsilon}
+\newcommand{\regular}[1]{\texttt{Regular}(#1)}
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %                                                                              %
-% %   Two-ended Macros                                                           %
-% %                                                                              %
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Two-ended Macros                                                           %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \newcommand{\set}[1]{\ensuremath{\left\{ #1 \right\}}}
+\newcommand{\set}[1]{\ensuremath{\left\{ #1 \right\}}}
+\newcommand{\counting}[1]{\ensuremath{\left[ #1 \right]}}
 % \newcommand{\sem}[1]{\ensuremath{\llbracket #1 \rrbracket}}
-% \newcommand{\abs}[1]{\ensuremath{\left\lvert #1 \right\rvert}}
+\newcommand{\abs}[1]{\ensuremath{\left\lvert #1 \right\rvert}}
 % \newcommand{\angular}[1]{\ensuremath{\langle}#1\ensuremath{\rangle}}
 
 
@@ -92,7 +96,7 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \DeclareMathOperator{\rank}{rank}  %  Rank
-% \DeclareMathOperator{\dom}{dom}  %  Domain
+\DeclareMathOperator{\dom}{dom}  %  Domain
 
 % \newcommand{\inv}{\ensuremath{^{-1}}}  %  Inverse
 
@@ -125,13 +129,13 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% %  Alphabets
-% \newcommand{\alphabet}{\Sigma}
-% \newcommand{\seedAlphabet}{\ensuremath{\Gamma}}
+%  Alphabets
+\newcommand{\alphabet}{\Sigma}
+\newcommand{\seedAlphabet}{\ensuremath{\Gamma}}
 % \newcommand{\coreAlphabet}{\ensuremath{\Sigma_\text{core}}}
-% \newcommand{\variables}{\texttt{Var}}
+\newcommand{\variables}{\texttt{Var}}
 
-% %  Language symbols
+%  Language symbols
 % \newcommand{\genericLanguage}{L}
 \newcommand{\seedLanguage}{S}
 % \newcommand{\sourceLang}{\ensuremath{\language_{\src}}}
@@ -155,24 +159,29 @@
 % \newcommand{\examplePatternLanguageNull}{\mathsf{null}}
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %                                                                              %
-% %   Automata-related                                                           %
-% %                                                                              %
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Automata-related                                                           %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \newcommand{\dfa}{\textsf{DFA}}
 % \newcommand{\nfa}{\textsf{NFA}}
 
-% \newcommand{\automaton}{\ensuremath{\mathcal{A}}}
+\newcommand{\automaton}{\ensuremath{\mathcal{A}}}
 % \newcommand{\automatonB}{\ensuremath{\mathcal{B}}}
 % \newcommand{\sourceAutomatonB}{\ensuremath{\automatonB_{\src}}}
 % \newcommand{\targetAutomatonB}{\ensuremath{\automatonB_{\tgt}}}
 
-% \newcommand{\automatonStateSet}{Q}
-% \newcommand{\automatonTransitionSet}{\Delta}
-% \newcommand{\automatonInitialStateSet}{Q_\textsf{in}}
-% \newcommand{\automatonFinalStateSet}{Q_\textsf{fin}}
+\newcommand{\automatonStateSet}{Q}
+\newcommand{\automatonTransitionSet}{\Delta}
+\newcommand{\automatonInitialStateSet}{Q_\textsf{in}}
+\newcommand{\automatonFinalStateSet}{Q_\textsf{fin}}
+
+\newcommand{\automataSet}[1]{\texttt{Automata}(#1)}
+
+\newcommand{\transitionSystem}{\ensuremath{\mathcal{T}}}
+\newcommand{\result}{\texttt{result}}
 
 % \newcommand{\mealyMachine}{M}
 % \newcommand{\mealyMachineStateSet}{Q}
@@ -217,14 +226,17 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\homomorphism}{\ensuremath{\phi}}
-% \newcommand{\substitution}{\ensuremath{\sigma}}
+\newcommand{\substitution}{\ensuremath{\sigma}}
 % \newcommand{\valuation}{\ensuremath{\sigma}}
 
 \newcommand{\sourceMap}{\ensuremath{\homomorphism_{\src}}}
 \newcommand{\targetMap}{\ensuremath{\homomorphism_{\tgt}}}
 
-% \newcommand{\guardFunction}{\ensuremath{\mathcal{G}}}
-% \newcommand{\guard}[1]{\ensuremath{\guardFunction(#1)}}
+\newcommand{\guardFunction}{\ensuremath{\mathcal{G}}}
+\newcommand{\guard}[1]{\ensuremath{\guardFunction(#1)}}
+
+\newcommand{\languageOf}[1]{\ensuremath{L(#1)}}
+\newcommand{\variablesOf}[1]{\variables(#1)}
 
 % \newcommand{\transductionFunction}{\ensuremath{\mathcal{T}}}
 
@@ -237,23 +249,21 @@
 % %                                                                              %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \newcommand{\atomicTransform}{\ensuremath{T}}
-% \newcommand{\fullTransform}{\ensuremath{\mathbf{T}}}
+\newcommand{\atomicTransform}{\ensuremath{T}}
+\newcommand{\fullTransform}{\ensuremath{\mathbf{T}}}
 
-% \newcommand{\action}{\alpha}  %  deprecated
-
-% \newcommand{\pattern}{\mathsf{Pat}}
-% \newcommand{\sourcePattern}{\pattern_{\src}}
-% \newcommand{\targetPattern}{\pattern_{\tgt}}
+\newcommand{\pattern}{\mathsf{Pat}}
+\newcommand{\sourcePattern}{\pattern_{\src}}
+\newcommand{\targetPattern}{\pattern_{\tgt}}
 
 % \newcommand{\post}{\textsf{post}}
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %                                                                              %
-% %   Multi-line                                                                 %
-% %                                                                              %
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Multi-line                                                                 %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \newcommand{\probdef}[3]{
 %     \fbox{\parbox{13cm}{\textbf{#1}\\
@@ -261,12 +271,12 @@
 %     \textbf{Question: } #3}}
 % }
 
-% \newcommand{\twopartfunc}[5]{
-%     #1 = \left\{ \begin{array}{ll}
-%         #2 & \mbox{ if } #3;\\
-%         #4 & \mbox{ if } #5.
-%     \end{array} \right.
-% }
+\newcommand{\twopartfunc}[5]{
+    #1 = \left\{ \begin{array}{ll}
+        #2 & \mbox{ if } #3;\\
+        #4 & \mbox{ if } #5.
+    \end{array} \right.
+}
 
 % \newcommand{\threepartfunc}[7]{
 %     #1 = \left\{ \begin{array}{lll}
@@ -279,18 +289,26 @@
 
 % %%%%%%%%%% Deprecated %%%%%%%%%%
 
-% \newcommand{\ssub}{\valuation}
-% \newcommand{\var}{\variables}
-% \newcommand{\T}{\transductionFunction}
-% \newcommand{\Aut}{\automaton}
-% \newcommand{\guardL}{\guardFunction}
-% \newcommand{\auttrans}{\automatonTransitionSet}
-% \newcommand{\autinitial}{\automatonInitialStateSet}
-% \newcommand{\autfin}{\automatonFinalStateSet}
-% \newcommand{\VARpat}{\pattern}
-% \newcommand{\spat}{\ensuremath{\sourcePattern}}
-% \newcommand{\tpat}{\ensuremath{\targetPattern}}
-% \newcommand{\aut}{\automaton}
+\newcommand{\Alphabet}{\alphabet}
+\newcommand{\Transitions}{\automatonTransitionSet}
+\newcommand{\Automata}{\automataSet}
+\newcommand{\T}{\transitionSystem}
+\newcommand{\Trees}{\trees}
+\newcommand{\Positions}{\positions}
+\newcommand{\Contexts}{\contexts}
+\newcommand{\Variables}{\variables}
+\newcommand{\relT}{\mathit{Rel}}
+\newcommand{\seedLang}{\seedLanguage}
+
+
+
+
+
+
+
+
+
+
 
 % % \newcommand{\tr}{\triangle}
 % % \newcommand*\pa[1]{\textsf{A}{#1}}
@@ -347,13 +365,10 @@
 % % \newcommand{\transition}{\ensuremath{\delta}}
 % % \newcommand{\contextInducedFunction}{induced function}
 % % \newcommand{\contextInducedRelation}{induced relation}
-% % \newcommand{\result}{\texttt{result}}
 % % \newcommand{\Results}{\texttt{Results}}
 % % \newcommand{\Functions}{\texttt{Functions}}
-% % \newcommand{\Relations}{\texttt{Relations}}
 % % \newcommand{\shape}{\texttt{Shape}}
 % % \newcommand{\RealisableRelations}[2]{\ensuremath{\texttt{InducedRelations}\left(#1, #2\right)}}
-% % \newcommand{\relT}{\mathit{Rel}}
 % % \newcommand{\rep}{\mathit{rep}}
 % % \newcommand{\start}{\mathsf{start}}
 
