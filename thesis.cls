@@ -161,13 +161,13 @@
 \newtheorem{example}{Example}[theorem]
 \newtheorem*{examples}{Examples}
 
-\input{thesis_peripherals/personal_details}
-\input{thesis_peripherals/titlepage}
+\input{thesisPeripherals/personal_details}
+\input{thesisPeripherals/titlepage}
 \newfont{\sfbf}{cmssbx10 scaled 1200}
 \newfont{\sftiny}{cmss9 scaled 1000}
-\input{thesis_peripherals/declaration}
-\input{thesis_peripherals/certificate}
-\input{thesis_peripherals/acknowledgement}
+\input{thesisPeripherals/declaration}
+\input{thesisPeripherals/certificate}
+\input{thesisPeripherals/acknowledgement}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
