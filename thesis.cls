@@ -36,6 +36,12 @@
 \usepackage{enumitem}
 \usepackage{vmargin}
 
+\usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
+bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
+colorlinks,linkcolor={red},citecolor={blue},urlcolor={green},
+pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
+
+
 % \usepackage[useregional]{datetime2}
 % \usepackage{setspace}
 % \usepackage[centerlast,small,sc]{caption}
@@ -54,10 +60,6 @@
 % \usepackage{xcolor}
 % \usepackage{thm-restate}
 
-% \usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
-% bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
-% colorlinks,linkcolor={red},citecolor={blue},urlcolor={green},
-% pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
 % %\usepackage[bookmarksnumbered,linktocpage,hypertexnames=false,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue,anchorcolor=green,pdfusetitle]{hyperref}
 % \usepackage{mathtools}
 % \usepackage{graphicx}
