@@ -1,0 +1,278 @@
+\section{Illustrating Example}\label{sec:illustratingExample}
+
+As mentioned in the introduction, our objective of this section is to illustrate our model through an example. We want to capture transformations of the form depicted in Figure~\ref{fig:trans-ex}. We will define a suitable seed language and give bimorphisms that attain this. 
+
+\begin{figure}
+    \framebox[0.55\textwidth] {\scalebox{0.8}{\begin{tikzpicture}[node distance=5mm]
+        \node[] (p1) {+};
+        \node[below right = 2mm and 20mm of p1] (p2) {+};
+        \node[below left = 2mm and 15mm of p1] (p3) {+};
+        \node[below right = of p2] (p4) {+};
+        \node[below left = of p4] (p5) {+};	
+
+        \node[below left = of p3] (m1) {$\times$};
+        \node[below right = of p3] (m2) {$\times$};
+        \node[below left = 3.5mm and 12mm of p2] (m3) {$\times$};
+        \node[below left = of p5] (m4) {$\times$};
+        \node[below right = of p5] (m5) {$\times$};
+        \node[below right = 3.5mm and 10mm of p4] (m6) {$\times$};
+
+        \node[below left = 1mm and 1mm of m1] (t1) {$f$};
+        \node[below left = 1mm and 1mm of m2] (t2) {$f$};
+        \node[below left = 1mm and 1mm of m3] (t3) {$f$};
+        \node[below left = 1mm and 1mm of m4] (t4) {$f$};
+        \node[below left = 1mm and 1mm of m5] (t5) {$f$};
+        \node[below left = 1mm and 1mm of m6] (t6) {$f$};
+
+        \node[below right = 1mm and 1mm of m1] (e1) {$e_1$};
+        \node[below right = 1mm and 1mm of m2] (e2) {$e_2$};
+        \node[below right = 1mm and 1mm of m3] (e3) {$e_3$};
+        \node[below right = 1mm and 1mm of m4] (e4) {$e_4$};
+        \node[below right = 1mm and 1mm of m5] (e5) {$e_5$};
+        \node[below right = 1mm and 1mm of m6] (e6) {$e_6$};
+
+        \draw[-]
+        (p1) edge (p2)
+        (p1) edge (p3)
+        (p2) edge (p4)
+        (p4) edge (p5);
+
+        \draw[-]
+        (p3) edge (m1)
+        (p3) edge (m2)
+        (p2) edge (m3)
+        (p5) edge (m4)
+        (p5) edge (m5)
+        (p4) edge (m6);
+
+        \draw[-]
+        (m1) edge (t1)
+        (m1) edge (e1)
+        (m2) edge (t2)
+        (m2) edge (e2)
+        (m3) edge (t3)
+        (m3) edge (e3)
+        (m4) edge (t4)
+        (m4) edge (e4)
+        (m5) edge (t5)
+        (m5) edge (e5)
+        (m6) edge (t6)
+        (m6) edge (e6);
+
+        \node[above = of p1] (text){{\large Source expression}};
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(p1)+(0,+3mm)$)--($(p3)+(-3mm,+3mm)$) --($(p3)+(-3mm,-3mm)$)-- ($(p1)+(0,-3mm)$)--($(p2) +(-3mm, -3mm)$)  --($(p4)+(-3mm,0)$)  -- ($(p5) +(-3mm, 0mm)$) -- ($(p5) +(-3mm, -3mm)$) --($(p5) +(3mm, -3mm)$) --($(p4)+(3mm,0)$) --($(p2)+(3mm,3mm)$)--($(p1)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e1)+(0,+3mm)$)--($(e1)+(-7mm,-13mm)$) --($(e1)+(5mm,-13mm)$)--($(e1)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e2)+(0,+3mm)$)--($(e2)+(-5mm,-13mm)$) --($(e2)+(10mm,-13mm)$)--($(e2)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e3)+(0,+3mm)$)--($(e3)+(-7mm,-5mm)$) --($(e3)+(5mm,-5mm)$)--($(e3)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e4)+(0,+3mm)$)--($(e4)+(-10mm,-5mm)$) --($(e4)+(5mm,-5mm)$)--($(e4)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e5)+(0,+3mm)$)--($(e5)+(-5mm,-5mm)$) --($(e5)+(10mm,-5mm)$)--($(e5)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e6)+(0,+3mm)$)--($(e6)+(-6mm,-7mm)$) --($(e6)+(5mm,-7mm)$)--($(e6)+(0,+3mm)$);
+        \end{scope}
+    \end{tikzpicture}}}
+
+    \raisebox{2cm}{ $\Longrightarrow$}
+    \framebox[0.35\textwidth] {\scalebox{0.8}{\begin{tikzpicture}[node distance=5mm]
+        \node[] (p1) {+};
+        \node[below right = 2mm and 10mm of p1] (p2) {+};
+        \node[below left = 2mm and 10mm of p1] (p3) {+};
+        \node[below right = of p2] (p4) {+};		
+        \node[below left = of p4] (p5) {+};		
+
+        \node[above left = of p1] (m) {$\times$};
+
+        \node[below left = 1mm and 1mm of m] (t) {$f$};
+        \node[below left = 1mm and 1mm of p3] (e1) {$e_1$};
+        \node[below right = 1mm and 1mm of p3] (e2) {$e_2$};
+        \node[below left = 1mm and 1mm of p2] (e3) {$e_3$};
+        \node[below left = 1mm and 1mm of p5] (e4) {$e_4$};
+        \node[below right = 1mm and 1mm of p5] (e5) {$e_5$};
+        \node[below right = 1mm and 1mm of p4] (e6) {$e_6$};	
+
+        \draw[-]
+        (p1) edge (p2)
+        (p1) edge (p3)
+        (p2) edge (p4)
+        (p4) edge (p5);
+
+        \draw[-]
+        (p3) edge (e1)
+        (p3) edge (e2)
+        (p2) edge (e3)
+        (p5) edge (e4)
+        (p5) edge (e5)
+        (p4) edge (e6);
+
+        \draw[-]
+        (m) edge (t)
+        (m) edge (p1);
+
+        \node[above = of m] (text){{\large Target expression}};	
+
+        \begin{scope}[on background layer={}]
+        	\fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(p1)+(0,+3mm)$)--($(p3)+(-3mm,+3mm)$) --($(p3)+(-3mm,-3mm)$)-- ($(p1)+(0,-3mm)$)--($(p2) +(-3mm, -3mm)$)  --($(p4)+(-3mm,0)$)  -- ($(p5) +(-3mm, 0mm)$) -- ($(p5) +(-3mm, -3mm)$) --($(p5) +(3mm, -3mm)$) --($(p4)+(3mm,0)$) --($(p2)+(3mm,3mm)$)--($(p1)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e1)+(0,+3mm)$)--($(e1)+(-7mm,-13mm)$) --($(e1)+(5mm,-13mm)$)--($(e1)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e2)+(0,+3mm)$)--($(e2)+(-5mm,-13mm)$) --($(e2)+(10mm,-13mm)$)--($(e2)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e3)+(0,+3mm)$)--($(e3)+(-7mm,-5mm)$) --($(e3)+(5mm,-5mm)$)--($(e3)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e4)+(0,+3mm)$)--($(e4)+(-10mm,-5mm)$) --($(e4)+(5mm,-5mm)$)--($(e4)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e5)+(0,+3mm)$)--($(e5)+(-5mm,-5mm)$) --($(e5)+(10mm,-5mm)$)--($(e5)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e6)+(0,+3mm)$)--($(e6)+(-6mm,-7mm)$) --($(e6)+(5mm,-7mm)$)--($(e6)+(0,+3mm)$);
+        \end{scope}
+    \end{tikzpicture}}}
+
+    \caption{The transformation of an expression following distributivity. Here $f$, $e_1$, \dots $e_6$ are arbitrary expressions. If $f$ is a variable instead of an expression, we get a (source pattern, target pattern) pair that capture this transformation.}\label{fig:trans-ex}
+\end{figure}
+
+\newcommand{\insertcontext}{\scalebox{.8}{
+    \begin{tikzpicture}[node distance=1mm, inner sep= 0.5mm]
+    \node[] (p1) {};
+    \node[above left =of p1] (m) {$\times$};
+    \node[below left=of m] (t) {$y$};
+
+    \draw[-]
+    (m) edge (t)
+    (m) edge (p1);		
+\end{tikzpicture}}}
+
+Consider the transformation depicted in Figure~\ref{fig:trans-ex}. The blue shaded parts in the source expression and the target expression remains unchanged.  Expressions are formed by the alphabet $\{+, \times, 0, 1\}$. The patterns would require a place holder symbol $y$ in addition to the above alphabet. In order to generate the (source pattern, target pattern) pair capturing this transformation, we require a seed tree which carries this blue shaded part intact. We expect the morphisms $\sourceMap$ and $\targetMap$ to be identity on this part. However, $\insertcontext$ gets inserted above $e_i$ in the source pattern, and at the root in the target pattern. In order to handle this we add new unary symbols $a$ and $b$ in the seed tree.  
+
+The seed tree and the morphisms $\sourceMap$ and $\targetMap$ for this transformation is depicted in Figure~\ref{fig:seed-tree}.
+
+\begin{figure}
+    \framebox[0.45\textwidth]{\scalebox{1}{\begin{tikzpicture}[node distance=5mm]
+        \node[] (p1) {+};
+        \node[ below right = 2mm and 10mm of p1] (p2) {+};
+        \node[below left = 2mm and 10mm of p1] (p3) {+};
+        \node[below right = of p2] (p4) {+};
+        \node[below left = of p4] (p5) {+};
+
+        \node[above = 2mm of p1] (m) {$a$};
+
+        \node[below left = 1mm and 1mm of p3] (b1) {$b$};
+        \node[below right = 1mm and 1mm of p3] (b2) {$b$};
+        \node[below left = 1mm and 5mm of p2] (b3) {$b$};
+        \node[below left = 1mm and 1mm of p5] (b4) {$b$};
+        \node[below right = 1mm and 1mm of p5] (b5) {$b$};
+        \node[below right = 1mm and 1mm of p4] (b6) {$b$};
+
+        \node[below = 2mm of b1] (e1) {$e_1$};
+        \node[below = 2mm of b2] (e2) {$e_2$};
+        \node[below = 2mm of b3] (e3) {$e_3$};
+        \node[below = 2mm of b4] (e4) {$e_4$};
+        \node[below = 2mm of b5] (e5) {$e_5$};
+        \node[below = 2mm of b6] (e6) {$e_6$};
+
+        \draw[-]
+        (p1) edge (p2)
+        (p1) edge (p3)
+        (p2) edge (p4)
+        (p4) edge (p5);
+
+        \draw[-]
+        (p3) edge  (b1)
+        (p3) edge  (b2)
+        (p2) edge  (b3)
+        (p5) edge  (b4)
+        (p5) edge  (b5)
+        (p4) edge  (b6);
+
+        \draw[-]
+        (b1) edge (e1)
+        (b2) edge (e2)
+        (b3) edge (e3)
+        (b4) edge (e4)
+        (b5) edge (e5)
+        (b6) edge (e6);
+
+        \draw[-]
+        (m) edge (p1);
+
+        \node[left = of m] (text){{Seed tree}};	
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(p1)+(0,+3mm)$)--($(p3)+(-3mm,+3mm)$) --($(p3)+(-3mm,-3mm)$)-- ($(p1)+(0,-3mm)$)--($(p2) +(-3mm, -3mm)$)  --($(p4)+(-3mm,0)$)  -- ($(p5) +(-3mm, 0mm)$) -- ($(p5) +(-3mm, -3mm)$) --($(p5) +(3mm, -3mm)$) --($(p4)+(3mm,0)$) --($(p2)+(3mm,3mm)$)--($(p1)+(0,+3mm)$);
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e1)+(0,+3mm)$)--($(e1)+(-7mm,-13mm)$) --($(e1)+(5mm,-13mm)$)--($(e1)+(0,+3mm)$) ;
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e2)+(0,+3mm)$)--($(e2)+(-5mm,-13mm)$) --($(e2)+(10mm,-13mm)$)--($(e2)+(0,+3mm)$) ;
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e3)+(0,+3mm)$)--($(e3)+(-7mm,-5mm)$) --($(e3)+(5mm,-5mm)$)--($(e3)+(0,+3mm)$) ;
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e4)+(0,+3mm)$)--($(e4)+(-10mm,-5mm)$) --($(e4)+(5mm,-5mm)$)--($(e4)+(0,+3mm)$) ;
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e5)+(0,+3mm)$)--($(e5)+(-5mm,-5mm)$) --($(e5)+(10mm,-5mm)$)--($(e5)+(0,+3mm)$) ;
+        \end{scope}
+
+        \begin{scope}[on background layer={}]
+            \fill[rounded corners = 3mm, color=blue!20, distance=5mm] ($(e6)+(0,+3mm)$)--($(e6)+(-6mm,-7mm)$) --($(e6)+(5mm,-7mm)$)--($(e6)+(0,+3mm)$) ;
+        \end{scope}
+    \end{tikzpicture}}}
+    \hfil
+    \raisebox{2.3cm}{\framebox[0.3\textwidth]{\begin{tabularx}{0.3\textwidth}{c c c c c}
+        \multicolumn{5}{c}{Morphisms}\\
+        \\
+        $\epsilon$ & $\xleftarrow{\phi}$ & $a$ & $\xrightarrow{\psi} $ & $\insertcontext$\\
+        $\insertcontext$ & $\xleftarrow{\phi}$ & $b$ & $\xrightarrow{\psi} $ & $\epsilon$\\
+        $+$ & $\xleftarrow{\phi}$ & $+$ & $\xrightarrow{\psi} $ & $+$\\
+        $\times$ & $\xleftarrow{\phi}$ & $\times$ & $\xrightarrow{\psi} $ & $\times$\\
+        $0$ & $\xleftarrow{\phi}$ & $0$ & $\xrightarrow{\psi} $ & $0$\\
+        $1$ & $\xleftarrow{\phi}$ & $1$ & $\xrightarrow{\psi} $ & $1$\\								
+    \end{tabularx}}}
+
+    \caption{The seed tree and the morphisms generating the (source pattern, target pattern) pair capturing the transformation depicted in Figure~\ref{fig:trans-ex}.}\label{fig:seed-tree}
+\end{figure}
+
+Note that, we require one such seed tree for each possible choice of $e_i$ and the shape of the ``+-kernal'', thus giving rise to an infinite seed language and hence an infinite set of (source pattern, target pattern) pairs capturing the transformation. Thankfully, the set of seed trees is tree regular (needs to check that the root is an $a$, every path has exactly one $b$, and the segment between $a$ and $b$ has only $+$s).
+
+\medskip
+
+We now give an example of \tcp\ on this transformation. We define the \emph{product-depth} of an expression as follows. The product-depth of a branch is the number of occurrences of $\times$ in that branch. The product depth of an expression the maximum of the product-depth of its branches. The classes of $k$-pd-bounded expressions are those with product-depth at most $k$. We  may be interested in checking whether $k$-pd-boundedness is preserved by the above transformation. This is an instance of \tcp, since $k$-pd-bounded expressions form a regular set of trees.
+
+Further examples, in particular the ones where we need multiple variables, are presented after formally defining our model, which we do next.

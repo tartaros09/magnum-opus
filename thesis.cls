@@ -35,12 +35,18 @@
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 \usepackage{vmargin}
+\usepackage{tabularx, environ}
 
 \usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
 bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
 colorlinks,linkcolor={red},citecolor={blue},urlcolor={green},
 pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
-
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{fit}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
 
 % \usepackage[useregional]{datetime2}
 % \usepackage{setspace}
