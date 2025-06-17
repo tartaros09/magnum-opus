@@ -132,7 +132,7 @@
 %  Alphabets
 \newcommand{\alphabet}{\Sigma}
 \newcommand{\seedAlphabet}{\ensuremath{\Gamma}}
-% \newcommand{\coreAlphabet}{\ensuremath{\Sigma_\text{core}}}
+\newcommand{\coreAlphabet}{\ensuremath{\Sigma_\text{core}}}
 \newcommand{\variables}{\texttt{Var}}
 
 %  Language symbols
@@ -142,21 +142,21 @@
 % \newcommand{\targetLang}{\ensuremath{\language_{\tgt}}}
 
 
-% %  Seed language letters
+%  Seed language letters
 % \newcommand{\exampleSeedLanguageStart}{\mathsf{start}}
 % \newcommand{\exampleSeedLanguageEnd}{\mathsf{end}}
-% \newcommand{\exampleSeedLanguageLoop}{\mathsf{loop}}
-% \newcommand{\exampleSeedLanguageEndLoop}{\mathsf{endLoop}}
+\newcommand{\exampleSeedLanguageLoop}{\mathsf{loop}}
+\newcommand{\exampleSeedLanguageEndLoop}{\mathsf{endLoop}}
 
-% \newcommand{\examplePatternLanguageFor}{\mathsf{for}}
+\newcommand{\examplePatternLanguageFor}{\mathsf{for}}
 % \newcommand{\examplePatternLanguageHead}{\mathsf{head}}
 % \newcommand{\examplePatternLanguageBody}{\mathsf{body}}
-% \newcommand{\examplePatternLanguageWhile}{\mathsf{while}}
+\newcommand{\examplePatternLanguageWhile}{\mathsf{while}}
 
-% \newcommand{\examplePatternLanguageInit}{\mathsf{init}}
-% \newcommand{\examplePatternLanguageProp}{\mathsf{cond}}
-% \newcommand{\examplePatternLanguageIncr}{\mathsf{incr}}
-% \newcommand{\examplePatternLanguageNull}{\mathsf{null}}
+\newcommand{\examplePatternLanguageInit}{\mathsf{init}}
+\newcommand{\examplePatternLanguageProp}{\mathsf{cond}}
+\newcommand{\examplePatternLanguageIncr}{\mathsf{incr}}
+\newcommand{\examplePatternLanguageNull}{\mathsf{null}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -298,10 +298,17 @@
 \newcommand{\Contexts}{\contexts}
 \newcommand{\Variables}{\variables}
 \newcommand{\relT}{\mathit{Rel}}
+
 \newcommand{\seedLang}{\seedLanguage}
+\newcommand{\seedLangExLoop}{def}
+\newcommand{\seedLangExEndLoop}{def}
 
-
-
+\newcommand{\langExFor}{\examplePatternLanguageFor}
+\newcommand{\langExWhile}{\examplePatternLanguageWhile}
+\newcommand{\langExNull}{\examplePatternLanguageNull}
+\newcommand{\langExInit}{\examplePatternLanguageInit}
+\newcommand{\langExProp}{\examplePatternLanguageProp}
+\newcommand{\langExIncr}{\examplePatternLanguageIncr}
 
 
 
