@@ -48,7 +48,7 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \newcommand{\bigo}[1]{\ensuremath{\mathcal{O}(#1)}}
+\newcommand{\bigo}[1]{\ensuremath{\mathcal{O}(#1)}}
 
 \newcommand{\hard}{-hard}
 \newcommand{\complete}{-complete}
@@ -136,10 +136,10 @@
 \newcommand{\variables}{\texttt{Var}}
 
 %  Language symbols
-% \newcommand{\genericLanguage}{L}
+\newcommand{\genericLanguage}{L}
 \newcommand{\seedLanguage}{S}
-% \newcommand{\sourceLang}{\ensuremath{\language_{\src}}}
-% \newcommand{\targetLang}{\ensuremath{\language_{\tgt}}}
+\newcommand{\sourceLanguage}{\ensuremath{\genericLanguage_{\src}}}
+\newcommand{\targetLanguage}{\ensuremath{\genericLanguage_{\tgt}}}
 
 
 %  Seed language letters
@@ -190,31 +190,31 @@
 % \newcommand{\mealyMachineOutputFunction}{\textsf{out}}
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %                                                                              %
-% %   Problem Names                                                              %
-% %                                                                              %
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Problem Names                                                              %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% %  Full problem names
-% \newcommand{\matchingProblemFull}{\texttt{Matching Problem}}
+%  Full problem names
+\newcommand{\matchingProblemFull}{\texttt{Matching Problem}}
+\newcommand{\oneInThreeSatFull}{\texttt{1-in-3 SAT}}
+\newcommand{\atomicTypecheckingProblemFull}{\texttt{Atomic Type-Checking Problem}}
+\newcommand{\fullTypecheckingProblemFull}{\texttt{Type-Checking Problem}}
 % \newcommand{\compatibilityProblemFull}{\texttt{Compatibility Problem}}
-% \newcommand{\typecheckingProblemFull}{\texttt{Atomic Type-Checking Problem}}
 % \newcommand{\metaCompatibilityProblemFull}{\texttt{Meta Compatibility Problem}}
-% \newcommand{\fullTypecheckingProblemFull}{\texttt{Type-Checking Problem}}
 % \newcommand{\intersectionNonemptinessFull}{\texttt{Intersection Nonemptiness of DBTA}}
-% \newcommand{\oneInThreeSatFull}{\texttt{1-in-3 SAT}}
 % \newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability}}
 % \newcommand{\multipleRelationRealisabilityFull}{\texttt{Multiple Relation Realisability}}
 
-% %  Short problem names
-% \newcommand{\matchingProblemShort}{\texttt{MTCH}}
+%  Short problem names
+\newcommand{\matchingProblemShort}{\texttt{MTCH}}
+\newcommand{\oneInThreeSatShort}{\texttt{1-in-3 SAT}}
+\newcommand{\atomicTypecheckingProblemShort}{\texttt{ATCP}}
+\newcommand{\fullTypecheckingProblemShort}{\texttt{TCP}}
 % \newcommand{\compatibilityProblemShort}{\texttt{CMPT}}
-% \newcommand{\typecheckingProblemShort}{\texttt{ATCP}}
 % \newcommand{\metaCompatibilityProblemShort}{\texttt{m-CMPT}}
-% \newcommand{\fullTypecheckingProblemShort}{\texttt{TCP}}
 % \newcommand{\intersectionNonemptinessShort}{\texttt{DINP}}
-% \newcommand{\oneInThreeSatShort}{\texttt{1-in-3 SAT}}
 % \newcommand{\relationRealisabilityShort}{\texttt{RLRS}}
 % \newcommand{\multipleRelationRealisabilityShort}{\texttt{m-RLRS}}
 
@@ -265,11 +265,12 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \newcommand{\probdef}[3]{
-%     \fbox{\parbox{13cm}{\textbf{#1}\\
-%     \textbf{Input: } #2\\
-%     \textbf{Question: } #3}}
-% }
+\newcommand{\probdef}[4]{
+    \noindent
+    \fbox{\parbox{13cm}{\textbf{#1} (\textbf{#2})\\
+    \textbf{Input: } #3\\
+    \textbf{Question: } #4}}
+}
 
 \newcommand{\twopartfunc}[5]{
     #1 = \left\{ \begin{array}{ll}
@@ -310,6 +311,8 @@
 \newcommand{\langExProp}{\examplePatternLanguageProp}
 \newcommand{\langExIncr}{\examplePatternLanguageIncr}
 
+\newcommand{\sourceLang}{\sourceLanguage}
+\newcommand{\targetLang}{\targetLanguage}
 
 
 
