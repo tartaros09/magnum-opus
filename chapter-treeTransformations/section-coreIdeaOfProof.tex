@@ -1,0 +1,119 @@
+\section{Core Idea of Proof}\label{sec:coreIdeaOfProof}
+
+\begin{figure}
+    \begin{tikzpicture}[node distance=5mm, inner sep=0pt, text width= 2mm]
+        \node[fill = blue, circle, label = {[xshift=-3mm, yshift=-3mm]$\eta$}] (eta) {};
+        \node[fill=green, below=of eta, circle, label={[xshift=-3mm, yshift=-3mm]$\beta$}] (beta) {};
+        \node[fill=magenta, left=of beta, circle, label={[xshift=-3mm, yshift=-3mm]$\alpha$}] (alpha) {};
+        \node[fill=orange, right=of beta, circle, label={[xshift=-3mm, yshift=-3mm]$\gamma$}] (gamma) {};
+
+        \draw[dotted, thick] ($(eta)+(0,+5mm)$)--(eta);
+        \draw[dotted, thick] ($(alpha)+(-2mm,-5mm)$)--(alpha);
+        \draw[dotted, thick] ($(alpha)+(+2mm,-5mm)$)--(alpha);
+        \draw[dotted, thick] ($(beta)+(-3mm,-5mm)$)--(beta);
+        \draw[dotted, thick] ($(beta)+(0,-5mm)$)--(beta);
+        \draw[dotted, thick] ($(beta)+(+3mm,-5mm)$)--(beta);
+        \draw[dotted, thick] ($(gamma)+(-2mm,-5mm)$)--(gamma);
+        \draw[dotted, thick] ($(gamma)+(+2mm,-5mm)$)--(gamma);
+        \draw[-]
+        (eta) edge (alpha)
+        (eta) edge (beta)
+        (eta) edge (gamma);
+        
+        \node[above = 1cm of eta, text width = 1.5cm] () {Seed tree};
+        \node[right = 0.5cm of eta] (arrow1) {$\xrightarrow{\homomorphism = \sourceMap}$};
+        
+        \coordinate (alphap) at ($(eta) + (1.7cm,-1.3cm)$);
+        \coordinate (betap) at ($(eta) + (3cm,-1.3cm)$);
+        \coordinate (gammap) at ($(eta) + (4.3cm,-1.3cm)$);
+        
+        \fill[color=blue!20] ($(eta) + (3cm,15mm)$) -- ($(eta) + (4.5cm,-1cm)$) -- ($(eta) + (1.5cm,-1cm)$);
+        \draw[color=blue, thick] ($(eta) + (3cm,15mm)$) -- ($(eta) + (4.5cm,-1cm)$) -- ($(eta) + (1.5cm,-1cm)$) -- ($(eta) + (3cm,15mm)$);
+        \fill[color=magenta!20] (alphap) -- ($(eta) + (2.2cm,-2cm)$) -- ($(eta) + (1.2cm,-2cm)$);
+        \draw[color=magenta, thick] (alphap) -- ($(eta) + (2.2cm,-2cm)$) -- ($(eta) + (1.2cm,-2cm)$) -- (alphap);
+        \fill[color=green!20] (betap)-- ($(eta) + (3.5cm,-2cm)$) -- ($(eta) + (2.5cm,-2cm)$);
+        \draw[color=green, thick] (betap)-- ($(eta) + (3.5cm,-2cm)$) -- ($(eta) + (2.5cm,-2cm)$) -- (betap);
+        \fill[color=orange!20] (gammap) -- ($(eta) + (4.8cm,-2cm)$) -- ($(eta) + (3.8cm,-2cm)$);
+        \draw[color=orange, thick] (gammap) -- ($(eta) + (4.8cm,-2cm)$) -- ($(eta) + (3.8cm,-2cm)$) -- (gammap);
+            
+        \draw[dotted, thick] ($(eta)+(3cm,+18mm)$)-- ($(eta) + (3cm,15mm)$);
+        \draw[dotted, thick] ($(eta)+(1.4cm,-23mm)$)--($(eta) + (1.5cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+20mm,-23mm)$)--($(eta) + (1.9cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+25mm,-23mm)$)--($(eta) + (2.8cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+30mm,-23mm)$)--($(eta) + (3cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+35mm,-23mm)$)--($(eta) + (3.2cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(4cm,-23mm)$)--($(eta) + (4.1cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+46mm,-23mm)$)--($(eta) + (4.5cm,-2cm)$);
+
+
+        \draw[] ($(alphap)+(0,3mm)$)--(alphap);
+        \draw[] ($(betap)+(0,3mm)$)--(betap);
+        \draw[] ($(gammap)+(0,3mm)$)--(gammap);
+
+        \node[fill=red, above right=5mm and 28mm of eta, circle, label={[xshift=-3mm, yshift=-3mm]$x$}] (x1) {};
+        \node[fill=red, below left=8mm and 4mm of x1, circle, label={[xshift=-3mm, yshift=-3mm]$x$}] (x2) {};
+
+        \draw[dotted, thick] ($(x1)+(-2mm,-5mm)$)--(x1);
+        \draw[dotted, thick] ($(x1)+(+2mm,-5mm)$)--(x1);
+        \draw[dotted, thick] ($(x2)+(-2mm,-5mm)$)--(x2);
+        \draw[dotted, thick] ($(x2)+(+2mm,-5mm)$)--(x2);
+        
+        \node at (alphap) [below left = 3.5mm and 1mm of alphap] {\small $\homomorphism(\alpha)$};
+        \node at (betap) [below left = 3.5mm and 1mm of betap] {\small $\homomorphism(\beta)$};
+        \node at (gammap) [below left = 3.5mm and 1mm of gammap] {\small $\homomorphism(\gamma)$};
+
+        \node[above right = 2.3cm and 2.1cm of eta, text width = 3cm] () {Source pattern};
+        \node[right = 4cm of arrow1] {$\xrightarrow{\substitution}$};
+        \node[right = 4.5cm of eta] (phanta) {};
+                                
+        \coordinate (alphas) at ($(phanta) + (1.7cm,-1.5cm)$);
+        \coordinate (betas) at ($(phanta) + (3cm,-1.5cm)$) ;
+        \coordinate (gammas) at ($(phanta) + (4.3cm,-1.5cm)$);
+
+        \fill[color=blue!20] ($(phanta) + (3cm,18mm)$) -- ($(phanta) + (4.7cm,-1.2cm)$) -- ($(phanta) + (1.3cm,-1.2cm)$);
+        \draw[color=blue, thick] ($(phanta) + (3cm,18mm)$) -- ($(phanta) + (4.7cm,-1.2cm)$) -- ($(phanta) + (1.3cm,-1.2cm)$) -- ($(phanta) + (3cm,18mm)$);
+        \fill[color=magenta!20] (alphas) -- ($(phanta) + (2.2cm,-2.4cm)$) -- ($(phanta) + (1.2cm,-2.4cm)$);
+        \draw[color=magenta, thick] (alphas) -- ($(phanta) + (2.2cm,-2.4cm)$) -- ($(phanta) + (1.2cm,-2.4cm)$) -- (alphas);
+        \fill[color=green!20] (betas)-- ($(phanta) + (3.5cm,-2.4cm)$) -- ($(phanta) + (2.5cm,-2.4cm)$);
+        \draw[color=green, thick] (betas) -- ($(phanta) + (3.5cm,-2.4cm)$) -- ($(phanta) + (2.5cm,-2.4cm)$) -- (betas);
+        \fill[color=orange!20] (gammas) -- ($(phanta) + (4.8cm,-2.4cm)$) -- ($(phanta) + (3.8cm,-2.4cm)$);
+        \draw[color=orange, thick] (gammas) -- ($(phanta) + (4.8cm,-2.4cm)$) -- ($(phanta) + (3.8cm,-2.4cm)$) -- (gammas);
+
+        \draw[dotted, thick] ($(phanta) + (3cm,18mm)$) -- ($(phanta)+(3cm,+21mm)$)  node[right , xshift = 1pt] {$q_{10}$};
+        \draw[dotted, thick] ($(phanta)+(1.4cm,-27mm)$)--($(phanta) + (1.5cm,-2.4cm)$);
+        \draw[dotted, thick] ($(phanta)+(+20mm,-27mm)$)--($(phanta) + (1.9cm,-2.4cm)$);
+        \draw[dotted, thick] ($(phanta)+(+25mm,-27mm)$)--($(phanta) + (2.8cm,-2.4cm)$);
+        \draw[dotted, thick] ($(phanta)+(+30mm,-27mm)$)--($(phanta) + (3cm,-2.4cm)$);
+        \draw[dotted, thick] ($(phanta)+(+35mm,-27mm)$)--($(phanta) + (3.2cm,-2.4cm)$);
+        \draw[dotted, thick] ($(phanta)+(4cm,-27mm)$)--($(phanta) + (4.1cm,-2.4cm)$);
+        \draw[dotted, thick] ($(phanta)+(+46mm,-27mm)$)--($(phanta) + (4.5cm,-2.4cm)$);
+
+        \draw[] ($(alphas)+(0,3mm)$)--(alphas) node[above right, xshift = 1pt] {$q_{7}$};
+        \draw[] ($(betas)+(0,3mm)$)--(betas) node[above right, xshift = 1pt] {$q_{8}$};
+        \draw[] ($(gammas)+(0,3mm)$)--(gammas) node[above right, xshift = 1pt] {$q_{9}$};
+
+        \node[fill=red!20, draw = red, above right=5mm and 27mm of phanta, regular polygon,regular polygon sides=3, text width = 4mm, label={[xshift=-6pt, yshift=-8mm]$\footnotesize\substitution(x)$}] (x1) {};
+        \node[fill=red!20,draw = red, regular polygon,regular polygon sides=3, text width = 4mm, below left=8mm and 4mm of x1, label={[xshift=-6pt, yshift=-8mm]$\footnotesize\substitution(x)$}] (x2) {};
+
+        \draw[dotted, thick] (x1) -- ($(x1)+(-2mm,-5mm)$) node[left, xshift = -3pt] {\color{red}$q_1$};
+        \draw[dotted, thick] (x1) -- ($(x1)+(+2mm,-5mm)$) node[right, xshift = 1pt] {\color{red}$q_2$};
+        \draw[dotted, thick] (x1) -- ($(x1)+(0mm,+8mm)$) node[right, xshift = 1pt] {\color{red}$q_3$};
+        \draw[dotted, thick] (x2) -- ($(x2)+(-2mm,-5mm)$) node[left, xshift = -3pt] {\color{red}$q_4$};
+        \draw[dotted, thick] (x2) -- ($(x2)+(+2mm,-5mm)$) node[right, xshift = 1pt] {\color{red}$q_5$};
+        \draw[dotted, thick] (x2) -- ($(x2)+(0mm,+8mm)$) node[left, xshift = -5pt] {\color{red}$q_6$};
+            
+        \node at (alphas) [below left = 6.5mm and 2.7mm of alphas] {\scriptsize $\substitution(\homomorphism(\alpha))$};
+        \node at (betas) [below left  = 6.5mm and 2.7mm of betas] {\scriptsize $\substitution(\homomorphism(\beta))$};
+        \node at (gammas) [below left  = 6.5mm and 2.7mm of gammas] {\scriptsize $\substitution(\homomorphism(\gamma))$};
+
+        \node[above right = 2.5cm and 13mm of phanta, text width =4cm] () {Annotated Source tree };
+    \end{tikzpicture}
+
+    \caption{The source tree is annotated with states of $A_{\sourceLang}$. We want to simulate the effect of running $A_{\sourceLang}$ on the source tree in the seed tree itself. This means, when processing $\eta$, it should guess and validate the potential transformation of the tuple $(q_7, q_8, q_9)$ to $q_{10}$ by a context (colored blue) in the source tree that matches $\phi_{\src}(\eta)$, and simultaneously make sure that there is a substitution for $x$ that preserves the transformations $(q_1, q_2)$ to $q_3 $ as well as $(q_4, q_5)$ to $q_6 $. An alternating tree automaton on the seed tree can achieve this.}\label{fig:proofOutline}
+\end{figure}
+
+To solve the \tcp, we need to check for the existence of a seed tree $s$ giving rise to an atomic transformation $\atomicTransform_s$, a source tree $t_s$, a target tree $t_t$ and a substitution $\substitution$ satisfying two constraints. First, the source tree $t_s$ should be in $\sourceLang$ and second, the target tree $t_t$ should be in $\targetLang$. The source tree is obtained from the seed tree by first applying the homomorphism $\sourceMap$ and then applying the substitution $\substitution$. Suppose a node $\eta$ in the seed tree is transformed into a context as shown in the middle of Fig.~\ref{fig:proofOutline}. Suppose a variable $x$ is substituted with the tree $\substitution(x)$ as shown in the right side of Fig.~\ref{fig:proofOutline}. Consider a run of $A_{\sourceLanguage}$ on the annotated source tree, in particular the state transformation ($(q_7, q_8, q_9)$ to $(q_{10})$) when the run parses the portion of the source tree that comes from the node $\eta$ of the seed tree. The idea of our decision procedure is to design a tree automaton (we will call this the \emph{far-sighted automaton} in the next two paragraphs) that parses the seed tree, and when it traverses the node $\eta$, it simulates $A_{\sourceLanguage}$'s state transformation $(q_7, q_8, q_9)$ to $(q_{10})$. To determine that $(q_7, q_8, q_9)$ is transformed to $q_{10}$, the far-sighted automaton needs to know that $(q_1, q_2)$ is transformed to $q_3$ by $\substitution(x)$.
+
+The far-sighted automaton doesn't know what is $\substitution$ (in fact, our goal is to check if a suitable $\substitution$ exists). There might be infinitely many substitutions $\substitution$ out of which one might work; but our far-sighted automaton is supposed to be a finite-state automaton, incapable of picking one choice from infinitely many. To work around this, we observe that the actual tree $\substitution(x)$ is not important; the important thing is that it transforms $(q_1, q_2)$ to $q_3$. Any other $\substitution'(x)$ which does the same transformation will work equally well in place of $\substitution(x)$. The number of such transformations is finite (since they are transformations on a finite set of states) and the far-sighted automaton only needs to check if one of these finitely many transformations work.
+
+One thing we ignored in the above explanation is that the variable $x$ may occur multiple times in the source pattern. In the run of $A_{\sourceLanguage}$ on the source tree, one occurrence of $\substitution(x)$ may encounter $(q_1, q_2)$ (which is transformed to $q_3$). Some other occurrence of $\substitution(X)$ may encounter some other pair $(q_4, q_5)$ (which is transformed to some other state, say $q_6$). What we need is a substitution that transforms $(q_1, q_2)$ to $q_3$ and also transforms $(q_4, q_5)$ to $q_6$ (and does other transformation too, if there are more occurrences of $x$ in the source pattern). To capture all these transformations simultaneously, we introduce the concept of relational lifts that is formally defined in the next section. The far-sighted automaton non-deterministically picks out one such possible set of transformations to check that the source tree is in $\sourceLanguage$. It similarly needs to check that the target tree is in $\targetLanguage$. Alternating tree automata offer a convenient way to achieve all these tasks of the far-sighted automaton. The proof idea is to design an alternating tree automaton whose non-emptiness is equivalent to the existence of a seed tree that satisfies the two required constraints.
