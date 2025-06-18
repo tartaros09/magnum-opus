@@ -16,16 +16,20 @@
 \newcommand{\B}{\ensuremath{\mathcal{B}}}
 
 % %  Word-related
-% \newcommand{\words}[1]{\ensuremath{\texttt{Words}\left(#1\right)}}  %  Set of all words over an alphabet #1.
+\newcommand{\words}[1]{\ensuremath{\texttt{Words}\left(#1\right)}}  %  Set of all words over an alphabet #1.
 
 %  Tree-related
-\newcommand{\trees}[1]{\ensuremath{\texttt{Trees}\left(#1\right)}}  %  Set of all trees over an alphabet #1.
-\newcommand{\contexts}[2]{\ensuremath{\texttt{Contexts}_{#2}\left(#1\right)}}  %  Set of all contexts with #2 holes over alphabet #1.
 \newcommand{\positions}{\texttt{Positions}}  %  Set of all positions in a tree. Subset of \N*.
-\newcommand{\relations}[2]{\ensuremath{\texttt{Relations}_{#2}\left(#1\right)}}  %  Set of all relations of arity #2 over set #1.
+\newcommand{\contexts}{\ensuremath{\texttt{Contexts}}}  %  Set of all contexts with #2 holes over alphabet #1.
+\newcommand{\relations}{\ensuremath{\texttt{Relations}}}  %  Set of all relations of arity #2 over set #1.
+
+\newcommand{\trees}[1]{\ensuremath{\texttt{Trees}\left(#1\right)}}  %  Set of all trees over an alphabet #1.
+
+\newcommand{\realisableRelations}[2]{\ensuremath{\texttt{InducedRelations}\left(#1, #2\right)}}
 
 %  Miscellaneous
 \newcommand{\e}{\varepsilon}
+\newcommand{\vect}[1]{\ensuremath{\overline{\textbf{#1}}}}
 \newcommand{\regular}[1]{\texttt{Regular}(#1)}
 
 
@@ -103,7 +107,7 @@
 % \newcommand{\lift}[1]{\ensuremath{\widetilde{#1}}}
 % \newcommand{\closure}[1]{\ensuremath{\overline{#1}}}
 
-% \newcommand{\operator}{\texttt{op}}
+\newcommand{\operator}{\texttt{op}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -201,10 +205,10 @@
 \newcommand{\oneInThreeSatFull}{\texttt{1-in-3 SAT}}
 \newcommand{\atomicTypecheckingProblemFull}{\texttt{Atomic Type-Checking Problem}}
 \newcommand{\fullTypecheckingProblemFull}{\texttt{Type-Checking Problem}}
+\newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability}}
 % \newcommand{\compatibilityProblemFull}{\texttt{Compatibility Problem}}
 % \newcommand{\metaCompatibilityProblemFull}{\texttt{Meta Compatibility Problem}}
 % \newcommand{\intersectionNonemptinessFull}{\texttt{Intersection Nonemptiness of DBTA}}
-% \newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability}}
 % \newcommand{\multipleRelationRealisabilityFull}{\texttt{Multiple Relation Realisability}}
 
 %  Short problem names
@@ -212,10 +216,10 @@
 \newcommand{\oneInThreeSatShort}{\texttt{1-in-3 SAT}}
 \newcommand{\atomicTypecheckingProblemShort}{\texttt{ATCP}}
 \newcommand{\fullTypecheckingProblemShort}{\texttt{TCP}}
+\newcommand{\relationRealisabilityShort}{\texttt{RLRS}}
 % \newcommand{\compatibilityProblemShort}{\texttt{CMPT}}
 % \newcommand{\metaCompatibilityProblemShort}{\texttt{m-CMPT}}
 % \newcommand{\intersectionNonemptinessShort}{\texttt{DINP}}
-% \newcommand{\relationRealisabilityShort}{\texttt{RLRS}}
 % \newcommand{\multipleRelationRealisabilityShort}{\texttt{m-RLRS}}
 
 
@@ -297,7 +301,9 @@
 \newcommand{\Trees}{\trees}
 \newcommand{\Positions}{\positions}
 \newcommand{\Contexts}{\contexts}
+\newcommand{\Relations}{\relations}
 \newcommand{\Variables}{\variables}
+\newcommand{\RealisableRelations}{\realisableRelations}
 \newcommand{\relT}{\mathit{Rel}}
 
 \newcommand{\seedLang}{\seedLanguage}
@@ -314,6 +320,11 @@
 \newcommand{\sourceLang}{\sourceLanguage}
 \newcommand{\targetLang}{\targetLanguage}
 
+\newcommand{\extendedTransitionRelation}{ETR}
+\newcommand{\Results}{\texttt{Results}}
+\newcommand{\q}{\vect{q}}
+\newcommand{\x}{\vect{x}}
+\newcommand{\D}{\mathcal{D}}
 
 
 
@@ -367,18 +378,14 @@
 % % \newcommand{\x}{\overline{\textbf{x}}}
 % % \newcommand{\B}{\mathcal{B}}
 % % \newcommand{\arity}{\texttt{arity}}
-% % \newcommand{\extendedTransitionRelation}{ETR}
-% % \newcommand{\D}{\mathcal{D}}
 
 
 % % \newcommand{\Transitions}{\ensuremath{\Delta}}
 % % \newcommand{\transition}{\ensuremath{\delta}}
 % % \newcommand{\contextInducedFunction}{induced function}
 % % \newcommand{\contextInducedRelation}{induced relation}
-% % \newcommand{\Results}{\texttt{Results}}
 % % \newcommand{\Functions}{\texttt{Functions}}
 % % \newcommand{\shape}{\texttt{Shape}}
-% % \newcommand{\RealisableRelations}[2]{\ensuremath{\texttt{InducedRelations}\left(#1, #2\right)}}
 % % \newcommand{\rep}{\mathit{rep}}
 % % \newcommand{\start}{\mathsf{start}}
 

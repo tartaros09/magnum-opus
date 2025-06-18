@@ -1,0 +1,43 @@
+\section{Relational Lifts}\label{sec:relationalLifts}
+
+Suppose $\automaton$ is a word automaton with set of states $\automatonStateSet$ and transition relation given by $\Transitions: \Alphabet \to \relations(\automatonStateSet, 2)$, we can extend it to $\widetilde{\Transitions}: \words{\Alphabet} \to \relations(\automatonStateSet, 2)$ such that $(q_1,q_2) \in \widetilde{\Transitions}(w)$ iff $\automaton$ has a run on the word $w$ starting from $q_1$ and ending at $q_2$. The following definition describes a similar extension for NBTTS.
+
+\begin{definition}[Extended Transition Relation(\extendedTransitionRelation)]\label{def:extendedTransitionRelation}
+    Let $\T := (\automatonStateSet, \Alphabet, \Transitions)$ be a NBTTS. We extend the function $\Transitions$ to a larger function $\widetilde{\Transitions} : \Contexts(\Alphabet) \to \Relations(\automatonStateSet)$ called the \emph{Extended Transition Relation} or \emph{\extendedTransitionRelation} as follows. Let $c \in \Contexts(\alphabet, k)$. For a tuple $\q := (q_1, q_2, \dots, q_k)$, define the NBTTS $\T_{\q} := (\automatonStateSet, \Alphabet\uplus\{\square_1/0, \square_2/0, \dots, \square_k/0\}, \Transitions\uplus\{(\square_i, \{q_i\}) \mid i \in \counting{k} \})$. Let us define the set $\Results(\q) := \{(\q, q) \in \automatonStateSet^{k+1} \mid q$ is the result of a run of $\T_{\q}$ on $c.\}$. Then we define $\widetilde{\Transitions}(c) := \bigcup_{\q \in \automatonStateSet^k} \Results(\q)$. We also refer to the relation $\widetilde{\Transitions}(c)$ as the \emph{relation induced} by the context $c$ on the states of the NBTTS $\T$. Note that for $a \in \Alphabet$, we have that $\widetilde{\Transitions}(a) = \Transitions(a)$.
+\end{definition}
+
+Suppose a word $w_1$ is extended by appending another word $w_2$ to its end. Now, $\widetilde{\Transitions}(w_1 \cdot w_2)$ is obtained by simply composing the relations $\widetilde{\Transitions}(w_1)$ and $\widetilde{\Transitions}(w_2)$. For trees, it is more complicated: a tree $t_1$ can have multiple ``end points'' where it can be extended by appending other trees. We will need a more complicated way of composing relations.
+
+\begin{definition}[Relational Lifts]\label{def:relationalLift}
+    Let $X$ be a set and $n \in \N_0$ be a nonnegative integer. Let $\operator \subseteq X^{n+1}$ be a relation. We define the \emph{relational lift} of $\operator$ as a new relation $\widetilde{\operator} \subseteq \relations(X)^{n+1}$ given as follows: For $R_1, \dots, R_n, R \in \relations(X)$, we say that $(R_1, R_2, \dots, R_n, R) \in \widetilde{\operator}$ if and only if
+    \begin{itemize}
+        \item $R \in \relations(X, 1+\sum_{j=1}^n i_j)$, where $i_j \in \N$ for all $j \in \counting{n}$ are such that $R_j \in \relations(X, i_j+1)$.
+        \item For all $j \in \counting{n}$, for all $\x_j \in X^{i_j}$, we have $(\x_1, \x_2, \dots, \x_n, y) \in R$ if and only if there exist $y_1, y_2, \dots, y_n \in X$ such that $(\x_j, y_j) \in R_j$ and $(y_1, y_2, \dots, y_n, y) \in \operator$.
+    \end{itemize}    
+\end{definition}
+
+We can think about relational lift as a procedure to compose arbitrarily many relations. Another, more abstract way to think about it is as a way of ``lifting'' an operator over a set to an operator over relations over that same set. In case of automata running on words, for any $a \in \Alphabet$ and any $w_1 \in \words{\Alphabet}$, if we set $\operator := \Transitions(a)$, then $(\widetilde{\Transitions}(w_1), \widetilde{\Transitions}(w_1 \cdot a)) \in \widetilde{\operator}$. In case of NBTTS running on contexts, suppose $c_1, \ldots, c_k$ are the children of a node labeled by the letter $a/k$ and we set $\operator := \Transitions(a) \subseteq \automatonStateSet^{k+1}$, then $(\widetilde{\Transitions}(c_1), \ldots, \widetilde{\Transitions}(c_k), R) \in \widetilde{\operator}$ implies that $R = \widetilde{\Transitions}(a(c_1, \ldots, c_k))$.
+
+%Note that $\widetilde{\Transitions}|_{\Alphabet} = \Transitions$. Intuitively, $\widetilde{\Transitions}$ extends $\Transitions$ such that the following diagram commutes.
+%    \[\begin{CD}
+%        \Alphabet @>>> \Trees{\Alphabet}\\
+%        @VV\Transitions V @VV\widetilde{\Transitions}V\\
+%        \Relations(Q) @>\sim>> \Relations(\Relations(Q))
+%    \end{CD}\]
+
+The following problem and its complexity is an important intermediate technical lemma used later.
+
+\probdef{\relationRealisabilityFull}{\relationRealisabilityShort}
+{NBTTS $\T := (\automatonStateSet, \Alphabet, \Transitions)$, relation $R \in \Relations(\automatonStateSet)$, NBTA $\D$.}
+{Does there exist $c \in \Contexts{\Alphabet}{} \cap L(\D)$ such that $\widetilde{\Transitions}(c) = R$?}
+
+As a matter of nomenclature, if the above condition holds for a given $\T, R, \D$, then we say that the relation $R$ is \emph{realisable} by $\T$ under $\D$.
+
+\begin{theorem}\label{thm:relationRealisabilityExptc}
+    \textsc{\relationRealisabilityFull}\ is \exptc.
+\end{theorem}
+
+The result follows from a reduction from the Intersection Nonemptiness problem for DBTA. A detailed proof of the same can be found in Appendix~\ref{sec:relationRealisabilityProof}
+
+In the proof for the above result, we also get that for each relation which we are checking for realisability, we can also get, in \expt, a context over the alphabet which realises it(if it is realisable). In such a case, we will say that the relation $R$ is \emph{realised} by the context $c$ on the NBTTS $\T$, under $\D$. We also say that $c$ \emph{induces} $R$ on $\T$ under $\D$.  For a given pair $(\T, \D)$ with NBTTS $\T$ and NBTA $\D$, we define the set
+\[ \RealisableRelations{\T}{\D} := \{(R, c) \mid \mbox{ $R$ is realised by $c$ on $\T$ under $\D$}\} \]
