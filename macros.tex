@@ -25,7 +25,7 @@
 
 \newcommand{\trees}[1]{\ensuremath{\texttt{Trees}\left(#1\right)}}  %  Set of all trees over an alphabet #1.
 
-\newcommand{\realisableRelations}[2]{\ensuremath{\texttt{InducedRelations}\left(#1, #2\right)}}
+\newcommand{\realisableRelations}[2]{\ensuremath{\texttt{InducedRel}\left(#1, #2\right)}}
 
 %  Miscellaneous
 \newcommand{\e}{\varepsilon}
@@ -118,7 +118,7 @@
 
 % %  Text colorings
 % \newcommand{\red}[1]{\textcolor{red}{#1}}
-% \newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
 % \newcommand{\pink}[1]{\textcolor{magenta}{#1}}
 
 
@@ -174,9 +174,9 @@
 % \newcommand{\nfa}{\textsf{NFA}}
 
 \newcommand{\automaton}{\ensuremath{\mathcal{A}}}
-% \newcommand{\automatonB}{\ensuremath{\mathcal{B}}}
-% \newcommand{\sourceAutomatonB}{\ensuremath{\automatonB_{\src}}}
-% \newcommand{\targetAutomatonB}{\ensuremath{\automatonB_{\tgt}}}
+\newcommand{\automatonB}{\ensuremath{\mathcal{B}}}
+\newcommand{\sourceAutomatonB}{\ensuremath{\automatonB_{\src}}}
+\newcommand{\targetAutomatonB}{\ensuremath{\automatonB_{\tgt}}}
 
 \newcommand{\automatonStateSet}{Q}
 \newcommand{\automatonTransitionSet}{\Delta}
@@ -187,6 +187,8 @@
 
 \newcommand{\transitionSystem}{\ensuremath{\mathcal{T}}}
 \newcommand{\result}{\texttt{result}}
+
+\newcommand{\start}{\ensuremath{\mathsf{start}}}
 
 % \newcommand{\mealyMachine}{M}
 % \newcommand{\mealyMachineStateSet}{Q}
@@ -242,6 +244,7 @@
 
 \newcommand{\languageOf}[1]{\ensuremath{L(#1)}}
 \newcommand{\variablesOf}[1]{\variables(#1)}
+\newcommand{\arity}{\texttt{arity}}
 
 % \newcommand{\transductionFunction}{\ensuremath{\mathcal{T}}}
 
@@ -378,7 +381,6 @@
 % % \newcommand{\q}{\overline{\textbf{q}}}
 % % \newcommand{\x}{\overline{\textbf{x}}}
 % % \newcommand{\B}{\mathcal{B}}
-% % \newcommand{\arity}{\texttt{arity}}
 
 
 % % \newcommand{\Transitions}{\ensuremath{\Delta}}
@@ -388,7 +390,6 @@
 % % \newcommand{\Functions}{\texttt{Functions}}
 % % \newcommand{\shape}{\texttt{Shape}}
 % % \newcommand{\rep}{\mathit{rep}}
-% % \newcommand{\start}{\mathsf{start}}
 
 
 % % \newcommand{\pt}[1]{\ensuremath{#1}-Pebble Tree Transducer}
