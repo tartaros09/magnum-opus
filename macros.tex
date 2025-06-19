@@ -149,18 +149,19 @@
 %  Seed language letters
 % \newcommand{\exampleSeedLanguageStart}{\mathsf{start}}
 % \newcommand{\exampleSeedLanguageEnd}{\mathsf{end}}
-\newcommand{\exampleSeedLanguageLoop}{\mathsf{loop}}
-\newcommand{\exampleSeedLanguageEndLoop}{\mathsf{endLoop}}
+\newcommand{\exampleSeedLanguageLoop}{\ensuremath{\mathsf{loop}}}
+\newcommand{\exampleSeedLanguageEndLoop}{\ensuremath{\mathsf{endLoop}}}
+\newcommand{\exampleSeedLanguageNull}{\ensuremath{\mathsf{null}}}
 
-\newcommand{\examplePatternLanguageFor}{\mathsf{for}}
+\newcommand{\examplePatternLanguageFor}{\ensuremath{\mathsf{for}}}
 % \newcommand{\examplePatternLanguageHead}{\mathsf{head}}
 % \newcommand{\examplePatternLanguageBody}{\mathsf{body}}
-\newcommand{\examplePatternLanguageWhile}{\mathsf{while}}
+\newcommand{\examplePatternLanguageWhile}{\ensuremath{\mathsf{while}}}
 
-\newcommand{\examplePatternLanguageInit}{\mathsf{init}}
-\newcommand{\examplePatternLanguageProp}{\mathsf{cond}}
-\newcommand{\examplePatternLanguageIncr}{\mathsf{incr}}
-\newcommand{\examplePatternLanguageNull}{\mathsf{null}}
+\newcommand{\examplePatternLanguageInit}{\ensuremath{\mathsf{init}}}
+\newcommand{\examplePatternLanguageProp}{\ensuremath{\mathsf{cond}}}
+\newcommand{\examplePatternLanguageIncr}{\ensuremath{\mathsf{incr}}}
+\newcommand{\examplePatternLanguageNull}{\ensuremath{\mathsf{null}}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -307,8 +308,8 @@
 \newcommand{\relT}{\mathit{Rel}}
 
 \newcommand{\seedLang}{\seedLanguage}
-\newcommand{\seedLangExLoop}{def}
-\newcommand{\seedLangExEndLoop}{def}
+\newcommand{\seedLangExLoop}{\exampleSeedLanguageLoop}
+\newcommand{\seedLangExEndLoop}{\exampleSeedLanguageEndLoop}
 
 \newcommand{\langExFor}{\examplePatternLanguageFor}
 \newcommand{\langExWhile}{\examplePatternLanguageWhile}
