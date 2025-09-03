@@ -41,7 +41,7 @@
 
 \newcommand{\set}[1]{\ensuremath{\left\{ #1 \right\}}}
 \newcommand{\counting}[1]{\ensuremath{\left[ #1 \right]}}
-% \newcommand{\sem}[1]{\ensuremath{\llbracket #1 \rrbracket}}
+\newcommand{\sem}[1]{\ensuremath{\llbracket #1 \rrbracket}}
 \newcommand{\abs}[1]{\ensuremath{\left\lvert #1 \right\rvert}}
 % \newcommand{\angular}[1]{\ensuremath{\langle}#1\ensuremath{\rangle}}
 
@@ -99,10 +99,9 @@
 % %                                                                              %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \DeclareMathOperator{\rank}{rank}  %  Rank
+\DeclareMathOperator{\rank}{rank}  %  Rank
 \DeclareMathOperator{\dom}{dom}  %  Domain
-
-% \newcommand{\inv}{\ensuremath{^{-1}}}  %  Inverse
+\newcommand{\inv}{\ensuremath{^{-1}}}  %  Inverse
 
 % \newcommand{\lift}[1]{\ensuremath{\widetilde{#1}}}
 % \newcommand{\closure}[1]{\ensuremath{\overline{#1}}}
@@ -117,7 +116,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % %  Text colorings
-% \newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 % \newcommand{\pink}[1]{\textcolor{magenta}{#1}}
 
@@ -181,6 +180,7 @@
 \newcommand{\automatonStateSet}{Q}
 \newcommand{\automatonTransitionSet}{\Delta}
 \newcommand{\automatonInitialStateSet}{Q_\textsf{in}}
+\newcommand{\automatonInitialState}{s}
 \newcommand{\automatonFinalStateSet}{Q_\textsf{fin}}
 
 \newcommand{\automataSet}[1]{\texttt{Automata}(#1)}
@@ -189,6 +189,8 @@
 \newcommand{\result}{\texttt{result}}
 
 \newcommand{\start}{\ensuremath{\mathsf{start}}}
+
+\newcommand{\pt}[1]{\ensuremath{#1}-Pebble Tree Transducer}
 
 % \newcommand{\mealyMachine}{M}
 % \newcommand{\mealyMachineStateSet}{Q}
@@ -245,6 +247,8 @@
 \newcommand{\languageOf}[1]{\ensuremath{L(#1)}}
 \newcommand{\variablesOf}[1]{\variables(#1)}
 \newcommand{\arity}{\texttt{arity}}
+
+\newcommand{\rev}{\texttt{Reverse}}
 
 % \newcommand{\transductionFunction}{\ensuremath{\mathcal{T}}}
 
@@ -390,9 +394,5 @@
 % % \newcommand{\Functions}{\texttt{Functions}}
 % % \newcommand{\shape}{\texttt{Shape}}
 % % \newcommand{\rep}{\mathit{rep}}
-
-
-% % \newcommand{\pt}[1]{\ensuremath{#1}-Pebble Tree Transducer}
-% % \newcommand{\rev}{\texttt{Reverse}}
 
 
