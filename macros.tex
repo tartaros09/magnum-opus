@@ -120,11 +120,14 @@
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 % \newcommand{\pink}[1]{\textcolor{magenta}{#1}}
 
+\newcommand{\todoMandate}[1]{\todo[inline]{#1}}
+\newcommand{\todoQuestion}[1]{\todo[inline, color=blue!50]{#1}}
 
 \newcommand{\src}{\mathit{src}}
 \newcommand{\tgt}{\mathit{tgt}}
 
 \newcommand{\tcp}{type-checking problem}
+\newcommand{\rab}{ranked alphabet}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
@@ -228,11 +231,11 @@
 % \newcommand{\multipleRelationRealisabilityShort}{\texttt{m-RLRS}}
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %                                                                              %
-% %   Functions                                                                  %
-% %                                                                              %
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Functions                                                                  %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\homomorphism}{\ensuremath{\phi}}
 \newcommand{\substitution}{\ensuremath{\sigma}}
@@ -255,11 +258,11 @@
 % \newcommand{\Id}{\textsf{Id}}
 
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %                                                                              %
-% %   Transformation-related                                                     %
-% %                                                                              %
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%   Transformation-related                                                     %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\atomicTransform}{\ensuremath{T}}
 \newcommand{\fullTransform}{\ensuremath{\mathbf{T}}}
@@ -302,42 +305,31 @@
 
 % %%%%%%%%%% Deprecated %%%%%%%%%%
 
-\newcommand{\Alphabet}{\alphabet}
-\newcommand{\Transitions}{\automatonTransitionSet}
-\newcommand{\Automata}{\automataSet}
-\newcommand{\T}{\transitionSystem}
-\newcommand{\Trees}{\trees}
-\newcommand{\Positions}{\positions}
-\newcommand{\Contexts}{\contexts}
-\newcommand{\Relations}{\relations}
-\newcommand{\Variables}{\variables}
-\newcommand{\RealisableRelations}{\realisableRelations}
-\newcommand{\relT}{\mathit{Rel}}
+% \newcommand{\Transitions}{\automatonTransitionSet}
+% \newcommand{\Automata}{\automataSet}
+% \newcommand{\T}{\transitionSystem}
+% \newcommand{\RealisableRelations}{\realisableRelations}
+% \newcommand{\relT}{\mathit{Rel}}
 
-\newcommand{\seedLang}{\seedLanguage}
-\newcommand{\seedLangExLoop}{\exampleSeedLanguageLoop}
-\newcommand{\seedLangExEndLoop}{\exampleSeedLanguageEndLoop}
+% \newcommand{\seedLang}{\seedLanguage}
+% \newcommand{\seedLangExLoop}{\exampleSeedLanguageLoop}
+% \newcommand{\seedLangExEndLoop}{\exampleSeedLanguageEndLoop}
 
-\newcommand{\langExFor}{\examplePatternLanguageFor}
-\newcommand{\langExWhile}{\examplePatternLanguageWhile}
-\newcommand{\langExNull}{\examplePatternLanguageNull}
-\newcommand{\langExInit}{\examplePatternLanguageInit}
-\newcommand{\langExProp}{\examplePatternLanguageProp}
-\newcommand{\langExIncr}{\examplePatternLanguageIncr}
+% \newcommand{\langExFor}{\examplePatternLanguageFor}
+% \newcommand{\langExWhile}{\examplePatternLanguageWhile}
+% \newcommand{\langExNull}{\examplePatternLanguageNull}
+% \newcommand{\langExInit}{\examplePatternLanguageInit}
+% \newcommand{\langExProp}{\examplePatternLanguageProp}
+% \newcommand{\langExIncr}{\examplePatternLanguageIncr}
 
-\newcommand{\sourceLang}{\sourceLanguage}
-\newcommand{\targetLang}{\targetLanguage}
+% \newcommand{\sourceLang}{\sourceLanguage}
+% \newcommand{\targetLang}{\targetLanguage}
 
-\newcommand{\extendedTransitionRelation}{ETR}
-\newcommand{\Results}{\texttt{Results}}
-\newcommand{\q}{\vect{q}}
-\newcommand{\x}{\vect{x}}
-\newcommand{\D}{\mathcal{D}}
-
-
-
-
-
+% \newcommand{\extendedTransitionRelation}{ETR}
+% \newcommand{\Results}{\texttt{Results}}
+% \newcommand{\q}{\vect{q}}
+% \newcommand{\x}{\vect{x}}
+% \newcommand{\D}{\mathcal{D}}
 
 % % \newcommand{\tr}{\triangle}
 % % \newcommand*\pa[1]{\textsf{A}{#1}}

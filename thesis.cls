@@ -36,6 +36,7 @@
 \usepackage{enumitem}
 \usepackage{vmargin}
 \usepackage{tabularx, environ}
+\usepackage{todonotes}
 
 \usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
 bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
