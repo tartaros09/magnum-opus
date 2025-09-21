@@ -36,7 +36,9 @@
 \usepackage{enumitem}
 \usepackage{vmargin}
 \usepackage{tabularx, environ}
-\usepackage{todonotes}
+\usepackage[disable]{todonotes}
+\usepackage{utfsym}
+\usepackage{lineno}
 
 \usepackage[pdfpagemode={UseOutlines},bookmarks=true,bookmarksopen=true,
 bookmarksopenlevel=0,bookmarksnumbered=true,hypertexnames=false,
@@ -104,6 +106,8 @@ pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
 \fancyheadoffset[LE,RO]{0\headwidth}
 \fancyheadoffset[RE,LO]{0\headwidth}
 
+\linenumbers
+
 \setlist[enumerate,itemize]{leftmargin=15pt}
 %\setlength{\parskip}{1.0ex plus0.5ex minus0.2ex}
 \setmarginsrb{1.0in}  % left margin
@@ -161,7 +165,7 @@ pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
-\newtheorem{problem}[theorem]{Problem}
+% \newtheorem{problem}[theorem]{Problem}
 %\newtheorem{algorithm}[theorem]{Algorithm}
 %\numberwithin{equation}{section}
 

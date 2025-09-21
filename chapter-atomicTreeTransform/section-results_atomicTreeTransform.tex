@@ -1,0 +1,132 @@
+\section{Results}\label{sec:results_atomicTreeTransforms}
+
+In this section, we shall state and prove some complexity results regarding the problems mentioned earlier. Throughout this Section, let $\alphabet$ be a \rab\ and let $\variables$ be a set of ranked variables. We first consider the \matchingProblemFull.
+
+\begin{problem}
+    \problemtitle{\matchingProblemFull}
+    \probleminput{A tree $t$, a pattern $\pattern$, a guard function $\guardFunction$. \grey{\slash\slash\ The guard languages are represented by NBTA.}}
+    \problemquestion{Does there exist a substitution $\substitution$ such that $\match(\substitution, t, \pattern, \guardFunction)$?}
+\end{problem}
+
+We will show that the \matchingProblemFull\ is \npc. For the upper bound, we give a proof by constructing a polynomial-time verifier for the solution given a polynomial-size witness.
+
+\begin{theorem}\label{thm:matchingProblemUpperBound}
+    The \matchingProblemFull\ is in \np.
+\end{theorem}
+
+\begin{proof}
+    Let $I := (t, \pattern, \guardFunction)$ be a given instance of the \matchingProblemFull. Note that $\guardFunction : \variables \to 2^{\trees{\alphabet}}$ is a function such that for each value $\guard{x}$ we are given an NBTA $\automatonB_x$ such that $\languageOf{\automatonB_x} = \guard{x}$. Let the size of the input be $N := \abs{\pattern} + \abs{t} + \abs{\guardFunction}$.
+    \todoMandate{Define the notion of $\abs{\cdot}$ for trees, patterns, and the guard function.}
+    We shall find a polynomial-sized witness $W$ and a polynomial-time verifier $V$ such that for the ordered pair $(I, W)$, $V$ returns ``yes'' in polynomial time if the witness proves that the answer is ``yes'' or ``no'' in polynomial time otherwise. We let the substitution itself be the witness $W$. Note that the size of $\abs{W}$ is bounded by $\abs{t}$. Then we can verify whether $\substitution(\pattern) = t$ in $\bigo{\abs{t}}$ time, which is linear in the size of the input, since it is just comparison of two trees and checking them for equality. We can also verify whether for every $x \in \variables(\pattern)$ if we have $\substitution(x) \in \guard{x}$. Since the guard languages were provided as NBTAs this amount to checking for membership for NBTAs, which can be done in time which is polynomial in the size of the input $N$. This constitutes a polynomial-time verifier for the problem, and hence we conclude that \matchingProblemFull\ is in \np.
+\end{proof}
+
+For the lower bound, we refer to~\cite{matchingProblemLowerBound}, which gives a proof of the same. For the sake of completeness, we provide a recreation of the proof below. The proof follows by showing a reduction from \oneInThreeSatFull, which is a known \npc\ problem\cite{oneInThreeSatIsNpHard}, to the \matchingProblemFull. 
+
+\begin{theorem}[\cite{matchingProblemLowerBound}]\label{thm:matchingProblemLowerBound}
+    The \matchingProblemFull\ is \nph.
+\end{theorem}
+
+\begin{proof}
+    Consider the problem \oneInThreeSatFull\ as given below:
+    \begin{problem}
+        \problemtitle{\oneInThreeSatFull}
+        \probleminput{3CNF formula $\phi$ without negated variables.}
+        \problemquestion{Is there a truth assignment to the variables of $\phi$ such that every clause contains exactly one literal that is true and $\phi$ evaluates to true?}
+    \end{problem}
+
+    We know from~\cite{oneInThreeSatIsNpHard} that \oneInThreeSatFull\ is \npc, in particular, \nph. We will show a reduction from \oneInThreeSatFull\ to the \matchingProblemFull. Let formula $\phi := \set{J(v_{f(3i-2)}, v_{f(3i-1)}, v_{f(3i)}) \mid i \in [n]}$ be an instance of \oneInThreeSatFull, where we have $V := \set{v_1, v_2, \dots, v_k}$ be a finite set of variables and $f : [3n] \to [k]$. We also have $J : V^3 \to \set{\top, \bot}$ to be a function which evaluates to $\top$ iff exactly one of its arguments is set to true, and $\bot$ otherwise.
+
+    Let $\alphabet := \set{a/1, \#/1, \lambda/0}$ be a \rab, and $\variables := \set{x_i/1 \mid i \in \N}$ be a set of ranked variables. Consider pattern $\pattern$ over $\alphabet$ and $\variables$ given by
+    \[ \pattern := x_{f(1)}x_{f(2)}x_{f(3)}\#x_{f(4)}x_{f(5)}x_{f(6)}\#\dots\#x_{f(3n-2)}x_{f(3n-1)}x_{f(3n)}\lambda \]
+    Note that since all the letters and variables have an arity of at most 1, we can write all trees as words ending in the nullary letter $\lambda$. We also define a tree $t := a\#a\#\dots\#a\lambda$, where the number of times $a$ occurs in the tree is $n$. We see that the only substitution $\substitution : V \to \set{a, \e}$ which matches $t$ to $\pattern$ is the one which assigns $a$ to every true variable and $\e$ to every false one. We also see that the corresponding guard languages which decide the `shape' of the trees can be easily specified by NBTA.
+    \todoMandate{Add complete descriptions of NBTA.}
+    This completes a polynomial-time reduction from \oneInThreeSatFull. Hence we get that \matchingProblemFull\ is \nph.
+\end{proof}
+
+Next we consider the \relationRealisabilityFull.
+\begin{problem}
+    \problemtitle{\relationRealisabilityFull}
+    \probleminput{NBTTS $\transitionSystem := (\automatonStateSet, \alphabet, \automatonTransitionSet)$, relation $R \in \relations(\automatonStateSet)$, NBTA $\automatonB$.}
+    \problemquestion{Does there exist context $c \in \contexts(\alphabet) \cap \languageOf{\automatonB}$ such that $\inducedRelation{c}{\transitionSystem} = R$?}
+\end{problem}
+We will show that \relationRealisabilityFull\ is \exptc. For the lower bound, we shall show a reduction from the \intersectionNonemptinessFull, which we know from~\cite{tata} to be \exptc. For the upper bound, we construct an NBTA and reduce the problem of finding such a context to checking this NBTA for nonemptiness.
+
+\begin{theorem}\label{thm:relationRealisabilityProblemUpperBound}
+    \relationRealisabilityFull\ is in \expt.
+\end{theorem}
+
+\begin{proof}
+    Consider an instance of \relationRealisabilityFull\ be given. Let $\transitionSystem := (\automatonStateSet, \alphabet, \automatonTransitionSet)$ be an NBTTS, $R \in \relations(Q, n+1)$ for some $n \in \N_0$ be a relation of arity $n+1$, and let $\automatonB$ be an NBTA over $\alphabet$. We need to find a context $c \in \contexts(\alphabet, n) \cap\languageOf{\automatonB}$ such that $\inducedRelation{c}{\transitionSystem} = R$. Consider NBTA $\automaton$ given by
+    \[ \automaton := \left( \cup_{i=1}^{n+1}\relations(Q, i), \alphabet \uplus \set{\square_i/0 \mid i \in [n], \automatonTransitionSet', \set{R}} \right) \]
+    where $\automatonTransitionSet'$ is given by $\automatonTransitionSet'(a) := \widetilde{\automatonTransitionSet}(a)$ for all $a \in \alphabet$, and $\automatonTransitionSet'(\square_i) := \automatonStateSet$ for all $i \in [n]$.
+    \todoQuestion{Make it easier to read?}
+    We see that a straight-forward induction on the height of the context gives us that for a context $c \in \contexts(\alphabet) \cap \languageOf{\automatonB}$, we have that $\inducedRelation{c}{\transitionSystem} = R$ if and only if $c \in \languageOf{\automaton} \cap \languageOf{\automatonB}$.
+    \todoMandate{Write a complete induction proof.}
+    Hence to find a context which induced the relation $R$ on the states of the transition system $\transitionSystem$, we need to check the product tree automation $\automaton \cap \automatonB$ for nonemptiness. Let $\automatonB$ have $m$ states.
+    \todoMandate{Calculate running time exactly in big-O notation.}
+    Hence we see that \relationRealisabilityFull\ can be solved in \expt.
+\end{proof}
+
+\begin{theorem}\label{thm:relationRealisabilityProblemLowerBound}
+    \relationRealisabilityFull\ is \expth.
+\end{theorem}
+
+\begin{proof}
+    We will show a reduction from the \intersectionNonemptinessFull\ to \relationRealisabilityFull. We recall \intersectionNonemptinessFull\ to be the following problem:
+    \begin{problem}
+        \problemtitle{\intersectionNonemptinessFull}
+        \probleminput{DBTAs $\automaton_1, \automaton_2, \dots, \automaton_n$.}
+        \problemquestion{Do we have $\cap_{i=1}^n \languageOf{\automaton_i} = \emptyset$?}
+    \end{problem}
+    We know from~\cite{tata} that \intersectionNonemptinessFull\ is \exptc. Let $\automaton_1, \automaton_2, \dots, \automaton_n$ be a given instance of \intersectionNonemptinessFull, where $\automaton_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ are DBTA over $\alphabet$. If $\automatonFinalStateSet_i = \emptyset$ for some $i \in [n]$, then we get $\languageOf{\automaton_i} = \emptyset$ which implies that $\bigcap_{i=1}^n \languageOf{\automaton_i} = \emptyset$. So let us assume that $\automatonFinalStateSet_i \neq \emptyset$ for all $i \in [n]$.
+
+    Consider NBTTS $\transitionSystem := (\automatonStateSet := (\biguplus_{i=1}^n \automatonStateSet_i)\uplus\set{\top}, \alphabet \uplus \set{\#/2}, \automatonTransitionSet)$ where $\automatonTransitionSet : \alphabet \uplus \set{\#/2} \to \relations(Q)$ is defined as
+    \[
+        \twopartfunc{\automatonTransitionSet(a)}{\biguplus_{i=1}^n \automatonTransitionSet_i(a)}{a \in \alphabet}{\set{(q, q', \top) \mid q, q' \in \automatonFinalStateSet_i \mbox{ for some } i \in [n]}}{a= \#}
+    \]
+    Let $R \in \relations(\automatonStateSet, 2)$ be given by $R := \set{(f_i, \top) \mid i \in [n]}$ where each $f_i \in \automatonFinalStateSet_i$ is an arbitrarily chosen but fixed final state of $\automaton_i$. Also consider DBTA $\automatonB$ which recognises all contexts of the form $\#(t, \square)$ where $t \in \trees{\alphabet}$. Consider the instance $(\transitionSystem, R, \automatonB)$ of the \relationRealisabilityFull.
+
+    We see that $R$ is realisable by $\transitionSystem$ under $\automatonB$ if and only if there exists a tree $t \in \bigcap_{i=1}^n \languageOf{\automaton_i}$. Clearly $R$ is realisable by $transitionSystem$ under $\automatonB \iff$ there exists a context $c := \#(t, \square)$ which induces the relation $R$ on the states of $\transitionSystem$ under $\automatonB \iff$ for each $i \in [n]$ and the labelling of the hole $\square$ with $f_i$, the result of a run of $\transitionSystem$ on $t$ yields a final state $f'_i \in \automatonFinalStateSet_i \iff$ $t$ is recognised by $\automaton_i$ for each $i \in [n] \iff t \in \bigcap_{i=1}^n \languageOf{\automaton_i}$. This completes the reduction. Hence we get that \relationRealisabilityFull\ is \expth.
+\end{proof}
+
+Next we consider the \atomicTypecheckingProblemFull.
+\begin{problem}
+    \problemtitle{\atomicTypecheckingProblemFull}
+    \probleminput{ATT $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, regular tree languages $\sourceLanguage, \targetLanguage$. \grey{\slash\slash\ The guard languages and $\sourceLanguage, \targetLanguage$ are represented by NBTA.}} 
+    \problemquestion{Do we have $\atomicTransform[\sourceLanguage] \subseteq \targetLanguage$?}
+\end{problem}
+
+We will show that the \atomicTypecheckingProblemFull\ is \exptc. For the upper bound, we provide the following proof which uses the Small-Model Property of contexts which satisfy a given relation as obtained from the proof of Theorem~\ref{thm:relationRealisabilityProblemUpperBound}.
+
+\begin{theorem}
+    The \atomicTypecheckingProblemFull\ is in \expt.
+\end{theorem}
+
+\begin{proof}
+    Note that deciding whether $\atomicTransform[\sourceLanguage] \subseteq \targetLanguage$ is equivalent to deciding whether $\atomicTransform[\sourceLanguage] \cap \targetLanguage^\complement = \emptyset$, where $\targetLanguage^\complement$ denotes the set complement of $\targetLanguage$ in $\trees{\alphabet}$. We also know from~\cite{tata} that complementing an NBTA takes time which is exponential in size of the input NBTA. Hence for this proof, we will answer the question whether $\atomicTransform[\sourceLanguage] \cap \targetLanguage^\complement = \emptyset$.
+
+    As mentioned in the problem, let $\automatonB_\src := (\automatonStateSet_\src, \alphabet, \automatonTransitionSet_\src, \automatonFinalStateSet_\src), \automatonB_\tgt := (\automatonStateSet_\tgt, \alphabet, \automatonTransitionSet_\tgt, \automatonFinalStateSet_\tgt)$ be NBTA recognising the regular tree languages $\sourceLanguage, \targetLanguage$ respectively. Let $\automatonB_\tgt^\complement := (\automatonStateSet'_\tgt, \alphabet, \automatonTransitionSet'_\tgt, \automatonFinalStateSet'_\tgt)$ be the NBTA constructed from $\automatonB_\tgt$ recognising $\targetLanguage^\complement$. We will see what it takes to find an element in the set $\atomicTransform[\sourceLanguage] \cap \targetLanguage^\complement$ if it is nonempty. We see that this is equivalent to finding a substitution $\substitution$ such that $\substitution(\sourcePattern) \in \sourceLanguage$ and $\substitution(\targetPattern) \in \targetLanguage^\complement$.
+
+    We will reduce this to the \relationRealisabilityFull. Define alphabet $\Gamma := \alphabet \uplus \set{\#/2}$ with an additional symbol $\#$ of arity 2. Let $\pattern$ be a pattern over $(\Gamma, \variables)$ given by $\pattern := \#(\sourcePattern, \targetPattern)$. Let $\automatonB$ be an NBTA which recognises all trees of the form $\#(t_\src, t_\tgt)$, with $t_\src \in \sourceLanguage$ and $t_\tgt \in \targetLanguage^\complement$. For the purposes of this proof, we can take $\automatonB := (\automatonStateSet, \Gamma, \automatonTransitionSet, \automatonFinalStateSet)$ where $\automatonStateSet := \automatonStateSet_\src \uplus \automatonStateSet'_\tgt \uplus \set{f}, \automatonFinalStateSet := \set{f}$ and $\automatonTransitionSet : \Gamma \to \relations(\automatonStateSet)$ is given binary
+    \[ \twopartfunc{\automatonTransitionSet(a)}{\automatonTransitionSet_\src(a) \uplus \automatonTransitionSet'_\tgt(a)}{a \in \alphabet}{\set{(f_\src, f'_\tgt, f) \mid f_\src \in \automatonFinalStateSet_\src, f'_\tgt \in \automatonFinalStateSet'_\tgt}}{a = \#} \]
+    Indeed, we can see that $\automatonB$ as described here does recognise precisely the afore-mentioned language.
+
+    Then we see that the \atomicTypecheckingProblemFull\ now reduces to finding a substitution $\substitution$ over $\Gamma$ satisfying $\guardFunction$ such that $\substitution(\pattern) \in \genericLanguage := \languageOf{\automatonB}$.
+
+    Let us assume that each variable $x/k \in \variablesOf{\pattern}$ appears $b_x$ number of times in $\pattern$. Consider all relations $R_x \in \relations(\automatonStateSet, k+1)$ such that $\abs{R_x} \leq b_x$. For each such relation we use Theorem~\ref{thm:relationRealisabilityProblemUpperBound} to find a context $c_x \in \contexts(\Gamma, k)$ such that $c_x \in \guard{x}$, and induces relation $R_x$ on the states of $\automatonB$. Once we have one such pair for every individual variable in $\variablesOf{\pattern}$, we simply use the substition $\substitution$ given by $\substitution(x) := c_x$ for all $x \in \variablesOf{\pattern}$ and check whether the resulting tree $\substitution(\pattern)$ belongs to $\genericLanguage$. This can be done in time given by
+    \[ \bigo{ \abs{\automatonB} \cdot \max_x \abs{\guard{x}} + \abs{\pattern} \cdot 2^{\abs{\automatonB} \cdot \max_x \abs{\guard{x}}} } \]
+    The number of times we have to perform this check operation is bounded above by the value $\left( \max_x \abs{\binom{\automatonStateSet^{\arity(x)+1}}{b_x}} \right)^{\abs{\variablesOf{\pattern}}}$. Hence the total time required to solve the \atomicTypecheckingProblemFull\ is given by
+    \[ \left( \max_x \abs{\binom{\automatonStateSet^{\arity(x)+1}}{b_x}} \right)^{\abs{\variablesOf{\pattern}}} \cdot \bigo{ \abs{\automatonB} \cdot \max_x \abs{\guard{x}} + \abs{\pattern} \cdot 2^{\abs{\automatonB} \cdot \max_x \abs{\guard{x}}} } \]
+    which we can see is exponential in the size of the input. This completes the proof.
+\end{proof}
+
+\begin{theorem}
+    The \atomicTypecheckingProblemFull\ is \expth.
+\end{theorem}
+
+\begin{proof}
+    To establish this lower bound, we will show a reduction from \intersectionNonemptinessFull\ as defined in the proof of Theorem~\ref{thm:relationRealisabilityProblemLowerBound} to \atomicTypecheckingProblemFull. As mentioned earlier, we know from \cite{tata} that \intersectionNonemptinessFull\ is \exptc. This reduction will give us the desired result. Let $\automaton_1, \automaton_2 , \dots, \automaton_n$ be an instance of \intersectionNonemptinessFull, where $\automaton_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ are DBTA over alphabet $\alphabet$ for all $i \in [n]$. We construct a corresponding instance of \atomicTypecheckingProblemFull\ as follows. Let $\Gamma := \alphabet \uplus \set{\#/n, \flat/0}$ be a larger alphabet. Consider the atomic transform $\atomicTransform := (\#(\underbrace{x, x, \dots, x}_n), \flat, \guardFunction)$, where $\guard{x} := \trees{\alphabet}$. Let the regular languages $\sourceLanguage := \set{\#(t_1, t_2, \dots, t_n) \mid t_i \in \languageOf{\automaton_i},~\forall i \in [n]}$, and $\targetLanguage := \set{\flat}$.
+
+    We can see that $\atomicTransform[\sourceLanguage] \cap \targetLanguage \neq \emptyset$ if and only if there exists a tree $t \in \trees{\alphabet}$ such that $t \in \languageOf{\automaton_i}$ for all $i \in [n]$. This completes the reduction.
+    \todoQuestion{Provide detailed automata to show that $\sourceLanguage$ and $\targetLanguage$ are regular?}
+\end{proof}

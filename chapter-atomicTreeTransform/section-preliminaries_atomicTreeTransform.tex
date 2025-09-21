@@ -1,0 +1,67 @@
+\section{Preliminaries}\label{sec:preliminaries_atomicTreeTransform}
+
+\begin{definition}[Ranked Alphabet]\label{def:rankedAlphabet}
+    A finite set $\alphabet := \set{a_1/k_1, a_2/k_2, \dots, a_n/k_n}$ is called a \emph{finite \rab}, where $a_i$ are called the \emph{letters} and $k_i := \arity(a_i)$ are nonnegative integers called their corresponding \emph{arities}. For each nonnegative integer $k \in \N_0$, we define pairwise disjoint sets $\alphabet_k := \set{a \in \alphabet \mid \arity(a) = k} \subseteq \alphabet$. We require that $\alphabet_0 \neq \emptyset$. We also define \emph{arity} of $\alphabet$ to be $\max_i k_i$.
+\end{definition}
+
+\todoMandate{Add motivation for defining trees.}
+
+\begin{definition}[Term, Tree]\label{def:tree}
+    A \emph{term} or a \emph{tree} over a given \rab\ $\alphabet$ is a partial function $t : \N^* \to \alphabet$ with the domain $\positions(t) \subseteq \N^*$ satisfying the following properties:
+    \begin{itemize}
+        \item $\positions(t)$ is nonempty and prefix-closed.
+        \item $\forall u \in \positions(t), t(u) \in \alphabet_k, k \in \N_0 \implies \set{j \mid uj \in \positions(t)} = [k]$. \todoQuestion{Rewrite with less math, more english?}
+    \end{itemize}
+    We say that a tree is \emph{finite} if $\positions(t)$ is finite.
+\end{definition}
+
+We shall only deal with finite trees in this dissertation, unless otherwise specified. We shall define the \emph{size of a tree} $t$ to be $\abs{\positions(t)}$ and denote it by $\abs{t}$. We denote the set of all finite trees over a \rab\ $\alphabet$ by $\emph{\trees{\alphabet}}$. A \emph{tree language} over $\alphabet$ is any subset of $\trees{\alphabet}$. We shall often omit mentioning the alphabet $\alphabet$ when referring to a tree language if the choice of alphabet is clear from the context.
+
+\begin{definition}[Context]\label{def:context}
+    Let $n \in \N_0$ be a nonnegative integer. A \emph{context of arity $n$} or \emph{$n$-context} over \rab\ $\alphabet$ is a tree over the \rab\ $\alphabet \uplus \set{\square_1/0, \square_2/0, \dots, \square_n/0}$ such that each letter $\square_i$ appears exactly once in it, for all $i \in [n]$. We refer to the positions occupied by letters $\square_i$ as \emph{holes} of the context for all $i \in [n]$.
+\end{definition}
+
+Intuitively, the leaves $\square_i/0$ of the holes on the context are the designated positions where other trees or contexts can be appended to the given context. We shall only deal with finite contexts in this dissertation, unless otherwise specified. We denote the set of all finite $n$-contexts over $\alphabet$ by $\contexts(\alphabet, n)$. We also denote the set $\bigcup_{n=0}^\infty \contexts(\alphabet, n)$ of all contexts over $\alphabet$ by $\contexts(\alphabet)$. Observe that by this definition, $\contexts(\alphabet, 0) := \trees{\alphabet}$.
+
+Just like in the case of finite words over an alphabet, we would like to introduce a notion of `regularity' for tree languages. We do this by defining tree automata, which gives us a finite characterisation of certain tree languages. We will use the definition as provided in~\cite{tata}.
+
+\begin{definition}[Nondeterministic Top-down Tree Automaton]\label{def:ntta}
+    A \emph{Nondeterministic Top-down Tree Automaton(NTTA)} over \rab\ $\alphabet$ is a tuple $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet)$ where $\automatonStateSet$ is a finite set of \emph{states}, $\automatonInitialStateSet \subseteq \automatonStateSet$ is the set of \emph{initial states}, and $\automatonTransitionSet : \alphabet \to \relations(Q)$ is such that $\automatonTransitionSet(a) \subseteq \automatonStateSet \times \automatonStateSet^k$ is a $(k+1)$-ary relation for all $a/k \in \alphabet$. An NTTA is called \emph{Deterministic Top-down Tree Automaton(DTTA)} if for each $a/k \in \alphabet$ and $q \in \automatonStateSet$, there is a unique tuple $\vect{q} \in \automatonStateSet^k$ such that $(q, \vect{q}) \in \automatonTransitionSet(a)$.
+\end{definition}
+
+\begin{definition}[\{Run, Acceptance\} for NTTA]\label{def:runAcceptanceNtta}
+    Given an NTTA $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet)$ and a tree $t \in \trees{\alphabet}$, we define a \emph{run} of $\automaton$ on $t$ as a tree $\rho : \positions(t) \to \automatonStateSet$ which is `compatible' with $\automatonTransitionSet$, i.e., for every $u \in \positions(t)$, if $t(u) := a/k$, $\rho(u) := q$, and $\rho(ui) := q_i$, for all $i \in [k]$, then $(q, q_1, q_2, \dots, q_k) \in \automatonTransitionSet(a)$. A run $\rho$ of $\automaton$ on tree $t$ is \emph{successful} if $\rho(\e) \in \automatonInitialStateSet$. We say a tree $t$ is \emph{accepted} by NTTA $\automaton$ if there exists a successful run of $\automaton$ on $t$. The set of all trees in $\trees{\alphabet}$ accepted by $\automaton$ is called the language \emph{recognised} by $\automaton$, and denoted by $\languageOf{\automaton} \subseteq \trees{\alphabet}$. A language $L \subseteq \trees{\alphabet}$ is called \emph{regular} if there exists NTTA $\automaton$ such that $L = \languageOf{\automaton}$.
+\end{definition}
+
+\begin{definition}[Nondeterministic Bottom-up Tree \{Transition System, Automaton\}]\label{def:nbta}
+    A \emph{Nondeterministic Bottom-up Tree Transition System(NBTTS)} over \rab\ $\alphabet$ is a tuple $\transitionSystem := (\automatonStateSet, \alphabet, \automatonTransitionSet)$, where $\automatonStateSet$ is a finite set of \emph{states}, and $\automatonTransitionSet : \alphabet \to \relations(\automatonStateSet)$ is such that $\automatonTransitionSet(a) \subseteq \automatonStateSet^k \times \automatonStateSet$ is a $(k+1)$-ary relation for all $a/k \in \alphabet$. A \emph{Nondeterministic Bottom-up Tree Automaton(NBTA)} is a tuple $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonFinalStateSet)$ such that $(\automatonStateSet, \alphabet, \automatonTransitionSet)$ is a NBTTS over $\alphabet$, and $\automatonFinalStateSet \subseteq \automatonStateSet$ is the set of \emph{final states}. An NBTA is called \emph{Deterministic Bottom-up Tree Automaton(DBTA)} if for each $a/k \in \alphabet$ and $\vect{q} \in \automatonStateSet^k$, there is a unique $q \in \automatonStateSet$ such that $(\vect{q}, q) \in \automatonTransitionSet(a)$.
+\end{definition}
+
+\begin{definition}[\{Run, Acceptance\} for NBTA]\label{def:runAcceptanceNbta}
+    Given an NBTA $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonFinalStateSet)$ and a tree $t \in \trees{\alphabet}$, we define a \emph{run} of $\automaton$ on $t$ as a tree $\rho : \positions(t) \to \automatonStateSet$ which is `compatible' with $\automatonTransitionSet$, i.e., for every $u \in \positions(t)$, if $t(u) := a/k$, $\rho(u) := q$, and $\rho(ui) := q_i$, for all $i \in [k]$, then $(q_1, q_2, \dots, q_k, q) \in \automatonTransitionSet(a)$. A run $\rho$ of $\automaton$ on tree $t$ is \emph{successful} if $\rho(\e) \in \automatonFinalStateSet$. We say a tree $t$ is \emph{accepted} by NBTA $\automaton$ if there exists a successful run of $\automaton$ on $t$. The set of all trees in $\trees{\alphabet}$ accepted by $\automaton$ is called the language \emph{recognised} by $\automaton$, and denoted by $\languageOf{\automaton} \subseteq \trees{\alphabet}$.
+\end{definition}
+
+\todoMandate{Add result showing expressive power equivalence of NTTA, NBTA, DBTA. Also mention DTTA being weaker, with examples.}
+\todoQuestion{Should there be a proof of the earlier fact?}
+
+We would like to take the transition function $\automatonTransitionSet$ as defined above and generalise it beyond just letters of the \rab\ $\alphabet$ to contexts over $\alphabet$. We define a notion of an `Extended Transition Relation' below.
+
+\begin{definition}[Extended Transition Relation(ETR)]\label{def:extendedTransitionRelation}
+    Let $\transitionSystem := (\automatonStateSet, \alphabet, \automatonTransitionSet)$ be a NBTTS. We extend the transition function $\automatonTransitionSet : \alphabet \to \relations(\automatonStateSet)$ to a larger function $\widetilde{\automatonTransitionSet} : \contexts(\alphabet) \to \relations(\automatonStateSet)$ called the \emph{Extended Transition Relation(ETR)} as follows: Let $c \in \contexts(\alphabet, k)$ be a context of arity $k$. For a $k$-tuple $\vect{q} := (q_1, q_2, \dots, q_k)$, we define NBTTS $\transitionSystem_{\vect{q}} := (\automatonStateSet, \alphabet \uplus \set{\square_i/0 \mid i \in [k]}, \automatonTransitionSet \uplus \set{(\square_i, \set{q_i}) \mid i \in [k]})$. Let $\result(\vect{q}) := \set{(\vect{q}, q) \in \automatonStateSet^{k+1} \mid \mbox{ $q$ is the result of a run of $\transitionSystem_{\vect{q}}$ on $c$.}}$. Then we define the value $\widetilde{\automatonTransitionSet}(c) := \bigcup_{\vect{q} \in \automatonStateSet^k} \result(\vect{q}) \subseteq \relations(\automatonStateSet, k+1)$. We also refer to $\widetilde{\automatonTransitionSet}(c)$ as the \emph{relation induced} by $c$ on the states of NBTTS $\transitionSystem$, and denote it by $\inducedRelation{c}{\transitionSystem}$.
+\end{definition}
+
+Note that the name `Extended Transition Relation' is befitting, as when restricted to the alphabet $\alphabet$ and considering each letter as a context, we get that for each $a \in \alphabet$, we have $\widetilde{\automatonTransitionSet}(a) = \automatonTransitionSet(a)$.
+
+\todoQuestion{Maybe add an example?}
+
+We also would like to define a procedure for composing together arbitrary relations in a constrained manner. We formalise this concept in the following definition.
+
+\begin{definition}[Relational Lift]\label{def:relationalLift}
+    Let $X$ be a set and let $n \in \N_0$ be a nonnegative integer. Let $\operator \subseteq X^{n+1}$ be a relation. We define the \emph{relational lift} of $\operator$ as a new relation $\widetilde{operator} \subseteq \relations(X)^{n+1}$ given as follows: For $R_1, R_2, \dots, R_n, R \in \relations(X)$, we say that $(R_1, R_2, \dots, R_n, R) \in \widetilde{\operator}$ if and only if
+    \begin{itemize}
+        \item If $R_i \in \relations(X, k_i+1)$ where $k_i \in \N_0$ for all $i \in [n]$, then we have that $R \in \relations\left(X, 1 + \sum_{i=1}^n k_i\right)$.
+        \item For all $i \in [n]$ and for all $\vect{x}_i \in X^{k_i}$ and $y \in X$, we have that $(\vect{x}_1, \vect{x}_2, \dots, \vect{x}_n, y) \in R$ if and only if there exist $y_1, y_2, \dots, y_n \in X$ such that $(\vect{x}_i, y_i) \in R_i$ for all $i \in [n]$, and $(y_1, y_2, \dots, y_n, y) \in \operator$.
+    \end{itemize}
+\end{definition}
+
+Note that if a relation $\operator \in \relations(X)$, then we have that the relational lift $\widetilde{\operator} \in \relations(\relations(X))$.

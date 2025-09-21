@@ -2,6 +2,41 @@
 
 \input{macros}
 
+\makeatletter
+%  Font replacement for unavailable styles.
+\@namedef{T1/zi4/m/it}{<->ssub*zi4/m/n}
+\@namedef{T1/zi4/b/it}{<->ssub*zi4/b/n}
+\@namedef{T1/zi4/bx/it}{<->ssub*zi4/b/n}
+\@namedef{T1/zi4/m/sl}{<->ssub*zi4/m/n}
+\@namedef{T1/zi4/b/sl}{<->ssub*zi4/b/n}
+\@namedef{T1/zi4/bx/sl}{<->ssub*zi4/b/n}
+\@namedef{OT1/cmr/m/scit}{<->ssub*cmr/m/sc}
+\@namedef{OT1/cmtt/m/scit}{<->ssub*cmtt/m/n}
+\@namedef{OMS/cmtt/m/n}{<->ssub*cmsy/m/n}
+\@namedef{U/stmry/b/n}{<->ssub*stmry/m/n}
+\makeatother
+
+\makeatletter
+\newcommand{\problemtitle}[1]{\gdef\@problemtitle{#1}}  % Store problem title
+\newcommand{\probleminput}[1]{\gdef\@probleminput{#1}}  % Store problem input
+\newcommand{\problemquestion}[1]{\gdef\@problemquestion{#1}}  % Store problem question
+\NewEnviron{problem}{
+  \problemtitle{}\probleminput{}\problemquestion{}  % Default input is empty
+  \BODY  % Parse input
+  \par\addvspace{.5\baselineskip}
+  \noindent
+  \begin{tabularx}{\textwidth}{@{\hspace{\parindent}} l X c}
+    \hline
+    \multicolumn{2}{@{\hspace{\parindent}}l}{\@problemtitle} \\  % Title
+    \hline
+    \textbf{Input:} & \@probleminput \\  % Input
+    \textbf{Question:} & \@problemquestion \\  % Question
+    \hline
+  \end{tabularx}
+  \par\addvspace{.5\baselineskip}
+}
+\makeatother
+
 \begin{document}
 % \maketitle
 \pagenumbering{roman}
@@ -33,7 +68,7 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\input{chapter-atomicTreeTransforms}
+\input{chapter-atomicTreeTransform}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

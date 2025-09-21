@@ -4,7 +4,7 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%  Number sets
+% Number sets
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
 \newcommand{\Z}{\ensuremath{\mathbb{Z}}}
 \newcommand{\Q}{\ensuremath{\mathbb{Q}}}
@@ -15,10 +15,10 @@
 % \newcommand{\field}{\ensuremath{\mathbb{F}}}
 \newcommand{\B}{\ensuremath{\mathcal{B}}}
 
-% %  Word-related
+% % Word-related
 \newcommand{\words}[1]{\ensuremath{\texttt{Words}\left(#1\right)}}  %  Set of all words over an alphabet #1.
 
-%  Tree-related
+% Tree-related
 \newcommand{\positions}{\texttt{Positions}}  %  Set of all positions in a tree. Subset of \N*.
 \newcommand{\contexts}{\ensuremath{\texttt{Contexts}}}  %  Set of all contexts with #2 holes over alphabet #1.
 \newcommand{\relations}{\ensuremath{\texttt{Relations}}}  %  Set of all relations of arity #2 over set #1.
@@ -27,7 +27,7 @@
 
 \newcommand{\realisableRelations}[2]{\ensuremath{\texttt{InducedRel}\left(#1, #2\right)}}
 
-%  Miscellaneous
+% Miscellaneous
 \newcommand{\e}{\varepsilon}
 \newcommand{\vect}[1]{\ensuremath{\overline{\textbf{#1}}}}
 \newcommand{\regular}[1]{\texttt{Regular}(#1)}
@@ -57,37 +57,37 @@
 \newcommand{\hard}{-hard}
 \newcommand{\complete}{-complete}
 
-%  NP
+% NP
 \newcommand{\np}{\textsc{NP}}
 \newcommand{\nph}{\np\hard}
 \newcommand{\npc}{\np\complete}
 
-% %  co-NP
+% % co-NP
 % \newcommand{\conp}{\textsc{co-NP}}
 % \newcommand{\conph}{\conp\hard}
 % \newcommand{\conpc}{\conp\complete}
 
-% %  PSPACE
+% % PSPACE
 % \newcommand{\psp}{\textsc{PSPACE}}
 % \newcommand{\psph}{\psp\hard}
 % \newcommand{\pspc}{\psp\complete}
 
-% %  NPSPACE
+% % NPSPACE
 % \newcommand{\npsp}{\textsc{NPSPACE}}
 % \newcommand{\npsph}{\npsp\hard}
 % \newcommand{\npspc}{\npsp\complete}
 
-%  EXPTime
+% EXPTime
 \newcommand{\expt}{\textsc{EXPTime}}
 \newcommand{\expth}{\expt\hard}
 \newcommand{\exptc}{\expt\complete}
 
-% %  2-EXPTime
+% % 2-EXPTime
 % \newcommand{\twoexpt}{\textsc{2-EXPTime}}
 % \newcommand{\twoexpth}{\twoexpt\hard}
 % \newcommand{\twoexptc}{\twoexpt\complete}
 
-% %  W[1]
+% % W[1]
 % \newcommand{\wone}{\textsc{W}[1]}
 % \newcommand{\woneh}{\wone\hard}
 % \newcommand{\wonec}{\wone\complete}
@@ -100,7 +100,7 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \DeclareMathOperator{\rank}{rank}  %  Rank
-\DeclareMathOperator{\dom}{dom}  %  Domain
+\DeclareMathOperator{\dom}{Domain}  %  Domain
 \newcommand{\inv}{\ensuremath{^{-1}}}  %  Inverse
 
 % \newcommand{\lift}[1]{\ensuremath{\widetilde{#1}}}
@@ -115,9 +115,32 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% %  Text colorings
+%  End-of-proof Symbol
+
+% % \usepackage{amssymb}
+% \renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}  % Halmos tombstone
+
+% % \usepackage{fdsymbol}
+% \renewcommand{\qedsymbol}{\ensuremath{\varheartsuit}}  % Filled hearts suit
+% \renewcommand{\qedsymbol}{\ensuremath{\spadesuit}}  % Filled spades suit
+% \renewcommand{\qedsymbol}{\ensuremath{\vardiamondsuit}}  % Filled diamonds suit
+% \renewcommand{\qedsymbol}{\ensuremath{\clubsuit}}  % Filled clubs suit
+
+% % \usepackage{utfsym}
+\renewcommand{\qedsymbol}{\ensuremath{\usym{1F3CD}}}  % Motorcycle
+
+% \renewcommand{\qedsymbol}{\ensuremath{}}
+% \renewcommand{\qedsymbol}{\ensuremath{}}
+% \renewcommand{\qedsymbol}{\ensuremath{}}
+% \renewcommand{\qedsymbol}{\ensuremath{}}
+% \renewcommand{\qedsymbol}{\ensuremath{}}
+% \renewcommand{\qedsymbol}{\ensuremath{}}
+
+
+% % Text colorings
 \newcommand{\red}[1]{\textcolor{red}{#1}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\grey}[1]{\textcolor{gray}{#1}}
 % \newcommand{\pink}[1]{\textcolor{magenta}{#1}}
 
 \newcommand{\todoMandate}[1]{\todo[inline]{#1}}
@@ -135,13 +158,13 @@
 %                                                                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%  Alphabets
+% Alphabets
 \newcommand{\alphabet}{\Sigma}
 \newcommand{\seedAlphabet}{\ensuremath{\Gamma}}
 \newcommand{\coreAlphabet}{\ensuremath{\Sigma_\text{core}}}
 \newcommand{\variables}{\texttt{Var}}
 
-%  Language symbols
+% Language symbols
 \newcommand{\genericLanguage}{L}
 \newcommand{\seedLanguage}{S}
 \newcommand{\sourceLanguage}{\ensuremath{\genericLanguage_{\src}}}
@@ -182,9 +205,9 @@
 
 \newcommand{\automatonStateSet}{Q}
 \newcommand{\automatonTransitionSet}{\Delta}
-\newcommand{\automatonInitialStateSet}{Q_\textsf{in}}
+\newcommand{\automatonInitialStateSet}{S} % {Q_\textsf{in}}
 \newcommand{\automatonInitialState}{s}
-\newcommand{\automatonFinalStateSet}{Q_\textsf{fin}}
+\newcommand{\automatonFinalStateSet}{F} % {Q_\textsf{fin}}
 
 \newcommand{\automataSet}[1]{\texttt{Automata}(#1)}
 
@@ -213,10 +236,10 @@
 \newcommand{\oneInThreeSatFull}{\texttt{1-in-3 SAT}}
 \newcommand{\atomicTypecheckingProblemFull}{\texttt{Atomic Type-Checking Problem}}
 \newcommand{\fullTypecheckingProblemFull}{\texttt{Type-Checking Problem}}
-\newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability}}
+\newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability Problem}}
+\newcommand{\intersectionNonemptinessFull}{\texttt{Intersection Nonemptiness Problem for DBTA}}
 % \newcommand{\compatibilityProblemFull}{\texttt{Compatibility Problem}}
 % \newcommand{\metaCompatibilityProblemFull}{\texttt{Meta Compatibility Problem}}
-% \newcommand{\intersectionNonemptinessFull}{\texttt{Intersection Nonemptiness of DBTA}}
 % \newcommand{\multipleRelationRealisabilityFull}{\texttt{Multiple Relation Realisability}}
 
 %  Short problem names
@@ -225,9 +248,9 @@
 \newcommand{\atomicTypecheckingProblemShort}{\texttt{ATCP}}
 \newcommand{\fullTypecheckingProblemShort}{\texttt{TCP}}
 \newcommand{\relationRealisabilityShort}{\texttt{RLRS}}
+\newcommand{\intersectionNonemptinessShort}{\texttt{DINP}}
 % \newcommand{\compatibilityProblemShort}{\texttt{CMPT}}
 % \newcommand{\metaCompatibilityProblemShort}{\texttt{m-CMPT}}
-% \newcommand{\intersectionNonemptinessShort}{\texttt{DINP}}
 % \newcommand{\multipleRelationRealisabilityShort}{\texttt{m-RLRS}}
 
 
@@ -270,6 +293,12 @@
 \newcommand{\pattern}{\mathsf{Pat}}
 \newcommand{\sourcePattern}{\pattern_{\src}}
 \newcommand{\targetPattern}{\pattern_{\tgt}}
+
+\newcommand{\inducedTransduction}{\texttt{IndTrans}}
+\newcommand{\inducedRelation}[2]{\ensuremath{\texttt{IndRel}(#1, #2)}}
+\newcommand{\match}{\texttt{Match}}
+
+\newcommand{\defaultAtomicTransform}{\ensuremath{(\sourcePattern, \targetPattern, \guardFunction)}}
 
 % \newcommand{\post}{\textsf{post}}
 

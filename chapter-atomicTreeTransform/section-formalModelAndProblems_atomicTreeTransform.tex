@@ -1,0 +1,104 @@
+\section{Formal Model and Problems}\label{sec:formalModelAndProblems_atomicTreeTransform}
+
+In this section, we introduce a model for tree transformation and describe some associated problems that we wish to study.
+
+\subsection{Model}\label{subsec:model_atomicTreeTransform}
+
+We let $\alphabet$ be a finite \rab. For the transformation, we will need trees some parts of which are not completely specified, and we use variables to denote those parts. Let $\variables$ be a countable set of \emph{ranked variables}. For a variable $x \in \variables$, we denote its \emph{arity} by $k_x := \arity(x) \in \N_0$. Just as in Definition~\ref{def:rankedAlphabet}, we define pairwise disjoint sets $\variables_k := \set{x \in \variables \mid \arity(x) = k} \subseteq \variables$ for all $k \in \N_0$.
+
+\begin{definition}[Tree Pattern]\label{def:treePattern}
+    Let $\alphabet$ be a finite \rab\ and $\variables$ be a set of ranked variables. A \emph{tree pattern} over $(\alphabet, \variables)$ and is defined to be a tree $\pattern \in \trees{\alphabet \uplus \variables}$. We also let $\variables(\pattern)$ to be the set of all the variables appearing in $\pattern$. Note that for every pattern $\pattern$, $\variablesOf{\pattern} \subseteq \variables$ is necessarily finite. Finally, we define the \emph{arity of a pattern} to be $\arity(\pattern) := \max_{x \in \variablesOf{\pattern}}\arity(x)$. 
+\end{definition}
+
+\todoMandate{Change all reference from `pattern' to `tree pattern'.}
+
+We will often omit mentioning the \rab\ $\alphabet$ and the set of ranked variables $\variables$ when referring to a pattern if the choice of both, the \rab\ and the set of ranked variables is clear from the context.
+A pattern can represent multiple trees by `substituting' variables in it by contexts of the same arity. We formalise this below.
+
+\begin{definition}[Substitution]\label{def:substitution}
+    A \emph{substitution} over $\alphabet$ is a partial function $\substitution : \variables \to \contexts(\alphabet)$ such that for all $x \in \dom(\substitution)$, we have $\substitution(x) \in \contexts(\alphabet, k)$ where $k$ is the arity of $x$.
+\end{definition}
+
+We will often omit mentioning the ranked alphabet \rab\ when referring to a substitution if the choice of the \rab\ is clear from the context.
+Given a substitution $\substitution$, we can naturally extend it to the set of patterns over $\alphabet$ and $\variables$ as follows: Define a tree homomorphism $\widetilde{\substitution} : \trees{\alphabet \uplus \variables} \to \trees{\alphabet}$ given by
+\[ \twopartfunc{\widetilde{\substitution}(x)}{\substitution(x)}{x \in \dom(\substitution)}{x}{\mbox{otherwise}} \]
+and extending it homomorphically to all of $\trees{\alphabet \uplus \variables}$.
+\todoQuestion{Add small blob about how tree homomorphisms work?}
+Since $\widetilde{\substitution} \mid_{\dom(\substitution)} = \substitution$, by abuse of notation, we  shall write $\widetilde{\substitution}$ as $\substitution$ in places where the distinction is irrelevant.
+
+We see that using substitutions, a single pattern can represent multiple trees. However we would like to control the set of trees a given pattern can represent. We do this with the help of guards. A \emph{guard} over a finite \rab\ $\alphabet$ is a partial function $\guardFunction : \variables \to 2^{\trees{\alphabet}}$, which assigns to each variable in its domain, a tree language over $\alphabet$. We will often omit mentioning the \rab\ $\alphabet$ when referring to the guard function if the choice of the \rab\ is clear from the context.
+
+\todoMandate{Add motivation for `match'.}
+
+\begin{definition}[Match]\label{def:match}
+    Let $\pattern$ be a pattern over $\alphabet$ and $\variables$, and let $t \in \trees{\alphabet}$ be a tree. Let $\guardFunction$ be a guard such that $\variables(\pattern) \subseteq \dom(\guardFunction)$. We say that $t$ \emph{matches} $\pattern$ under $\guardFunction$ iff there exists a substitution $\substitution$ such that
+    \begin{itemize}
+        \item $\variables(\pattern) \subseteq \dom(\substitution) \subseteq \dom(\guardFunction)$.
+        \item $\substitution(x) \in \guard{x}$, for all variables $x \in \variables(\pattern)$.
+        \item $\substitution(\pattern) = t$.
+    \end{itemize}
+    In such a case, we call $\substitution$ the \emph{matching substitution}, and say that $\substitution$ \emph{matches} the tree $t$ to the pattern $\pattern$ under guard $\guardFunction$, and we denote this by $\match(\substitution, t, \pattern, \guardFunction)$.
+    \todoMandate{Come up with wayyy better notation for matching.}
+\end{definition}
+
+\begin{example}\label{exp:multipleMatching}
+    Given a pattern and a tree, there may exist more than one matching substitution for a given match. For example, if $a/1, b/1, c/0$ are ranked letters, and $x/1, y/0$ are ranked variables.
+    Consider the substitutions $\substitution_1, \substitution_2$ given by $\substitution_1(x) := a-b-\square_1, \substitution_1(y) := c$, whereas $\substitution_2(x) := a-\square_1, \substitution_2(y) := b-c$.
+
+    We see that both the substitutions $\substitution_1, \substitution_2$ match the tree $t := a-b-b-c$ to the pattern $\pattern := x-b-y$ under the guard $\guardFunction$ given by $\guard{x} = \guard{y} := \trees{\alphabet}$.
+\end{example}
+
+\todoMandate{Add motivation for atomic model.}
+
+\begin{definition}[Atomic Tree Transform]\label{def:atomicTreeTransform}
+    Let $\alphabet$ be a finite \rab, let $\variables$ be a countable set of ranked variables. An \emph{Atomic Tree Transform(ATT)} is an ordered triple $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, where $\sourcePattern, \targetPattern$ are patterns over $\alphabet$ and $\variables$ called the \emph{source pattern} and \emph{target pattern} respectively, and $\guardFunction$ is a guard function over $\alphabet$ such that $\variables(\sourcePattern) \cup \variables(\targetPattern) \subseteq \dom(\guardFunction)$.
+\end{definition}
+
+For a given ATT $\atomicTransform$, we define the \emph{transduction induced by $\atomicTransform$} to be a binary relation $\inducedTransduction(\atomicTransform)$ given by
+\[
+    \inducedTransduction(\atomicTransform) := \set{(t, t') \mid \exists \substitution \mbox{ s.t. } \match(\substitution, t, \sourcePattern, \guardFunction) \mbox{ and } \match(\substitution, t', \targetPattern, \guardFunction).}
+\]
+\todoMandate{Come up with a better notation for $\inducedTransduction$.}
+% \begin{itemize}
+%     \item $\sem{\pattern}_\substitution = t$.
+%     \item $\pattern \models_\substitution^\guardFunction t$.
+%     \item $\substitution(\pattern) = t$.
+%     \item $\pattern \xrightarrow[\guardFunction]{\substitution} t$.
+% \end{itemize}
+
+As with any binary relation, we let by $\atomicTransform(t) := \set{t' \mid (t, t') \in \inducedTransduction(\atomicTransform)} \subseteq \trees{\alphabet}$ the \emph{effect} of $\atomicTransform$ on tree $t$. We also naturally extend this effect to tree languages by setting $\atomicTransform(L) := \bigcup_{t \in L} \atomicTransform(t)$.
+
+\todoMandate{Add examples demonstrating the transform.}
+
+\subsection{Problems}\label{subsec:problems_atomicTreeTransform}
+
+We consider some problems associated with the model described in Subsection~\ref{subsec:model_atomicTreeTransform}. Throughout this Subsection, let $\alphabet$ be a \rab\ and let $\variables$ be a set of ranked variables.
+
+\begin{problem}\label{prb:matchingProblem}
+    \problemtitle{\matchingProblemFull}
+    \probleminput{A tree $t$, a pattern $\pattern$, guard function $\guardFunction$.}
+    \problemquestion{Does there exist substitution $\substitution$ such that $\match(\substitution, t, \pattern, \guardFunction)$?}
+\end{problem}
+
+We know from~\cite{matchingProblemLowerBound} that the \matchingProblemFull\ is \nph. The proof works by constructing a reduction from \oneInThreeSatFull, which we know from~\cite{oneInThreeSatIsNpHard} is \nph. We will also show an \np\ upper bound by finding a polynomial-sized certificate for a match. This will give us the result that \matchingProblemFull\ is \npc.
+
+\begin{problem}\label{prb:relationRealisabilityProblem}
+    \problemtitle{\relationRealisabilityFull}
+    \probleminput{NBTTS $\transitionSystem := (\automatonStateSet, \alphabet, \automatonTransitionSet)$, relation $R \in \relations(\automatonStateSet)$ NBTA $\automatonB$.}
+    \problemquestion{Does there exist context $c \in \contexts(\alphabet) \cap \languageOf{\automatonB}$ such that $\inducedRelation{c}{\transitionSystem} = R$?}
+\end{problem}
+
+In other words, given a tree transition system, we would like to find out if there exists a context which induces a particular relation in the states of that tree transition system. As a part of nomenclature, we will say that is such a context exists, then $R$ is \emph{realisable} by $\transitionSystem$ under $\automatonB$.
+\todoQuestion{Add some more description?}
+
+\todoQuestion{Add a macro for (default) ATT tuple?}
+
+\begin{problem}\label{prb:atomicTypecheckingProblem}
+    \problemtitle{\atomicTypecheckingProblemFull}
+    \probleminput{ATT $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, regular tree languages $\sourceLanguage, \targetLanguage$.}
+    \problemquestion{Do we have $\atomicTransform(\sourceLanguage) \subseteq \targetLanguage$?}
+\end{problem}
+
+We will show that \atomicTypecheckingProblemFull\ is \exptc\ in Section~\ref{sec:results_atomicTreeTransform}.
+\todoQuestion{Write a one-line summary of the proof?}
+\todoQuestion{Describe problems in more detail?}
