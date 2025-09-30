@@ -36,7 +36,8 @@
 \usepackage{enumitem}
 \usepackage{vmargin}
 \usepackage{tabularx, environ}
-\usepackage[disable]{todonotes}
+% \usepackage[disable]{todonotes}
+\usepackage{todonotes}
 \usepackage{utfsym}
 \usepackage{lineno}
 

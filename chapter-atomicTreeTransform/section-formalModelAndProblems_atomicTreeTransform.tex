@@ -7,51 +7,49 @@ In this section, we introduce a model for tree transformation and describe some 
 We let $\alphabet$ be a finite \rab. For the transformation, we will need trees some parts of which are not completely specified, and we use variables to denote those parts. Let $\variables$ be a countable set of \emph{ranked variables}. For a variable $x \in \variables$, we denote its \emph{arity} by $k_x := \arity(x) \in \N_0$. Just as in Definition~\ref{def:rankedAlphabet}, we define pairwise disjoint sets $\variables_k := \set{x \in \variables \mid \arity(x) = k} \subseteq \variables$ for all $k \in \N_0$.
 
 \begin{definition}[Tree Pattern]\label{def:treePattern}
-    Let $\alphabet$ be a finite \rab\ and $\variables$ be a set of ranked variables. A \emph{tree pattern} over $(\alphabet, \variables)$ and is defined to be a tree $\pattern \in \trees{\alphabet \uplus \variables}$. We also let $\variables(\pattern)$ to be the set of all the variables appearing in $\pattern$. Note that for every pattern $\pattern$, $\variablesOf{\pattern} \subseteq \variables$ is necessarily finite. Finally, we define the \emph{arity of a pattern} to be $\arity(\pattern) := \max_{x \in \variablesOf{\pattern}}\arity(x)$. 
+    Let $\alphabet$ be a finite \rab\ and $\variables$ be a set of ranked variables. A \emph{tree pattern} over $(\alphabet, \variables)$ and is defined to be a tree $\pattern \in \trees{\alphabet \uplus \variables}$. We also let $\variables(\pattern)$ to be the set of all the variables appearing in $\pattern$. Note that for every tree pattern $\pattern$, $\variablesOf{\pattern} \subseteq \variables$ is necessarily finite. Finally, we define the \emph{arity of a tree pattern} to be $\arity(\pattern) := \max_{x \in \variablesOf{\pattern}}\arity(x)$. 
 \end{definition}
 
-\todoMandate{Change all reference from `pattern' to `tree pattern'.}
-
-We will often omit mentioning the \rab\ $\alphabet$ and the set of ranked variables $\variables$ when referring to a pattern if the choice of both, the \rab\ and the set of ranked variables is clear from the context.
-A pattern can represent multiple trees by `substituting' variables in it by contexts of the same arity. We formalise this below.
+We will often omit mentioning the \rab\ $\alphabet$ and the set of ranked variables $\variables$ when referring to a tree pattern if the choice of both, the \rab\ and the set of ranked variables is clear from the context.
+A tree pattern can represent multiple trees by `substituting' variables in it by contexts of the same arity. We formalise this below.
 
 \begin{definition}[Substitution]\label{def:substitution}
     A \emph{substitution} over $\alphabet$ is a partial function $\substitution : \variables \to \contexts(\alphabet)$ such that for all $x \in \dom(\substitution)$, we have $\substitution(x) \in \contexts(\alphabet, k)$ where $k$ is the arity of $x$.
 \end{definition}
 
-We will often omit mentioning the ranked alphabet \rab\ when referring to a substitution if the choice of the \rab\ is clear from the context.
-Given a substitution $\substitution$, we can naturally extend it to the set of patterns over $\alphabet$ and $\variables$ as follows: Define a tree homomorphism $\widetilde{\substitution} : \trees{\alphabet \uplus \variables} \to \trees{\alphabet}$ given by
+We will often omit mentioning the \rab\ $\alphabet$ when referring to a substitution if the choice of the \rab\ is clear from the context.
+Given a substitution $\substitution$, we can naturally extend it to the set of tree patterns over $(\alphabet, \variables)$ as follows: Define a tree homomorphism $\widetilde{\substitution} : \trees{\alphabet \uplus \variables} \to \trees{\alphabet}$ given by
 \[ \twopartfunc{\widetilde{\substitution}(x)}{\substitution(x)}{x \in \dom(\substitution)}{x}{\mbox{otherwise}} \]
 and extending it homomorphically to all of $\trees{\alphabet \uplus \variables}$.
 \todoQuestion{Add small blob about how tree homomorphisms work?}
 Since $\widetilde{\substitution} \mid_{\dom(\substitution)} = \substitution$, by abuse of notation, we  shall write $\widetilde{\substitution}$ as $\substitution$ in places where the distinction is irrelevant.
 
-We see that using substitutions, a single pattern can represent multiple trees. However we would like to control the set of trees a given pattern can represent. We do this with the help of guards. A \emph{guard} over a finite \rab\ $\alphabet$ is a partial function $\guardFunction : \variables \to 2^{\trees{\alphabet}}$, which assigns to each variable in its domain, a tree language over $\alphabet$. We will often omit mentioning the \rab\ $\alphabet$ when referring to the guard function if the choice of the \rab\ is clear from the context.
+We see that using substitutions, a single tree pattern can represent multiple trees. However we would like to control the set of trees a given tree pattern can represent. We do this with the help of guards. A \emph{guard} over a finite \rab\ $\alphabet$ is a partial function $\guardFunction : \variables \to 2^{\trees{\alphabet}}$, which assigns to each variable in its domain, a tree language over $\alphabet$. We will often omit mentioning the \rab\ $\alphabet$ when referring to the guard function if the choice of the \rab\ is clear from the context.
 
 \todoMandate{Add motivation for `match'.}
 
 \begin{definition}[Match]\label{def:match}
-    Let $\pattern$ be a pattern over $\alphabet$ and $\variables$, and let $t \in \trees{\alphabet}$ be a tree. Let $\guardFunction$ be a guard such that $\variables(\pattern) \subseteq \dom(\guardFunction)$. We say that $t$ \emph{matches} $\pattern$ under $\guardFunction$ iff there exists a substitution $\substitution$ such that
+    Let $\pattern$ be a tree pattern over $(\alphabet, \variables)$, and let $t \in \trees{\alphabet}$ be a tree. Let $\guardFunction$ be a guard such that $\variables(\pattern) \subseteq \dom(\guardFunction)$. We say that $t$ \emph{matches} $\pattern$ under $\guardFunction$ iff there exists a substitution $\substitution$ such that
     \begin{itemize}
         \item $\variables(\pattern) \subseteq \dom(\substitution) \subseteq \dom(\guardFunction)$.
         \item $\substitution(x) \in \guard{x}$, for all variables $x \in \variables(\pattern)$.
         \item $\substitution(\pattern) = t$.
     \end{itemize}
-    In such a case, we call $\substitution$ the \emph{matching substitution}, and say that $\substitution$ \emph{matches} the tree $t$ to the pattern $\pattern$ under guard $\guardFunction$, and we denote this by $\match(\substitution, t, \pattern, \guardFunction)$.
+    In such a case, we call $\substitution$ the \emph{matching substitution}, and say that $\substitution$ \emph{matches} the tree $t$ to the tree pattern $\pattern$ under guard $\guardFunction$, and we denote this by $\match(\substitution, t, \pattern, \guardFunction)$.
     \todoMandate{Come up with wayyy better notation for matching.}
 \end{definition}
 
 \begin{example}\label{exp:multipleMatching}
-    Given a pattern and a tree, there may exist more than one matching substitution for a given match. For example, if $a/1, b/1, c/0$ are ranked letters, and $x/1, y/0$ are ranked variables.
+    Given a tree pattern and a tree, there may exist more than one matching substitution for a given match. For example, if $a/1, b/1, c/0$ are ranked letters, and $x/1, y/0$ are ranked variables.
     Consider the substitutions $\substitution_1, \substitution_2$ given by $\substitution_1(x) := a-b-\square_1, \substitution_1(y) := c$, whereas $\substitution_2(x) := a-\square_1, \substitution_2(y) := b-c$.
 
-    We see that both the substitutions $\substitution_1, \substitution_2$ match the tree $t := a-b-b-c$ to the pattern $\pattern := x-b-y$ under the guard $\guardFunction$ given by $\guard{x} = \guard{y} := \trees{\alphabet}$.
+    We see that both the substitutions $\substitution_1, \substitution_2$ match the tree $t := a-b-b-c$ to the tree pattern $\pattern := x-b-y$ under the guard $\guardFunction$ given by $\guard{x} = \guard{y} := \trees{\alphabet}$.
 \end{example}
 
 \todoMandate{Add motivation for atomic model.}
 
 \begin{definition}[Atomic Tree Transform]\label{def:atomicTreeTransform}
-    Let $\alphabet$ be a finite \rab, let $\variables$ be a countable set of ranked variables. An \emph{Atomic Tree Transform(ATT)} is an ordered triple $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, where $\sourcePattern, \targetPattern$ are patterns over $\alphabet$ and $\variables$ called the \emph{source pattern} and \emph{target pattern} respectively, and $\guardFunction$ is a guard function over $\alphabet$ such that $\variables(\sourcePattern) \cup \variables(\targetPattern) \subseteq \dom(\guardFunction)$.
+    Let $\alphabet$ be a finite \rab, let $\variables$ be a countable set of ranked variables. An \emph{Atomic Tree Transform(ATT)} is an ordered triple $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, where $\sourcePattern, \targetPattern$ are tree patterns over $(\alphabet, \variables)$ called the \emph{source pattern} and \emph{target pattern} respectively, and $\guardFunction$ is a guard function over $\alphabet$ such that $\variables(\sourcePattern) \cup \variables(\targetPattern) \subseteq \dom(\guardFunction)$.
 \end{definition}
 
 For a given ATT $\atomicTransform$, we define the \emph{transduction induced by $\atomicTransform$} to be a binary relation $\inducedTransduction(\atomicTransform)$ given by
@@ -76,7 +74,7 @@ We consider some problems associated with the model described in Subsection~\ref
 
 \begin{problem}\label{prb:matchingProblem}
     \problemtitle{\matchingProblemFull}
-    \probleminput{A tree $t$, a pattern $\pattern$, guard function $\guardFunction$.}
+    \probleminput{A tree $t$, a tree pattern $\pattern$, guard function $\guardFunction$.}
     \problemquestion{Does there exist substitution $\substitution$ such that $\match(\substitution, t, \pattern, \guardFunction)$?}
 \end{problem}
 

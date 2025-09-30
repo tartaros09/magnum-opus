@@ -41,8 +41,15 @@ Just like in the case of finite words over an alphabet, we would like to introdu
     Given an NBTA $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonFinalStateSet)$ and a tree $t \in \trees{\alphabet}$, we define a \emph{run} of $\automaton$ on $t$ as a tree $\rho : \positions(t) \to \automatonStateSet$ which is `compatible' with $\automatonTransitionSet$, i.e., for every $u \in \positions(t)$, if $t(u) := a/k$, $\rho(u) := q$, and $\rho(ui) := q_i$, for all $i \in [k]$, then $(q_1, q_2, \dots, q_k, q) \in \automatonTransitionSet(a)$. A run $\rho$ of $\automaton$ on tree $t$ is \emph{successful} if $\rho(\e) \in \automatonFinalStateSet$. We say a tree $t$ is \emph{accepted} by NBTA $\automaton$ if there exists a successful run of $\automaton$ on $t$. The set of all trees in $\trees{\alphabet}$ accepted by $\automaton$ is called the language \emph{recognised} by $\automaton$, and denoted by $\languageOf{\automaton} \subseteq \trees{\alphabet}$.
 \end{definition}
 
-\todoMandate{Add result showing expressive power equivalence of NTTA, NBTA, DBTA. Also mention DTTA being weaker, with examples.}
+In the last two definitions we have defined various automata like NBTA, DBTA, NTTA, and DTTA. We state a result providing a comparison of these automata in terms of their expressive power. This is a standard result and can be found in \cite{tata}. We summarise and paraphrase the results here for the sake of completeness.
+
+\begin{theorem}[\cite{tata}]
+    In terms of expressive power, NBTA, DBTA, and NTTA are all equivalent, and strictly greater than DTTA.
+\end{theorem}
+
 \todoQuestion{Should there be a proof of the earlier fact?}
+
+This theorem allows us the concession of using either of NBTA or NTTA for purposes of defining, characterising, or representing a given regular language as per our convenience.
 
 We would like to take the transition function $\automatonTransitionSet$ as defined above and generalise it beyond just letters of the \rab\ $\alphabet$ to contexts over $\alphabet$. We define a notion of an `Extended Transition Relation' below.
 
@@ -57,7 +64,7 @@ Note that the name `Extended Transition Relation' is befitting, as when restrict
 We also would like to define a procedure for composing together arbitrary relations in a constrained manner. We formalise this concept in the following definition.
 
 \begin{definition}[Relational Lift]\label{def:relationalLift}
-    Let $X$ be a set and let $n \in \N_0$ be a nonnegative integer. Let $\operator \subseteq X^{n+1}$ be a relation. We define the \emph{relational lift} of $\operator$ as a new relation $\widetilde{operator} \subseteq \relations(X)^{n+1}$ given as follows: For $R_1, R_2, \dots, R_n, R \in \relations(X)$, we say that $(R_1, R_2, \dots, R_n, R) \in \widetilde{\operator}$ if and only if
+    Let $X$ be a set and let $n \in \N_0$ be a nonnegative integer. Let $\operator \subseteq X^{n+1}$ be a relation. We define the \emph{relational lift} of $\operator$ as a new relation $\widetilde{\operator} \subseteq \relations(X)^{n+1}$ given as follows: For $R_1, R_2, \dots, R_n, R \in \relations(X)$, we say that $(R_1, R_2, \dots, R_n, R) \in \widetilde{\operator}$ if and only if
     \begin{itemize}
         \item If $R_i \in \relations(X, k_i+1)$ where $k_i \in \N_0$ for all $i \in [n]$, then we have that $R \in \relations\left(X, 1 + \sum_{i=1}^n k_i\right)$.
         \item For all $i \in [n]$ and for all $\vect{x}_i \in X^{k_i}$ and $y \in X$, we have that $(\vect{x}_1, \vect{x}_2, \dots, \vect{x}_n, y) \in R$ if and only if there exist $y_1, y_2, \dots, y_n \in X$ such that $(\vect{x}_i, y_i) \in R_i$ for all $i \in [n]$, and $(y_1, y_2, \dots, y_n, y) \in \operator$.
