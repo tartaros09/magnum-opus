@@ -51,6 +51,8 @@ pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
 \usetikzlibrary{backgrounds}
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
+\usetikzlibrary{automata}
+\usetikzlibrary{arrows.meta}
 
 % \usepackage[useregional]{datetime2}
 % \usepackage{setspace}

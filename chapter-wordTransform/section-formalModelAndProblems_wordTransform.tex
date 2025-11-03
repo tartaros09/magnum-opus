@@ -1,0 +1,58 @@
+\section{Formal Model and Problems}\label{sec:formalModelAndProblem_wordTransform}
+
+In this section, we introduce a model for word transformation and describe some associated problems that we wish to study.
+
+\subsection{Model}\label{subsec:model_wordTransform}
+
+\begin{definition}[Word Pattern]\label{def:wordPattern}
+    Let $\alphabet$ be a given finite alphabet. Let $\variables$ be a countable set of \emph{variables}. We define a \emph{word pattern} $\pattern$ over $(\alphabet, \variables)$ as a word $\pattern \in \words{\alphabet \uplus \variables}$. For a pattern $\pattern$, we define $\variablesOf{\pattern} \subseteq \variables$ to be the set of all variables appearing in the pattern. Note that $\variablesOf{\pattern}$ is necessarily a finite set.
+
+    A word pattern $\pattern$ is called \emph{copyless} if every variable in $\variablesOf{\pattern}$ occurs exactly once in $\pattern$. A pattern is called \emph{copyful} if it is not copyless.
+\end{definition}
+
+\todoMandate{Give examples of patterns.}
+
+We will often omit mentioning the alphabet $\alphabet$ and the set of variables $\variables$ when referring to a word pattern if the choice of both, the alphabet and the set of variables is clear from the context.
+
+\begin{definition}[\stringSubstitution]\label{def:valuation}
+    \todoMandate{Change the label according to plan.}
+    Let $\alphabet$ be a finite alphabet and $\variables$ be a set of variables. We define a \emph{\stringSubstitution} as a function $\substitution : \variables \to \words{\alphabet}$ which assigns to each variable, a word over $\alphabet$. We also extend this to a bigger function $\widetilde{\substitution} : \words{\alphabet
+     \uplus \variables} \to \words{\alphabet}$ by setting it to be identity on $\alphabet$ and naturally extending it to the asterate. In other words, we define
+     \[ \threepartfunc{\widetilde{\substitution}(w)}{\e}{w = \e}{a \cdot \widetilde{\substitution}(w')}{w = aw', a \in \alphabet}{\substitution(x)\cdot \widetilde{\substitution}(w')}{w = xw', x \in \variables} \]    
+\end{definition}
+
+By abuse of notation we will denote $\widetilde{\substitution}$ as $\substitution$ since they agree on the set $\variables$ which is the intersection of their respective domains.
+
+\todoMandate{Give example of \stringSubstitution.}
+
+We see that using \stringSubstitution, a single word pattern can represent multiple words. However we would like to control the set of words a given word pattern can represent. We do this with the help of guards. A \emph{guard} over a finite alphabet $\alphabet$ is a partial function $\guardFunction : \variables \to 2^{\words{\alphabet}}$, which assigns to each variable in its domain, a language over $\alphabet$. We will often omit mentioning the alphabet $\alphabet$ when referring to the guard function if the choice of the alphabet is clear from the context. Throughout the chapter, we will almost always deal with \emph{regular guards}, i.e., guards $\guardFunction : \variables \to \regularLanguagesOver{\alphabet}$. 
+
+We will often omit mentioning the alphabet $\alphabet$ when referring to a guard function $\guardFunction$ if the choice of the alphabet is clear from the context.
+
+We also define a \emph{transduction} over $\alphabet$ to be any function $T : \words{\alphabet} \to \words{\alphabet}$. We will also denote the set of all transductions over $\alphabet$ by \transductionsOver{\alphabet}. We will often omit mentioning the alphabet $\alphabet$ when referring to a transduction $T$ if the choice of the alphabet is clear from the context.
+
+
+\begin{definition}[Word Transform]\label{def:wordTransform}
+    Let $\alphabet$ be a finite alphabet. Let $\variables$ be a set of variables. A \emph{word transform} $\wordTransform$ is defined to be a 4-tuple $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ where, $\sourcePattern, \targetPattern$ are word patterns called \emph{source pattern} and \emph{target pattern} respectively, $\guardFunction$ is a regular guard function, and $\transductionFunction : \vstp \to \transductionsOver{\alphabet}$ is the \emph{transduction function} which assigns to each variable appearing in either of the patterns, a transduction over $\alphabet$. 
+
+    A word transform $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ is said to be \emph{enabled} on word $w \in \words{\alphabet}$ iff there exists a \stringSubstitution\ $\substitution$ such that $\substitution(\sourcePattern) = w$, and $\substitution(x) \in \guard{x}$ for all variables $x \in \variablesOf{\sourcePattern}$. Such a \stringSubstitution\ $\substitution$ is called an \emph{enabling} \stringSubstitution\ of $\wordTransform$ on $w$. For a given \stringSubstitution\ $\substitution$, define a new \stringSubstitution\ $\substitution' : \variables \to \words{\alphabet}$ given by $\substitution'(x) := \transductionFunction(x)(\substitution(x))$ for all $x \in \variables$.
+
+    Finally, let $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be a word transform which is enabled at word $w \in \words{\alphabet}$ with $\substitution$ being an enabling \stringSubstitution. Then we define the action of $\wordTransform$ on $w$ to be $\substitution'(\targetPattern)$. We also denote this resulting string by $w \cdot (\wordTransform, \substitution)$.
+    \todoMandate{Review the last line.}
+\end{definition}
+
+\todoMandate{Give examples of word transforms.}
+
+Let $L$ be a language over $\alphabet$, and let $\wordTransform$ be a word transform. We define $\post(L, \wordTransform) := \set{w \cdot (\wordTransform, \substitution) \mid w \in L, \substitution \mbox{ enables $\wordTransform$ on $w$}}$.
+
+\subsection{Problem}\label{subsec:problems_wordTransform}
+
+In this subsection, we shall explore some problems related to the model for word transformation we introduced earlier.
+
+\begin{problem}\label{prb:invarianceCheckingProblem}
+    \problemtitle{\invarianceCheckingProblemFull}
+    \probleminput{Word transform $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$, regular language $L$.}
+    \problemquestion{Do we have $\post(L, \wordTransform) \subseteq L$?}
+\end{problem}
+
+\todoMandate{Add descriptions of the complexity bounds for various configurations of the problem.}

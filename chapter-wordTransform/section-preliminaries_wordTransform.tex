@@ -1,0 +1,31 @@
+\section{Preliminaries}\label{sec:preliminaries_wordTransform}
+
+\begin{definition}[Alphabet, Word, Language]\label{def:alphabet}
+    An \emph{alphabet} is a finite set $\alphabet$. The elements of an alphabet are called \emph{letters}. A \emph{word} or \emph{string} over $\alphabet$ is defined as a sequence of letters. The set of all finite words over $\alphabet$ is denoted by $\words{\alphabet}$. We denote the empty word by $\e$. For each word $w \in \words{\alphabet}$, we denote the \emph{length} of a word $w$ by $\abs{w}$. We also denote its $i^{th}$ letter by $w[i]$. We define a \emph{language} over $\alphabet$ to be a subset $L \subseteq \words{\alphabet}$.
+\end{definition}
+
+\todoQuestion{Maybe include examples of words, languages?}
+
+\begin{definition}[Finite-State Automata]\label{def:fa}
+    Let $\alphabet$ be a finite alphabet. A \emph{Nondeterministic Finite-State Automaton} of \emph{NFA} $\automaton$ over $\alphabet$ is defined as a tuple $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet, \automatonFinalStateSet)$ where $\automatonStateSet$ is a finite set of \emph{states}, $\automatonInitialStateSet \subseteq \automatonStateSet$ is the set of \emph{initial states}, $\automatonFinalStateSet \subseteq \automatonStateSet$ is the set of final states, and $\automatonTransitionSet \subseteq \automatonStateSet \times \alphabet \times \automatonStateSet$ is the \emph{transition relation}. A \emph{Deterministic Finite-State Automaton} or \emph{DFA} is an NFA such that for each $q \in \automatonStateSet$ and $a \in \alphabet$ there exists a unique $q' \in \automatonStateSet$ such that $(q, a, q') \in \automatonTransitionSet$.
+\end{definition}
+
+\begin{definition}[Regular Language]\label{def:regularLanguage}
+    Let $\alphabet$ be a finite alphabet. Let $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet, \automatonFinalStateSet)$ be an NFA over $\alphabet$. We define a \emph{run} $\rho$ of $\automaton$ over a word $w := a_1a_2\dots a_n \in \words{\alphabet}$ as a sequence $q_0, a_1, q_1, a_2, q_2, \dots, q_{n-1}, a_n, q_n$ such that $q_i \in \automatonStateSet$ for all $i \in [n]$, $q_0 \in \automatonInitialStateSet$, $a_i \in \alphabet$ for all $i \in [n]$, and for each $i \in [n]$ we have $(q_{i-1}, a_i, q_i) \in \automatonTransitionSet$. The above run $\rho$ over $w$ is said to be \emph{successful} if $q_n \in \automatonFinalStateSet$. A word $w$ is said to be \emph{accepted} by $\automaton$ if there exists a run $\rho$ of $\automaton$ on $w$ which is successful. The set of all words accepted by $\automaton$ is called the \emph{language recognised by $\automaton$} and denoted by $\languageOf{\automaton}$. Finally, a language $L \subset \words{\alphabet}$ is called \emph{recognisable} or \emph{regular} if there exists an NFA $\automaton$ over $\alphabet$ such that $L = \languageOf{\automaton}$. The set of all regular languages over $\alphabet$ is denoted by $\regularLanguagesOver{\alphabet}$.
+\end{definition}
+
+We consider transformations from words to words. We look at a certain class of transformation functions called \emph{pure sequential functions}. We define them with the help of type of automaton called the \emph{Mealy Machine}, which we define now.
+
+\begin{definition}[Mealy Machine]\label{def:mealyMachine}
+    Let $\alphabet$ be an alphabet. A \emph{Mealy Machine} over $\alphabet$ is defined as a tuple $\mealyMachine := (\mealyMachineStateSet, \alphabet, \mealyMachineTransitionFunction, \mealyMachineInitialState, \mealyMachineOutputFunction)$ where $\mealyMachineStateSet$ is a finite set of \emph{states}, $\mealyMachineInitialState \in \mealyMachineStateSet$ is the \emph{initial state}, $\mealyMachineTransitionFunction : \mealyMachineStateSet \times \alphabet \to \mealyMachineStateSet$ is the \emph{state transition function}, and $\mealyMachineOutputFunction : \mealyMachineStateSet \times \alphabet
+     \to \words{\alphabet}$ is the \emph{output function}. We naturally extend the functions $\mealyMachineTransitionFunction$ and $\mealyMachineOutputFunction$ to words instead of letters as follows: Define $\widetilde{\mealyMachineTransitionFunction} : \mealyMachineStateSet \times \words{\alphabet} \to \mealyMachineStateSet$ defined recursively by
+     \[ \twopartfunc{\widetilde{\mealyMachineTransitionFunction}(q, w)}{q}{w = \e}{\widetilde{\mealyMachineTransitionFunction}(\mealyMachineTransitionFunction(q, a), w')}{w = aw', a \in \alphabet} \]
+     Similarly, we define $\widetilde{\mealyMachineOutputFunction} : \mealyMachineStateSet \times \words{\alphabet} \to \words{\alphabet}$ given by
+     \[ \twopartfunc{\widetilde{\mealyMachineOutputFunction}(q, w)}{\e}{w = \e}{\mealyMachineOutputFunction(q, a) \cdot \widetilde{\mealyMachineOutputFunction}(\mealyMachineTransitionFunction(q, a), w')}{w = aw', a \in \alphabet} \]
+     Finally, we define the \emph{transform induced by $\mealyMachine$} to be the function $\sem{\mealyMachine} : \words{\alphabet} \to \words{\alphabet}$ given by $\sem{\mealyMachine}(w) := \widetilde{\mealyMachineOutputFunction}(\mealyMachineInitialState, w)$.
+\end{definition}
+
+By abuse of notation, we shall denote $\widetilde{\mealyMachineTransitionFunction}$ as $\mealyMachineTransitionFunction$ and $\widetilde{\mealyMachineOutputFunction}$ as $\mealyMachineOutputFunction$, since both of them agree on $\mealyMachineStateSet \times \alphabet$, which is the intersection of their respective domains.
+
+\todoMandate{Give example of a Mealy Machine with working transform.}
+

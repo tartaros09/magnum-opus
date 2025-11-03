@@ -1,0 +1,260 @@
+\section{Results}\label{sec:results_wordTransforms}
+
+In this section, we shall state and prove some complexity results regarding the problems mentioned earlier. Throughout this Section, let $\alphabet$ be an alphabet and let $\variables$ be a set of variables. We begin with a hardness result about the \invarianceCheckingProblemFull.
+
+\begin{theorem}\label{thm:icpGeneralLowerBound}
+    The \invarianceCheckingProblemFull\ is \psph\ even if $\transductionFunction$ is the constant identity transduction function, $\guardFunction$ is the constant $\words{\alphabet}$ function and at least one of the following is true:
+    \begin{enumerate}
+        \item $L$ is given using an NFA.
+        \item $\sourcePattern$ is copyful.
+        \item $\targetPattern$ is copyful.
+    \end{enumerate}
+\end{theorem}
+
+We split the proof of Theorem~\ref{thm:icpGeneralLowerBound} into three separate Lemmas. In each of the lemmas, we shall show a reduction from the \intersectionNonemptinessWordFull\ to \invarianceCheckingProblemFull. We describe the \intersectionNonemptinessWordFull\ below.
+
+\begin{problem}\label{prb:intersectionNonemptinessWord}
+    \problemtitle{\intersectionNonemptinessWordFull}
+    \probleminput{DFAs $\automatonB_1, \automatonB_2, \dots, \automatonB_n$ over $\alphabet$.}
+    \problemquestion{Do we have $\languageOf{\automatonB_1} \cap \languageOf{\automatonB_2} \cap \dots \cap \languageOf{\automatonB_n} \neq \emptyset$?}
+\end{problem}
+
+We know from~\cite{intersectionNonemptinessWordBound} that the above problem is \pspc.
+
+\begin{lemma}\label{lem:icpGeneralLowerBoundWithNfaLanguage}
+    Let $\automaton$ be an \textbf{NFA}, and $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be a word transform such that $\sourcePattern, \targetPattern$ are copyless. Then the problem of deciding whether $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ is \psph.
+\end{lemma}
+
+\begin{proof}
+    Let $\automatonB_1, \automatonB_2, \dots, \automatonB_n$ be an instance of the \intersectionNonemptinessWordFull, where each $\automatonB_i$ is a DFA over $\alphabet$, for all $i \in [n]$. Let $\automaton$ be an NFA over the extended alphabet $\alphabet \uplus \set{\#}$ recognising the language $\set{\#} \cup \languageOf{\automatonB_1}^\complement \cup \languageOf{\automatonB_2}^\complement \cup \dots \cup \languageOf{\automatonB_n}^\complement$.
+    \todoMandate{Give explicit description of the above NFA $\automaton$.}
+    Since $\automatonB_i$ are DFAs, the NFA $\automaton$ can be constructed in polynomial time. We also set $\sourcePattern := \#$, and $\targetPattern := x$ where $x \in \variables$. The guard function is given by $\guard{x} := \words{\alphabet}$, and finally $\transductionFunction(x) := \identity$, the identity transduction. Consider the instance of the \invarianceCheckingProblemFull\ given by $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction), \languageOf{\automaton}$.
+
+    For any word $w \in \languageOf{\automaton}$, the word transform $\wordTransform$ is enabled on $w$ using a \stringSubstitution\ $\substitution$ if and only if $\substitution(x) \in \words{\alphabet}$ and $\substitution(\sourcePattern) := \substitution(\#) := \# = w$. For such a \stringSubstitution\ $\substitution$, we have that $w \cdot (\wordTransform, \substitution) = \substitution(x)$, which can be any element of $\words{\alphabet}$. Hence we get that $\post(\languageOf{\automaton}, \wordTransform) = \words{\alphabet}$. On the other hand, we also have $\words{\alphabet} \cup \set{\#} = \emptyset$ which gives us that $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ if and only if $\words{\alphabet} \subseteq \languageOf{\automatonB_1}^\complement \cup \languageOf{\automatonB_2}^\complement \cup \dots \cup \languageOf{\automatonB_n}^\complement \iff \bigcup_{i=1}^n \languageOf{\automatonB_i} = \emptyset$. This completes the reduction.
+\end{proof}
+
+\todoMandate{Come up with better names for `copyless', `copyful'.}
+
+\begin{lemma}\label{lem:icpGeneralLowerBoundWithCopyfulSourcePattern}
+    Let $\automaton$ be an DFA, and $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be a word transform such that $\sourcePattern$ is \textbf{copyful}, $\targetPattern$ is copyless. Then the problem of deciding whether $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ is \psph.
+\end{lemma}
+
+\begin{proof}
+    Let $\automatonB_1, \automatonB_2, \dots, \automatonB_n$ be an instance of the \intersectionNonemptinessWordFull, where each $\automatonB_i$ is a DFA over $\alphabet$, for all $i \in [n]$. Let $\automaton$ be a DFA over the extended alphabet $\alphabet \uplus \set{\#}$ recognising the language $\words{\alphabet}\#\languageOf{\automatonB_1}\#\languageOf{\automatonB_2}\#\dots\#\languageOf{\automatonB_n}$.
+    \todoMandate{Give explicit description of the above DFA $\automaton$.}
+    Since all $\automatonB_i$ are DFAs, the DFA $\automaton$ can be constructed in polynomial time. We also set $\sourcePattern := y\#\underbrace{x\#x\#\dots\#x}_n$, where $x, y \in \variables$ and the variable $x$ occurs $n$ times, and we set $\targetPattern := x$. The guard function is given by $\guard{x} = \guard{y} := \words{\alphabet}$, and finally $\transductionFunction(x) = \transductionFunction(y) := \identity$, the identity transduction. Consider the instance of the \invarianceCheckingProblemFull\ given by $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction), \languageOf{\automaton}$.
+
+    We see that the target pattern(and hence, any result of applying word transform $\wordTransform$ on any input word) does not contain the letter $\#$, but every word in $\languageOf{\automaton}$ contains at least one occurrance of $\#$. Hence $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton} \iff \post(\languageOf{\automaton}, \wordTransform) = \emptyset \iff \wordTransform$ is never enabled on any word in $\languageOf{\automaton} \iff \bigcap_{i=1}^n \languageOf{\automatonB_i} = \emptyset$. This completes the reduction.  
+\end{proof}
+
+\todoMandate{Check details and verify correctness of this proof.}
+
+\begin{lemma}\label{lem:icpGeneralLowerBoundWithCopyfulTargetPattern}
+    Let $\automaton$ be an DFA, and $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be a word transform such that $\sourcePattern$ is copyless, $\targetPattern$ is \textbf{copyful}. Then the problem of deciding whether $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ is \psph.    
+\end{lemma}
+
+\begin{proof}
+    Let $\automatonB_1, \automatonB_2, \dots, \automatonB_n$ be an instance of the \intersectionNonemptinessWordFull, where each $\automatonB_i$ is a DFA over $\alphabet$, for all $i \in [n]$. Let $\automaton$ be a DFA over the extended alphabet $\alphabet \uplus \set{\#, \natural}$ recognising the language $\set{\natural} \cup \left(\languageOf{\automatonB_1}\#\languageOf{\automatonB_2}\#\dots\#\languageOf{\automatonB_n}\right)^\complement$. Since $\automatonB_i$ are DFAs, the DFA $\automaton$ can be constructed in polynomial time.
+    \todoMandate{Give explicit description of the above DFA $\automaton$.}
+    We also set $\sourcePattern := \natural$ and $\targetPattern := \underbrace{x\#x\#\dots\#x}_n$, where $x \in \variables$ appears $n$ times. The guard function is given by $\guard{x} := \words{\alphabet}$, and finally $\transductionFunction(x) := \identity$, the identity transduction. Consider the instance of the \invarianceCheckingProblemFull\ given by $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction), \languageOf{\automaton}$.
+
+    For any word $w \in \languageOf{\automaton}$, the word transform $\wordTransform$ is enabled on $w$ using a \stringSubstitution\ $\substitution \iff \substitution(x) \in \words{\alphabet}$ an $\substitution(\sourcePattern) := \substitution(\natural) := \natural = w$. For such a \stringSubstitution\ $\substitution$ we have that $w \cdot (\wordTransform, \substitution) = \substitution(x)$. Hence we get $\post(\languageOf{\automaton}, \wordTransform) = \set{w\#w\#\dots\#w \mid w \in \words{\alphabet}}$. Since $\natural \notin \post(\languageOf{\automaton}, \wordTransform)$, we have that $\post(\languageOf{\automaton}, \wordTransform) \not\subseteq \languageOf{\automaton} \iff $ there exists $w_1 \in \words{\alphabet}$ such that $w_1\#w_1\#\dots\#w_1 \notin \languageOf{\automaton} \iff w_1 \in \languageOf{\automatonB_i}$ for all $i \in [n] \iff \bigcap_{i=1}^n \languageOf{\automatonB_i} \neq \emptyset$. This completes the reduction.
+\end{proof}
+
+\begin{theorem}\label{thm:icpGeneralUpperBound}
+    The \invarianceCheckingProblemFull\ is in \psp\ if $L$ is given using an NFA, and each transduction $\transductionFunction(x)$ is given by a Mealy Machine for each variable $x \in \vstp$.
+\end{theorem}
+
+\begin{proof}
+    Let $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet, \automatonFinalStateSet)$ be an NFA which recognises the regular language $L$, and let $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be the given word transform. It is sufficient to show that checking whether $\post(\languageOf{\automaton}, \wordTransform) \not\subseteq \languageOf{\automaton}$ is in \psp. For every variable $x \in \vstp$ let $\automatonB_x$ be an NFA recognising the regular language $\guard{x}$. We see that checking whether $\post(\languageOf{\automaton}, \wordTransform) \not\subseteq \languageOf{\automaton}$ is equivalent to checking the existence of a \stringSubstitution\ $\substitution : \vstp \to \words{\alphabet}$ such that if we define $\substitution' : \vstp \to \words{\alphabet}$ to be the \stringSubstitution\ defined by $\substitution'(x) := \transductionFunction(x)(\substitution(x))$ for all $x \in \vstp$, then the following conditions hold:
+    \begin{enumerate}
+        \item $\substitution(x) \in \guard{x}$ for all $x \in \vstp$.
+        \item $\substitution(\sourcePattern) \in \languageOf{\automaton}$.
+        \item $\substitution'(\targetPattern) \notin \languageOf{\automaton}$.
+    \end{enumerate}
+
+    Let $\matricesOver{\automaton}$ be the set of all $\automatonStateSet \times \automatonStateSet$ matrices over $\set{0, 1}$ which can be interpreted as the transformation matrices of $\automaton$. Let $\identity \in \matricesOver{\automaton}$ be the identity matrix. The set $\matricesOver{\automaton}$ along with matrix multiplication forms a monoid with $\identity$ as the identity element. Let $h : \words{\alphabet} \to \matricesOver{\automaton}$ be the homomorphism given by defining $h(a) := \transitionMatrixOf{a}$ where $\transitionMatrixOf{a} \in \matricesOver{\automaton}$ is the transition matrix for the letter $a \in \alphabet$ on $\automaton$ and extending it canonically to $\words{\alphabet}$. In other words, we get that $h(w)$ is the $\automatonStateSet \times \automatonStateSet$ transition matrix induced by the word $w$ i.e., the matrix such that the $(q, q')$ entry is 1 iff there is a path from state $q$ to state $q'$ on reading the word $w$ in $\automaton$ and 0 otherwise. Let $e \in \set{0, 1}^\automatonStateSet$ be a row vector of size $\automatonStateSet$ whose $q^{th}$ entry is 1 iff $q \in \automatonInitialStateSet$ and let $f^T \in \set{0, 1}^\automatonStateSet$ be a column vector of size $\automatonStateSet$ whose $q^{th}$ entry is 1 iff $q \in \automatonFinalStateSet$. In this setup, we see that a word $w \in \words{\alphabet}$ is accepted by $\automaton$ if and only if $e \cdot h(w) \cdot f = 1$.
+
+    We see that to check whether $\post(\languageOf{\automaton}, \wordTransform) \not\subseteq \languageOf{\automaton}$, in place of conditions 1--3 mentioned above, it is enough to equivalently check for the existence of functions $g, g' : \alphabet \cup \vstp \to \matricesOver{\automaton}$ such that
+    \begin{enumerate}
+        \setcounter{enumi}{3}
+        \item $g(a) = h(a) = g'(a)$ for all $a \in \alphabet$.
+        \item For all $x \in \vstp$, there exists $w_x \in h^{-1}(g(x)) \cap \guard{x}$ such that $g'(x) = h(\transductionFunction(x)(w_x))$.
+        \item $e \cdot g(\sourcePattern) \cdot f = 1$.
+        \item $e \cdot g'(\targetPattern) \cdot f = 0$.
+    \end{enumerate}
+
+    To check the equivalence of conditions 1--3 and 4--7, let us assume that there exists a \stringSubstitution\ $\substitution$ satisfying conditions 1--3. Setting $w_x := \substitution(x), g(x) := h(w_x), g'(x) := h(\transductionFunction(x)(w_x))$ for all $x \in \vstp$ will satisfy all conditions 4--7. Conversely if there exist functions $g, g'$ satisfying conditions 4--7, then we see that \stringSubstitution\ $\substitution$ given by setting $\substitution(x) := w_x$ for all variables $x \in \vstp$ will satisfy conditions 1--3.
+
+    We provide a nondeterministic \psp\ procedure for the \invarianceCheckingProblemFull. In essence, the procedure will guess functions $g, g'$ and check that they satisfy conditions 4--7. Condition 4 involves checking the equality of matrices and can be done in linear time. Similarly, conditions 6, 7 involve matrix multiplication and hence can be performed in polynomial time. We will verify condition 5 using the small-model property. In other words, we will prove that if there exists a word $w_x$ satisfying condition 5, then there must exist a word of length at most exponential in the size of the input that will also satisfy it. This will ensure that the existence of such a word can be verified in \psp.
+
+    Suppose there exists a word $w_x$ satisfying condition 5. Then for every $i$ in the set $\set{0, 1, \dots, \abs{w_x}}$, let $e_i$ be a vector over $\set{0, 1}$ defined as follows. Each element of the vector $e_i$ is indexed by $\automatonStateSet \times \automatonStateSet \times \automatonStateSet_x \times \automatonStateSet_x \times T_x \times T_x \times \automatonStateSet \times \automatonStateSet$ where $\automatonStateSet$ is the set of states of NFA $\automaton$, $\automatonStateSet_x$ is the set of states of the automaton $\automatonB_x$ recognising the guard language $\guard{x}$ for each variable $x \in \vstp$, and $T_x$ is the set of states of the Mealy machine $M_x$ for the transduction $\transductionFunction(x)$ for all variables $x \in \vstp$.
+
+    For any word $w := a_1a_2 \dots a_n \in \words{\alphabet}$, let $w[1, i]$ be defined as $w[1, i] := a_1a_2 \dots a_i$, the \emph{restriction} of the word $w$ to places $1, 2, \dots, i$ whenever $i \leq n$. For the sake of convenience, we define $w[1, i] := w$ if $i > n$, and we also define $w[1, 0] := \e$, the empty word. Then for each $e_i$ we define the entry at the position $(q_s, q'_s, q_x, q'_x, t_x, t'_x, q_t, q'_t)$ is 1 if and only if the following four conditions are satisfied:
+    \begin{enumerate}
+        \item There is a path from $q_s$ to $q'_s$ on $w[1, i]$ in $\automaton$.
+        \item There is a path from $q_x$ to $q'_x$ on $w[1, i]$ in $\automatonB_x$.
+        \item There is a path from $t_x$ to $t'_x$ on $w[1, i]$ in $M_x$.
+        \item There is a path from $q_t$ to $q'_t$ on $\transductionFunction(x)(w[1, i])$ in $\automaton$.
+    \end{enumerate}
+    Let us define
+    \[ n := \abs{\automatonStateSet}^4 \max_{x \in \vstp}\abs{\automatonStateSet_x}^2 \max_{x \in \vstp}\abs{T_x}^2 \]
+    and let $N := 2^n$ be the number distinct vectors over $\set{0, 1}$ indexed by $\automatonStateSet \times \automatonStateSet \times \automatonStateSet_x \times \automatonStateSet_x \times T_x \times T_x \times \automatonStateSet \times \automatonStateSet$ that can exist. For each $x \in \vstp$, if $\abs{w_x} > N$, then there are distinct positions $j \neq k$ such that $e_j = e_k$. In this case we can drop the portion of $w_x$ between these positions and the resulting word will still satisfy condition 5 and be strictly smaller. We can continue this until we get a word of length at most $N$. Hence a nondeterministic \psp\ procedure can guess and verify the existence of a word satisfying condition 5, using space linear in $\log N := \abs{\automatonStateSet}^4 \max_{x \in \vstp}\abs{\automatonStateSet_x}^2 \max_{x \in \vstp}\abs{T_x}^2$. By Savitch's Theorem, there is a \psp\ procedure that achieves the same outcome.
+    \todoMandate{Improve the proof.}
+    \todoQuestion{Need to cite Savitch's Theorem?}
+    Hence we get that \invarianceCheckingProblemFull\ is in \psp.
+\end{proof}
+
+We also consider a special case of the \invarianceCheckingProblemFull, where the regular langugage is given by a DFA, and both the source and target pattern are copyless. We will show that this configuration allows us to solve the \invarianceCheckingProblemFull\ in \conp. In fact we shall show that the problem is complete for this class.
+
+\begin{theorem}\label{thm:icpSpecial}
+    The \invarianceCheckingProblemFull\ is \conpc\ if $L$ is given using a DFA, and $\sourcePattern, \targetPattern$ are copyless.
+\end{theorem}
+
+We split the proof of Theorem~\ref{thm:icpSpecial} into two separate lemmas, one each for establishing the upper and lower bounds respectively.
+
+\begin{lemma}\label{lem:icpSpecialUpperBound}
+    Let $\automaton$ be an DFA, and $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be a word transform such that $\sourcePattern, \targetPattern$ are copyless. Then the problem of deciding whether $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ is in \conp.
+\end{lemma}
+
+\begin{proof}
+    We need to show that deciding whether $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ is in \conp. This is equivalent to showing that deciding whether $\post(\languageOf{\automaton}, \wordTransform) \cap \languageOf{\automaton}^\complement \neq \emptyset$ is in \np. We will achieve this by proving  short-witness property. Suppose $\substitution$ is a \stringSubstitution\ such that $\substitution(\sourcePattern) \cdot (\wordTransform, \substitution) \notin \languageOf{\automaton}$. Then we will prove that there exists \stringSubstitution\ $\overline{\substitution}$ such that $\overline{\substitution}(\sourcePattern) \cdot (\wordTransform, \overline{\substitution}) \notin \languageOf{\automaton}$ and $\abs{\overline{\substitution}(x)}$ is bounded by a polynomial in the size of the input for all variables $x \in \vstp$. Once we have the existence of such a $\overline{\substitution}$, we can guess and verify the existence in polynomial time.
+
+    Let $\substitution$ be a \stringSubstitution\ such that $\substitution(\sourcePattern) \cdot (\wordTransform, \substitution) \notin \languageOf{\automaton}$. Pick a variable $x \in \vstp$. For this variable, let us assume that $\substitution(x) := w \in \words{\alphabet}$.Let $M_x$ be the Mealy machine for the transduction $\transductionFunction(x)$, and $\automatonB_x$ be an automaton recognising the guard language $\guard{x}$ for all $x \in \vstp$. Also define \stringSubstitution\ $\substitution'$ by setting $\substitution'(x) := \transductionFunction(x)(\substitution(x))$ for all variables $x \in \vstp$.
+    
+    
+    Consider the following runs:
+    \begin{enumerate}
+        \item The run of $\automaton$ on $\substitution(\sourcePattern)$ enter $w$ at state $p$ and leaves at state $p'$.
+        \item The run of $\automatonB_x$ on $w$ starts at state $q$ nd ends at state $q'$.
+        \item The run of $M_x$ on $w$ starts at state $r$ and ends at state $r'$.
+        \item The run of $\automaton$ on $\substitution'(\targetPattern)$ enters $\transductionFunction(x)(w)$ at state $s$ and leaves at state $s'$.
+    \end{enumerate}
+    Let the runs mentioned in 1, 2, 3 above be in states $p_i, q_i, r_i$ respectively just before reading $w[i]$, the $i^{th}$ letter of $w$. Let the run in 4 be in state $s_i$ just before reading $w_i^t$, the string output by $M_x$ at position $i$ while reading $w$. For some $i, j$ with $i \neq j$, if the tuple $(p_i, q_i, r_i, s_i)$ is equal to $(p_j, q_j, r_j, s_j)$, then we can drop the portion of $w$ between $i$ and $j$, and the shorter word will still have all the properties that $w$ has. We can continue this till we get a word of length at most $\abs{\automatonB_x}\abs{\automaton}^2\abs{M_x}$. For every variable $x$, the desired \stringSubstitution\ $\overline{\substitution}$ maps $x$ to a short word s described above, thus proving the short-witness property.
+\end{proof}
+
+Note that the above technique fails if $\automaton$ is a non-DFA NFA. In that case, it is not enough to ensure that the run in 4 is a rejecting run. We will have to prove that \emph{all} runs of $\automaton$ on $\substitution'(\targetPattern)$ are rejecting. The above techniquealso fails if $\sourcePattern$ is copyful; if a variable $x$ occurs more than once, the the run in 1 will pass through $w$ more than once and we will have to take care of all those passes. Hence in place of checking that the tuple $(p_i, q_i, r_i, s_i)$ repeats, we will have to consider tuples whose dimension depends on the input and we will not get a short-witness property. Similarly, the above technique breaks down if $\targetPattern$ is copyful.
+
+\begin{lemma}\label{lem:icpSpecialLowerBound}
+    Let $\automaton$ be an DFA, and $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ be a word transform such that $\sourcePattern, \targetPattern$ are copyless. Then the problem of deciding whether $\post(\languageOf{\automaton}, \wordTransform) \subseteq \languageOf{\automaton}$ is \conph.
+\end{lemma}
+
+\begin{proof}
+    We consider the following well-known problem.
+    \begin{problem}\label{prb:cliqueProblem}
+        \problemtitle{\cliqueProblemFull}
+        \probleminput{Graph $G := (V, E)$ with $n$ vertices, nonnegative integer $k \in \N_0$.}
+        \problemquestion{Does $G$ contain a $k$-clique as a subgraph?}
+    \end{problem}
+    We know from \cite{cliqueNpCompleteness} that \cliqueProblemFull\ is \npc. We shall show a reduction from complement of \cliqueProblemFull\ to our problem at hand.
+
+    Suppose we are given a graph $G := (V, E)$ with vertex set $V := \set{v_1, v_2, \dots, v_n}$ and a number $k$ such that $0 \leq k \leq n$. We shall design a word transform $\wordTransform$ and the candidate invariant language $L$ with the following goal: The word transform $\wordTransform$ will be enabled on a word $w \in L$ only if it is of the form
+    \[ w := Ia_{i_1}\underbrace{v_{i_1}v_{i_1}\dots v_{i_1}}_k a_{i_2}\underbrace{v_{i_2}v_{i_2}\dots v_{i_2}}_k a_{i_3} \dots a_{i_k}\underbrace{v_{i_k}v_{i_k}\cdots v_{i_k}}_k \]
+    with $1 \leq i_1 < i_2 < \dots < i_k \leq n$. In other words, we guess $k$ vertices, repeating each of them $k$ times in the word. This word transform will produce the word
+    \[ w' := \theta~a_{i_1}~v_{i_1}v_{i_2} \dots v_{i_k}~a_{i_2}~v_{i_1}v_{i_2} \dots v_{i_k}~a_{i_3}\dots~a_{i_k}~v_{i_1}v_{i_2} \dots v_{i_k}. \]
+    We see that this output word $w'$ has all the guessed $k$ vertices in every `block' delimited by the $a_i$. We also see tht $w' \in L$ if and only if at least two of these vertices do NOT have an edge between them, i.e., these $k$ vertices do not form a clique. Conversely, the word $w'$ will NOT belong to $L$ (that is, $L$ is NOT an invariant) if the $k$ guessed vertices form a $k$-clique.
+
+    Since we require the source and target word patterns of the word transform to be copyless, we will use $k^2$ variables of the form $x_i^j$ to represent the vertices in the string. Further, there will be variables $S_i$ to represent delimiters. Let us describe the word transform $\wordTransform$ formally. Let $\alphabet := \set{a_1, a_2, \dots, a_n, \theta, I}$, and $\variables \supseteq \set{S_1, S_2, \dots, S_k} \uplus \set{x_i^j \mid 1 \leq i, j \leq k}$. Then the word pattern $\wordTransform := (\sourcePattern, \targetPattern, \transductionFunction, \guardFunction)$ is given by
+    \begin{itemize}
+        \item $\sourcePattern := I~S_1~x_1^1x_1^2\dots x_1^k~S_2~x_2^1x_2^2\dots x_2^k~S_3 \dots S_k~x_k^1x_k^2\dots x_k^k$ is the source pattern. Note that in each `block' of $x_i^j$, the \emph{subscript} is the same whereas the superscript takes all values in $[k]$.
+        \item $\targetPattern := \theta~S_1~x_1^1x_2^1\dots x_k^1~S_2~x_1^2x_2^2\dots x_k^2~S_3 \dots S_k~x_1^kx_2^k\dots x_k^k$ is the target pattern. Note that in each `block' of $x_i^j$, the \emph{superscript} is the same whereas the subscript takes all values in $[k]$.
+        \item The transduction function $\transductionFunction$ maps each variable to the identity transduction.
+        \item The guard function is given by $\guard{x_i^j} := \set{v_1, v_2, \dots, v_n}$ for all $i, j \in [k]$, $\guard{S_i} := \set{a_1, a_2, \dots, a_n}$ for all $i \in [k]$.
+    \end{itemize}
+
+    As for the regular language $L$, we describe it by providing a DFA. Consider DFA $\automaton$ as given in Figure~\ref{fig:icpSpecialCaseLowerBoundCliqueAutomaton}. As we can see the DFA has two parts, a top and a bottom. Any word which begins with the letter $I$ and hence, could be a potential match for the source pattern, runs in the top part. Similarly any word that starts with a $\theta$ and hence, could be a potential match for the target pattern, runs in the bottom part. All the states in the top part of $\automaton$ are accepting with the exception of the sink state $X_i$, and all states in the bottom part of $\automaton$ are rejecting, with the exception of the sink state $X_o$.
+
+    The top part of the DFA guarantees that in a block of letters following some $a_i$, it is the same vertex $v_i$ that gets repeated. The length of each block and the number of blocks are taken care of by the source pattern. Thus the source pattern together with this automaton $\automaton$ ensures that the input word is of the required form. Notice that this part does not look at the edges of the graph, and in particular does not verify that these vertices form a clique.
+
+    The bottom part of the automaton reads the words that start with a $\theta$ and in particular the potential output strings of the word transform $\wordTransform$. This part of $\automaton$ ensures that in the block following some $a_i$, all the vertices appearing in the block are neighbours of $v_i$, or $v_i$ itself. Let us denote this set of vertices that are at a distance at most 1 from $v_i$ by $N_i$. Note that if the block after some $a_i$ contains a vertex $v_j$ which is not in $N_i$, then it goes into the accepting sink state $X_o$. Thus if the guessed vertices do not form a clique, the output word will be accepted by $\automaton$. On the other hand, if the guessed vertices do form a clique, then in every block the vertices encountered belong to the respective $N_i$, and the run remains in the bottom part of the DFA where all states are rejecting.
+
+    We see that the DFA $\automaton$ only depends on the input graph $G = (V, E)$ and not on the number $k$. If the input graph $G$ has a clique of size $k$, then there is an input word that matches the source pattern, and produces the output word which is rejected by $\automaton$. Thus $\languageOf{\automaton}$ is not an invariant in thi case. Conversely, if the input graph does not have a clique of size $k$, then for every input word that enables the word transform $\wordTransform$, the output word will have a block starting at some $a_i$ and containing a vertex that does not belong to the neighbour set $N_i$, and the run of $\automaton$ on the output word will end up in the sink state $X_o$ which is accepting. Thus $\languageOf{\automaton}$ will be an invariant in this case. 
+\end{proof}
+
+We know from $\cite{cliqueisWOne}$ that the problem $\cliqueProblemFull$ is \woneh, and hence it is unlikely to be fixed-parameter tractable with the clique-size $k$ as a parameter. But this gives us the following corollary
+
+\begin{corollary}\label{cor:icpSpecialLowerBoundWOne}
+    Let $\wordTransform$ be a word transform with copyless source and target patterns. Then the problem of checking whether a given DFA describes an invariant for $\wordTransform$ is \woneh\ with the length of the patterns being the parameter.
+\end{corollary}
+
+\tikzset{->, node distance = 5.5em, initial text = ,}
+\begin{figure}[h]\label{fig:icpSpecialCaseLowerBoundCliqueAutomaton}
+    \begin{tikzpicture}
+        \node[state, accepting] (input) {\texttt{in}};
+        \node[state, accepting, right of = input] (i1) {$i_1$};
+        \node[state, accepting, right of = i1] (i2) {$i_2$};
+        \node[state, accepting, right of = i2] (i3) {$i_3$};
+        \node[right of = i3] (dots1) {$\dots$};
+        \node[state, accepting, right of = dots1] (in) {$i_n$};
+
+        \node[state, initial, below of = input, node distance = 8em] (0) {$0$};
+
+        \node[state, below of = 0, node distance = 8em] (output) {$\texttt{out}$};
+        \node[state, right of = output] (o1) {$o_1$};
+        \node[state, right of = o1] (o2) {$o_2$};
+        \node[state, right of = o2] (o3) {$o_3$};
+        \node[right of = o3] (dots2) {$\dots$};
+        \node[state, right of = dots2] (on) {$o_n$};
+
+        \node[state, right of = in, below of = in] (xi) {$X_i$};
+        \node[state, accepting, right of = on, above of = on] (xo) {$X_o$};
+
+        \draw
+        (0) edge[left] node {$I$} (input)
+        (0) edge[left] node {$\theta$} (output)
+
+        (i1) edge[loop below] node {$v_1$} (i1)
+        (i2) edge[loop below] node {$v_2$} (i2)
+        (i3) edge[loop below] node {$v_3$} (i3)
+        (in) edge[loop below] node {$v_n$} (in)
+        
+        (o1) edge[loop above] node {$N_1$} (o1)
+        (o2) edge[loop above] node {$N_2$} (o2)
+        (o3) edge[loop above] node {$N_3$} (o3)
+        (on) edge[loop above] node {$N_n$} (on)
+
+        (input) edge[below] node {$a_1$} (i1)
+        (i1) edge[below] node {$a_2$} (i2)
+        (i2) edge[below] node {$a_3$} (i3)
+        (i3) edge[below] node {$a_4$} (dots1)
+        (dots1) edge[below] node {$a_n$} (in)
+
+        (output) edge[below] node {$a_1$} (o1)
+        (o1) edge[below] node {$a_2$} (o2)
+        (o2) edge[below] node {$a_3$} (o3)
+        (o3) edge[below] node {$a_4$} (dots2)
+        (dots2) edge[below] node {$a_n$} (on)
+
+        (input) edge[above, bend left = 30] node {$a_2$} (i2)
+        (input) edge[above, bend left = 50] node {$a_3$} (i3)
+        (input) edge[above, bend left = 70, pos = 0.75] node {$a_n$} (in)
+        (i1) edge[above, bend left = 30] node {$a_3$} (i3)
+        (i1) edge[above, bend left = 50, pos = 0.75] node {$a_n$} (in)
+        (i3) edge[above, bend left = 30] node {$a_n$} (in)
+
+        (output) edge[below, bend right = 30] node {$a_2$} (o2)
+        (output) edge[below, bend right = 50] node {$a_3$} (o3)
+        (output) edge[below, bend right = 70, pos = 0.75] node {$a_n$} (on)
+        (o1) edge[below, bend right = 30] node {$a_3$} (o3)
+        (o1) edge[below, bend right = 50, pos = 0.75] node {$a_n$} (on)
+        (o3) edge[below, bend right = 30] node {$a_n$} (on)
+
+        (input) edge[below, dotted, bend right = 20] node {} (xi)
+        (i1) edge[below, dotted, bend right = 20] node {} (xi)
+        (i2) edge[below, dotted, bend right = 20] node {} (xi)
+        (i3) edge[below, dotted, bend right = 20] node {} (xi)
+        (in) edge[below, dotted, bend right = 20] node {} (xi)
+
+        (output) edge[below, dotted, bend left = 20] node {} (xo)
+        (o1) edge[below, dotted, bend left = 20] node {} (xo)
+        (o2) edge[below, dotted, bend left = 20] node {} (xo)
+        (o3) edge[below, dotted, bend left = 20] node {} (xo)
+        (on) edge[below, dotted, bend left = 20] node {} (xo)
+
+        (0) edge[below, dotted, bend right = 10] node {} (xi)
+
+        (xi) edge[loop above, dotted] node {} (xi)
+        (xo) edge[loop below, dotted] node {} (xo);
+    \end{tikzpicture}
+    \caption{The automaton $\automaton$ used in the polynomial reduction from the problem of finding a clique in a graph. Here $N_i$ denotes the set of all nodes at a distance of at most one from $v_i$. In other words, it includes $v_i$ and all its neighbours. The transitions on unspecified letters are denoted by dotted edges, and they go to sink states as shown.}
+\end{figure}

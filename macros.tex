@@ -15,8 +15,9 @@
 % \newcommand{\field}{\ensuremath{\mathbb{F}}}
 \newcommand{\B}{\ensuremath{\mathcal{B}}}
 
-% % Word-related
+% Word-related
 \newcommand{\words}[1]{\ensuremath{\texttt{Words}\left(#1\right)}}  %  Set of all words over an alphabet #1.
+\newcommand{\transductionsOver}[1]{\ensuremath{\texttt{Transductions}\left(#1\right)}}  %  Set of all transductions over #1.
 
 % Tree-related
 \newcommand{\positions}{\texttt{Positions}}  %  Set of all positions in a tree. Subset of \N*.
@@ -30,7 +31,7 @@
 % Miscellaneous
 \newcommand{\e}{\varepsilon}
 \newcommand{\vect}[1]{\ensuremath{\overline{\textbf{#1}}}}
-\newcommand{\regular}[1]{\texttt{Regular}(#1)}
+\newcommand{\matricesOver}[1]{\ensuremath{\mathbb{M}(#1)}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,15 +63,15 @@
 \newcommand{\nph}{\np\hard}
 \newcommand{\npc}{\np\complete}
 
-% % co-NP
-% \newcommand{\conp}{\textsc{co-NP}}
-% \newcommand{\conph}{\conp\hard}
-% \newcommand{\conpc}{\conp\complete}
+% co-NP
+\newcommand{\conp}{\textsc{co-NP}}
+\newcommand{\conph}{\conp\hard}
+\newcommand{\conpc}{\conp\complete}
 
-% % PSPACE
-% \newcommand{\psp}{\textsc{PSPACE}}
-% \newcommand{\psph}{\psp\hard}
-% \newcommand{\pspc}{\psp\complete}
+% PSPACE
+\newcommand{\psp}{\textsc{PSPACE}}
+\newcommand{\psph}{\psp\hard}
+\newcommand{\pspc}{\psp\complete}
 
 % % NPSPACE
 % \newcommand{\npsp}{\textsc{NPSPACE}}
@@ -87,10 +88,10 @@
 % \newcommand{\twoexpth}{\twoexpt\hard}
 % \newcommand{\twoexptc}{\twoexpt\complete}
 
-% % W[1]
-% \newcommand{\wone}{\textsc{W}[1]}
-% \newcommand{\woneh}{\wone\hard}
-% \newcommand{\wonec}{\wone\complete}
+% W[1]
+\newcommand{\wone}{\textsc{W}[1]}
+\newcommand{\woneh}{\wone\hard}
+\newcommand{\wonec}{\wone\complete}
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -152,6 +153,11 @@
 \newcommand{\tcp}{type-checking problem}
 \newcommand{\rab}{ranked alphabet}
 
+\newcommand{\identity}{\ensuremath{\texttt{Id}}}
+
+%%% WARNING - WIP
+\newcommand{\stringSubstitution}{valuation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                              %
 %   Language-related                                                           %
@@ -170,6 +176,7 @@
 \newcommand{\sourceLanguage}{\ensuremath{\genericLanguage_{\src}}}
 \newcommand{\targetLanguage}{\ensuremath{\genericLanguage_{\tgt}}}
 
+\newcommand{\regularLanguagesOver}[1]{\ensuremath{\mathcal{R}eg(#1)}}
 
 %  Seed language letters
 % \newcommand{\exampleSeedLanguageStart}{\mathsf{start}}
@@ -198,16 +205,30 @@
 % \newcommand{\dfa}{\textsf{DFA}}
 % \newcommand{\nfa}{\textsf{NFA}}
 
+\newcommand{\transitionMatrixOf}[1]{\ensuremath{\mu(#1)}}
+
 \newcommand{\automaton}{\ensuremath{\mathcal{A}}}
 \newcommand{\automatonB}{\ensuremath{\mathcal{B}}}
+
+\newcommand{\mealyMachine}{\ensuremath{\mathcal{M}}}
+\newcommand{\mealyMachineStateSet}{Q}
+\newcommand{\mealyMachineTransitionFunction}{\delta}
+\newcommand{\mealyMachineInitialState}{s}
+% \newcommand{\mealyMachineInitialState}{q_0}
+\newcommand{\mealyMachineOutputFunction}{\texttt{out}}
+
 \newcommand{\sourceAutomatonB}{\ensuremath{\automatonB_{\src}}}
 \newcommand{\targetAutomatonB}{\ensuremath{\automatonB_{\tgt}}}
 
 \newcommand{\automatonStateSet}{Q}
 \newcommand{\automatonTransitionSet}{\Delta}
+
 \newcommand{\automatonInitialStateSet}{S} % {Q_\textsf{in}}
-\newcommand{\automatonInitialState}{s}
+% \newcommand{\automatonInitialStateSet}{Q_\textsf{in}}
 \newcommand{\automatonFinalStateSet}{F} % {Q_\textsf{fin}}
+% \newcommand{\automatonFinalStateSet}{Q_\textsf{fin}}
+
+\newcommand{\automatonInitialState}{s}
 
 \newcommand{\automataSet}[1]{\texttt{Automata}(#1)}
 
@@ -232,23 +253,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %  Full problem names
+\newcommand{\cliqueProblemFull}{\texttt{Clique}}
+
+\newcommand{\invarianceCheckingProblemFull}{\texttt{Invariance-Checking Problem}}
+\newcommand{\intersectionNonemptinessWordFull}{\texttt{Intersection Nonemptiness Problem for DFA}}
+
 \newcommand{\matchingProblemFull}{\texttt{Matching Problem}}
 \newcommand{\oneInThreeSatFull}{\texttt{1-in-3 SAT}}
 \newcommand{\atomicTypecheckingProblemFull}{\texttt{Atomic Type-Checking Problem}}
 \newcommand{\fullTypecheckingProblemFull}{\texttt{Type-Checking Problem}}
 \newcommand{\relationRealisabilityFull}{\texttt{Relation Realisability Problem}}
-\newcommand{\intersectionNonemptinessFull}{\texttt{Intersection Nonemptiness Problem for DBTA}}
+\newcommand{\intersectionNonemptinessTreeFull}{\texttt{Intersection Nonemptiness Problem for DBTA}}
 % \newcommand{\compatibilityProblemFull}{\texttt{Compatibility Problem}}
 % \newcommand{\metaCompatibilityProblemFull}{\texttt{Meta Compatibility Problem}}
 % \newcommand{\multipleRelationRealisabilityFull}{\texttt{Multiple Relation Realisability}}
 
 %  Short problem names
+\newcommand{\cliqueProblemShort}{\texttt{CLQ}}
+
+\newcommand{\invarianceCheckingProblemShort}{\texttt{ICP}}
+\newcommand{\intersectionNonemptinessWordShort}{\texttt{DINP(W)}}
+
 \newcommand{\matchingProblemShort}{\texttt{MTCH}}
 \newcommand{\oneInThreeSatShort}{\texttt{1-in-3 SAT}}
 \newcommand{\atomicTypecheckingProblemShort}{\texttt{ATCP}}
 \newcommand{\fullTypecheckingProblemShort}{\texttt{TCP}}
 \newcommand{\relationRealisabilityShort}{\texttt{RLRS}}
-\newcommand{\intersectionNonemptinessShort}{\texttt{DINP}}
+\newcommand{\intersectionNonemptinessTreeShort}{\texttt{DINP(T)}}
 % \newcommand{\compatibilityProblemShort}{\texttt{CMPT}}
 % \newcommand{\metaCompatibilityProblemShort}{\texttt{m-CMPT}}
 % \newcommand{\multipleRelationRealisabilityShort}{\texttt{m-RLRS}}
@@ -276,7 +307,7 @@
 
 \newcommand{\rev}{\texttt{Reverse}}
 
-% \newcommand{\transductionFunction}{\ensuremath{\mathcal{T}}}
+\newcommand{\transductionFunction}{\ensuremath{\mathbb{T}}}
 
 % \newcommand{\Id}{\textsf{Id}}
 
@@ -290,9 +321,13 @@
 \newcommand{\atomicTransform}{\ensuremath{T}}
 \newcommand{\fullTransform}{\ensuremath{\mathbf{T}}}
 
+\newcommand{\wordTransform}{\ensuremath{W}}
+
 \newcommand{\pattern}{\mathsf{Pat}}
 \newcommand{\sourcePattern}{\pattern_{\src}}
 \newcommand{\targetPattern}{\pattern_{\tgt}}
+
+\newcommand{\vstp}{\ensuremath{\variablesOf{\sourcePattern} \cup \variablesOf{\targetPattern}}}
 
 \newcommand{\inducedTransduction}{\texttt{IndTrans}}
 \newcommand{\inducedRelation}[2]{\ensuremath{\texttt{IndRel}(#1, #2)}}
@@ -300,7 +335,7 @@
 
 \newcommand{\defaultAtomicTransform}{\ensuremath{(\sourcePattern, \targetPattern, \guardFunction)}}
 
-% \newcommand{\post}{\textsf{post}}
+\newcommand{\post}{\textsf{post}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -323,14 +358,22 @@
     \end{array} \right.
 }
 
-% \newcommand{\threepartfunc}[7]{
-%     #1 = \left\{ \begin{array}{lll}
+\newcommand{\threepartfunc}[7]{
+    #1 = \left\{ \begin{array}{lll}
+        #2 & \mbox{ if } #3;\\
+        #4 & \mbox{ if } #5;\\
+        #6 & \mbox{ if } #7.
+    \end{array} \right.
+}
+
+% \newcommand{\fourpartfunc}[9]{
+%     #1 = \left\{ \begin{array}{llll}
 %         #2 & \mbox{ if } #3;\\
 %         #4 & \mbox{ if } #5;\\
-%         #6 & \mbox{ if } #7.
+%         #6 & \mbox{ if } #7;\\
+%         #8 & \mbox{ if } #9.
 %     \end{array} \right.
 % }
-
 
 % %%%%%%%%%% Deprecated %%%%%%%%%%
 
