@@ -1,0 +1,94 @@
+\scalebox{0.73}{\begin{tikzpicture}[node distance=2mm]
+    \node[draw, align=left] (blob1) {\texttt{int[] A = new int[m];}};
+    \node[draw, align=left, color=blue, below=2mm  of blob1] (for1) {\texttt{for}};
+    \node[draw, align=left, below left= of for1, color=blue] (init1) {\texttt{$x^\examplePatternLanguageInit_1$}};
+    \node[draw, align=left, color=blue, below left=2mm and -10mm of init1] (null1) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, color=blue, below right=2mm and -8mm of null1] (term1) {\texttt{$x^\examplePatternLanguageProp_1$}};
+    \node[draw, align=left, color=blue, below left=2mm and -10mm of term1] (null2) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, color=blue, below right=2mm and -3mm of null2] (incr1) {\texttt{$x^\examplePatternLanguageIncr_1$}};
+    \node[draw, align=left, color = blue, below left  =2mm and -10mm of incr1] (null3) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, below right = 2mm and -28mm of null3] (blob2){\texttt{A[i] = getInputFromUser();}};
+    \node[draw, align=left, color=red, below right=2mm and -20mm of blob2] (null4) {\texttt{$\examplePatternLanguageNull$}};
+
+    \node[draw, align=left, color=blue, below left=2mm and -5mm of null4] (for2){\texttt{for}};
+    \node[draw, align=left, below left= of for2, color=blue] (init2) {\texttt{$x^\examplePatternLanguageInit_2$}};
+    \node[draw, align=left, color=blue, below left=2mm and -10mm of init2] (null5) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, color=blue, below right=2mm and -8mm of null5] (term2) {\texttt{$x^\examplePatternLanguageProp_2$}};
+    \node[draw, align=left, color=blue, below left=2mm and -10mm of term2] (null6) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, color=blue, below right=2mm and -3mm of null6] (incr2) {\texttt{$x^\examplePatternLanguageIncr_2$}};
+    \node[draw, align=left, color = blue, below=2mm and -10mm of incr2] (null7) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, below right = 2mm and -28mm of null7] (blob3){
+        \texttt{int minIndex = j;}\\
+        \texttt{int minValue = A[minIndex];}};
+
+    \node[draw, align=left, color=blue, below=2mm  of blob3] (for3) {\texttt{for}};
+    \node[draw, align=left, below left= of for3, color=blue] (init3) {\texttt{$x^\examplePatternLanguageInit_3$}};
+    \node[draw, align=left, color=blue, below left=2mm and -10mm of init3] (null8) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, color=blue, below right=2mm and -8mm of null8] (term3) {\texttt{$x^\examplePatternLanguageProp_3$}};
+    \node[draw, align=left, color=blue, below left=2mm and -10mm of term3] (null9) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, color=blue, below right=2mm and -3mm of null9] (incr3) {\texttt{$x^\examplePatternLanguageIncr_3$}};
+    \node[draw, align=left, color = blue, below left  =2mm and -10mm of incr3] (null10) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, below right = 2mm and -28mm of null10] (blob4){
+        \texttt{if(A[k] < minValue) \{}\\
+        \texttt{minIndex = k;}\\
+        \texttt{minValue = A[k]; \}}};
+    \node[draw, align=left, color=red, below right=2mm and -16mm of blob4] (null11) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, below left=2mm and -26mm of null11] (blob5){
+        \texttt{int temp = A[j];}\\
+        \texttt{A[j] = A[k];}\\
+        \texttt{A[k] = temp;}};
+    \node[draw, align=left, color=red, below left=2mm and -10mm of blob5] (null12) {\texttt{$\examplePatternLanguageNull$}};
+    \node[draw, align=left, below right=2mm and 10mm of null12] (blob6){\texttt{return A;}};
+    \node[draw, align=left, below left=2mm and -10mm of blob6] (null13) {\texttt{$\examplePatternLanguageNull$}};
+
+    \draw[->]
+    (blob1) edge (for1)
+    (for1) edge[color=blue] (init1)
+    (init1) edge[color=blue] (null1)
+    (for1) edge[color=blue, bend left=30] (term1)
+    (term1) edge[color=blue] (null2)
+    (for1) edge[bend left=30, color=blue] (incr1)
+    (incr1) edge[color=blue] (null3)
+    (for1) edge[bend left=50] (blob2)
+    (blob2) edge (null4)
+    (for1) edge[bend left=60] (for2)
+
+    (for2) edge[color=blue] (init2)
+    (init2) edge[color=blue] (null5)
+    (for2) edge[color=blue, bend left=30] (term2)
+    (term2) edge[color=blue] (null6)
+    (for2) edge[bend left=30, color=blue] (incr2)
+    (incr2) edge[color=blue] (null7)
+    (for2) edge[bend left=50] (blob3)
+    (blob3) edge (for3)
+
+    (for3) edge[color=blue] (init3)
+    (init3) edge[color=blue] (null8)
+    (for3) edge[color=blue, bend left=30] (term3)
+    (term3) edge[color=blue] (null9)
+    (for3) edge[bend left=30, color=blue] (incr3)
+    (incr3) edge[color=blue] (null10)
+    (for3) edge[bend left=50] (blob4)
+    (blob4) edge (null11)
+    (for3) edge[bend left=40] (blob5)
+    (blob5) edge (null12)
+    
+    (for2) edge[bend left=30] (blob6)
+    (blob6) edge (null13);
+
+    \begin{scope}[on background layer={}]
+        \draw[rounded corners=3mm, color=blue, dashed, thick] (-3.5,-6.3) rectangle (4,-6.3+5.9);
+        \draw[color=blue] (-3.5+1.1,-6.3+0.3) node {$\phi_\src(\exampleSeedLanguageLoop_1)$};
+        \draw[rounded corners=3mm, color=blue, dashed, thick] (-3.5,-13.8) rectangle (4,-13.8+5.85);
+        \draw[color=blue] (-3.5+1.1,-13.8+0.3) node {$\phi_\src(\exampleSeedLanguageLoop_2)$};
+        \draw[rounded corners=3mm, color=blue, dashed, thick] (-3.5,-20.95) rectangle (4,-20.95+5.85);
+        \draw[color=blue] (-3.5+1.1,-20.95+0.3) node {$\phi_\src(\exampleSeedLanguageLoop_3)$};
+
+        \draw[rounded corners=3mm, color=red, dashed, thick] (-3.5,-7.88) rectangle (4,-7.9+0.75);
+        \draw[color=red] (-3.5+1.5,-7.88+0.3) node {$\phi_\src(\exampleSeedLanguageEndLoop_1)$};
+        \draw[rounded corners=3mm, color=red, dashed, thick] (-3.5,-23.7) rectangle (4,-23.7+0.8);
+        \draw[color=red] (-3.5+1.5,-23.7+0.3) node {$\phi_\src(\exampleSeedLanguageEndLoop_3)$};
+        \draw[rounded corners=3mm, color=red, dashed, thick] (-3.5,-26.35) rectangle (4,-26.35+0.8);
+        \draw[color=red] (-3.5+1.5,-26.35+0.3) node {$\phi_\src(\exampleSeedLanguageEndLoop_2)$};
+    \end{scope}
+\end{tikzpicture}}

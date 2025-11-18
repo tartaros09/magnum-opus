@@ -1,0 +1,51 @@
+\begin{tabular}{p{0.45\textwidth}}
+    Source code \\ \hline
+    \texttt{int[] A = new int[m];}\\
+    \texttt{for(int i=0;i<A.length;i++) \{}\\
+    \texttt{\quad A[i] = getInputFromUser();}\\
+    \texttt{\}}\\
+    \texttt{for(int j=0;j<A.length;j++) \{}\\
+    \texttt{\quad int minIndex = j;}\\
+    \texttt{\quad int minValue = A[minIndex];}\\
+    \texttt{\quad for(int k=j;k<A.length;k++) \{}\\
+    \texttt{\quad \quad if(A[k] < minValue) \{}\\
+    \texttt{\quad \quad \quad minIndex = k;}\\
+    \texttt{\quad \quad \quad minValue = A[k];}\\
+    \texttt{\quad \quad \}}\\
+    \texttt{\quad \}}\\
+    \texttt{\quad int temp = A[j];}\\
+    \texttt{\quad int A[j] = A[k];}\\
+    \texttt{\quad int A[k] = temp;}\\
+    \texttt{\}}\\
+    \texttt{return A;}\\
+    \\
+    \\
+\end{tabular}
+\hfil
+\begin{tabular}{p{0.45\textwidth}}
+    Target code \\ \hline
+    \texttt{int[] A = new int[m];}\\
+    \texttt{int i=0;}\\
+    \texttt{while(i<A.length) \{}\\
+    \texttt{\quad A[i] = getInputFromUser();}\\
+    \texttt{\quad i++;}\\
+    \texttt{\}}\\
+    \texttt{int j=0;}\\
+    \texttt{while(j<A.length) \{}\\
+    \texttt{\quad int minIndex = j;}\\
+    \texttt{\quad int minValue = A[minIndex];}\\
+    \texttt{\quad int k=j;}\\
+    \texttt{\quad while(k<A.length) \{}\\
+    \texttt{\quad \quad if(A[k] < minValue) \{}\\
+    \texttt{\quad \quad \quad minIndex = k;}\\
+    \texttt{\quad \quad \quad minValue = A[k];}\\
+    \texttt{\quad \quad \}}\\
+    \texttt{\quad \quad k++;}\\
+    \texttt{\quad \}}\\
+    \texttt{\quad int temp = A[j];}\\
+    \texttt{\quad int A[j] = A[k];}\\
+    \texttt{\quad int A[k] = temp;}\\
+    \texttt{\quad j++;}\\
+    \texttt{\}}\\
+    \texttt{return A;}\\
+\end{tabular}

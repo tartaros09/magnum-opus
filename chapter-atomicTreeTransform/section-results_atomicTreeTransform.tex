@@ -49,7 +49,7 @@ Next we consider the \relationRealisabilityFull.
     \probleminput{NBTTS $\transitionSystem := (\automatonStateSet, \alphabet, \automatonTransitionSet)$, relation $R \in \relations(\automatonStateSet)$, NBTA $\automatonB$.}
     \problemquestion{Does there exist context $c \in \contexts(\alphabet) \cap \languageOf{\automatonB}$ such that $\inducedRelation{c}{\transitionSystem} = R$?}
 \end{problem}
-We will show that \relationRealisabilityFull\ is \exptc. For the lower bound, we shall show a reduction from the \intersectionNonemptinessFull, which we know from~\cite{tata} to be \exptc. For the upper bound, we construct an NBTA and reduce the problem of finding such a context to checking this NBTA for nonemptiness.
+We will show that \relationRealisabilityFull\ is \exptc. For the lower bound, we shall show a reduction from the \intersectionNonemptinessTreeFull, which we know from~\cite{tata} to be \exptc. For the upper bound, we construct an NBTA and reduce the problem of finding such a context to checking this NBTA for nonemptiness.
 
 \begin{theorem}\label{thm:relationRealisabilityProblemUpperBound}
     \relationRealisabilityFull\ is in \expt.
@@ -72,13 +72,13 @@ We will show that \relationRealisabilityFull\ is \exptc. For the lower bound, we
 \end{theorem}
 
 \begin{proof}
-    We will show a reduction from the \intersectionNonemptinessFull\ to \relationRealisabilityFull. We recall \intersectionNonemptinessFull\ to be the following problem:
+    We will show a reduction from the \intersectionNonemptinessTreeFull\ to \relationRealisabilityFull. We recall \intersectionNonemptinessTreeFull\ to be the following problem:
     \begin{problem}
-        \problemtitle{\intersectionNonemptinessFull}
+        \problemtitle{\intersectionNonemptinessTreeFull}
         \probleminput{DBTAs $\automaton_1, \automaton_2, \dots, \automaton_n$.}
         \problemquestion{Do we have $\cap_{i=1}^n \languageOf{\automaton_i} = \emptyset$?}
     \end{problem}
-    We know from~\cite{tata} that \intersectionNonemptinessFull\ is \exptc. Let $\automaton_1, \automaton_2, \dots, \automaton_n$ be a given instance of \intersectionNonemptinessFull, where $\automaton_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ are DBTA over $\alphabet$. If $\automatonFinalStateSet_i = \emptyset$ for some $i \in [n]$, then we get $\languageOf{\automaton_i} = \emptyset$ which implies that $\bigcap_{i=1}^n \languageOf{\automaton_i} = \emptyset$. So let us assume that $\automatonFinalStateSet_i \neq \emptyset$ for all $i \in [n]$.
+    We know from~\cite{tata} that \intersectionNonemptinessTreeFull\ is \exptc. Let $\automaton_1, \automaton_2, \dots, \automaton_n$ be a given instance of \intersectionNonemptinessTreeFull, where $\automaton_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ are DBTA over $\alphabet$. If $\automatonFinalStateSet_i = \emptyset$ for some $i \in [n]$, then we get $\languageOf{\automaton_i} = \emptyset$ which implies that $\bigcap_{i=1}^n \languageOf{\automaton_i} = \emptyset$. So let us assume that $\automatonFinalStateSet_i \neq \emptyset$ for all $i \in [n]$.
 
     Consider NBTTS $\transitionSystem := (\automatonStateSet := (\biguplus_{i=1}^n \automatonStateSet_i)\uplus\set{\top}, \alphabet \uplus \set{\#/2}, \automatonTransitionSet)$ where $\automatonTransitionSet : \alphabet \uplus \set{\#/2} \to \relations(Q)$ is defined as
     \[
@@ -125,7 +125,7 @@ We will show that the \atomicTypecheckingProblemFull\ is \exptc. For the upper b
 \end{theorem}
 
 \begin{proof}
-    To establish this lower bound, we will show a reduction from \intersectionNonemptinessFull\ as defined in the proof of Theorem~\ref{thm:relationRealisabilityProblemLowerBound} to \atomicTypecheckingProblemFull. As mentioned earlier, we know from \cite{tata} that \intersectionNonemptinessFull\ is \exptc. This reduction will give us the desired result. Let $\automaton_1, \automaton_2 , \dots, \automaton_n$ be an instance of \intersectionNonemptinessFull, where $\automaton_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ are DBTA over alphabet $\alphabet$ for all $i \in [n]$. We construct a corresponding instance of \atomicTypecheckingProblemFull\ as follows. Let $\Gamma := \alphabet \uplus \set{\#/n, \flat/0}$ be a larger alphabet. Consider the atomic transform $\atomicTransform := (\#(\underbrace{x, x, \dots, x}_n), \flat, \guardFunction)$, where $\guard{x} := \trees{\alphabet}$. Let the regular languages $\sourceLanguage := \set{\#(t_1, t_2, \dots, t_n) \mid t_i \in \languageOf{\automaton_i},~\forall i \in [n]}$, and $\targetLanguage := \set{\flat}$.
+    To establish this lower bound, we will show a reduction from \intersectionNonemptinessTreeFull\ as defined in the proof of Theorem~\ref{thm:relationRealisabilityProblemLowerBound} to \atomicTypecheckingProblemFull. As mentioned earlier, we know from \cite{tata} that \intersectionNonemptinessTreeFull\ is \exptc. This reduction will give us the desired result. Let $\automaton_1, \automaton_2 , \dots, \automaton_n$ be an instance of \intersectionNonemptinessTreeFull, where $\automaton_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ are DBTA over alphabet $\alphabet$ for all $i \in [n]$. We construct a corresponding instance of \atomicTypecheckingProblemFull\ as follows. Let $\Gamma := \alphabet \uplus \set{\#/n, \flat/0}$ be a larger alphabet. Consider the atomic transform $\atomicTransform := (\#(\underbrace{x, x, \dots, x}_n), \flat, \guardFunction)$, where $\guard{x} := \trees{\alphabet}$. Let the regular languages $\sourceLanguage := \set{\#(t_1, t_2, \dots, t_n) \mid t_i \in \languageOf{\automaton_i},~\forall i \in [n]}$, and $\targetLanguage := \set{\flat}$.
 
     We can see that $\atomicTransform[\sourceLanguage] \cap \targetLanguage \neq \emptyset$ if and only if there exists a tree $t \in \trees{\alphabet}$ such that $t \in \languageOf{\automaton_i}$ for all $i \in [n]$. This completes the reduction.
     \todoQuestion{Provide detailed automata to show that $\sourceLanguage$ and $\targetLanguage$ are regular?}

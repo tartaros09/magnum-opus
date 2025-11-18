@@ -1,0 +1,120 @@
+\section{Formal Model and Problems}\label{sec:formalModelAndProblems_treeTransform}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%  Model                                                                       %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Model}\label{subsec:model_treeTransform}
+
+We recall atomic tree transforms as defined in \ref{def:atomicTreeTransform}.
+
+\begin{definition*}[Atomic Tree Transform]
+    Let $\alphabet$ be a finite \rab, let $\variables$ be a countable set of ranked variables. An \emph{Atomic Tree Transform(ATT)} is an ordered triple $\atomicTransform := (\sourcePattern, \targetPattern, \guardFunction)$, where $\sourcePattern, \targetPattern$ are tree patterns over $(\alphabet, \variables)$ called the \emph{source pattern} and \emph{target pattern} respectively, and $\guardFunction$ is a guard function over $\alphabet$ such that $\variables(\sourcePattern) \cup \variables(\targetPattern) \subseteq \dom(\guardFunction)$.
+\end{definition*}
+
+For a given ATT $\atomicTransform$, we define the \emph{transduction induced by $\atomicTransform$} to be a binary relation $\inducedTransduction(\atomicTransform)$ given by
+\[
+    \inducedTransduction(\atomicTransform) := \set{(t, t') \mid \exists \substitution \mbox{ s.t. } \match(\substitution, t, \sourcePattern, \guardFunction) \mbox{ and } \match(\substitution, t', \targetPattern, \guardFunction).}
+\]
+
+\todoMandate{Add motivation for defining full transform.}
+
+\begin{definition}[Tree Transform]\label{def:treeTransform}
+    Let $\alphabet, \seedAlphabet$ be two finite \rab s. Let $\variables$ be a countably infinite set of variables. A \emph{tree transform} $\treeTransform$ is a ordered pair $\treeTransform := (B := (\seedLanguage, \sourceMap, \targetMap), \guardFunction)$, where $B$ is a bimorphism with,
+    \begin{itemize}
+        \item $\seedLanguage \subseteq \trees{\seedAlphabet}$ is a regular seed language.
+        \item $\sourceMap, \targetMap : \trees{\seedAlphabet} \to \trees{\alphabet \uplus \variables}$ are tree homomorphisms.
+        \item $\guardFunction : \variables \to 2^{\trees{\alphabet}}$ is a guard function over $\alphabet$.
+    \end{itemize}
+    We define the \emph{relation induced by $\treeTransform := (B := (\seedLanguage, \sourceMap, \targetMap), \guardFunction)$} as follows: for each seed tree $s \in \seedLanguage$, we define the atomic tree transform $\atomicTransform_s := (\sourceMap(s), \targetMap(s), \guardFunction)$. Then $\inducedTransduction(\treeTransform) := \bigcup_{s \in \seedLanguage}\inducedTransduction(\atomicTransform_s)$.
+\end{definition}
+
+As for any relation, for a tree $t$, and a tree language $L$, we define
+\begin{itemize}
+    \item $\treeTransform(t) := \set{t' \mid (t, t') \in \inducedTransduction(\treeTransform)}$.
+    \item $\treeTransform(L) := \bigcup_{t \in L}\treeTransform(t)$.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%  Examples                                                                    %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Example - Code Snippet Translation}\label{subsec:forWhileLoopExample}
+
+As a motivating example, we consider the a piece of code, written in a language like C++ or Java, containing a certain bounded number of \textbf{for} loops. We would like to transform this into a corresponding piece of code with \textbf{while} loops. A concrete example is depicted in Figure~\ref{fig:codeSnippets}, where we have piece of code implementing the Selection Sort algorithm containing only \textbf{for} loops, and we wish to convert into code that uses only \textbf{while} loops.
+\begin{figure}[ht]
+    \include{figures/codeSnippets}
+    \caption{The source and target code snippets for Selection Sort, before and after transforming \texttt{for} loops to \texttt{while} loops.}\label{fig:codeSnippets}
+\end{figure}
+
+\todoQuestion{Check out \verbatim vs \texttt?}
+
+Let us bound the number of $\examplePatternLanguageFor$ loops in our programs by some fixed $n \in \N$. Consider the alphabet $\alphabet := \coreAlphabet \uplus \set{\examplePatternLanguageFor/5, \examplePatternLanguageWhile/3, \examplePatternLanguageNull/0}$ where the unary $\coreAlphabet$ refers to the alphabet used for programming, which for instance, could be all the characters appearing on a standard keyboard. With this alphabet, the source and target codes as seen in Figure~\ref{fig:codeSnippets} can be seen as trees, as shown in Figure~\ref{fig:codeSnippetsAsTrees}. Long chains of characters from $\coreAlphabet$ are written as mere sequences wrapped in box for the sake of readability and space.
+
+\begin{figure}
+    \begin{subfigure}{0.5\textwidth}
+        \include{figures/sourceCodeSnippetAsTree}
+        \caption{Source code}\label{subfig:sourcCode}
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \include{figures/targetCodeSnippetAsTree}
+        \caption{Target code}\label{subfig:targetCode}
+    \end{subfigure}
+    \caption{Code snippets from Figure~\ref{fig:codeSnippets} as trees.}\label{fig:codeSnippetsAsTrees}
+\end{figure}
+
+\todoMandate{Redraw arcs without intersection.}
+
+We would like to capture these codes with  patterns containing variables, which will allow us to move around the sections of code as needed. Let $\variables := \set{x^\examplePatternLanguageInit_i/1, x^\examplePatternLanguageProp_i/1, x^\examplePatternLanguageIncr_i/1 \mid i \in [n]}$ be the set of variables. Recall that $n$, bound on the number of $\examplePatternLanguageFor$ loops in our programs, is a constant and hence we have only a fixed finite number of variables.
+
+\begin{figure}[ht]
+    \centering
+    \include{figures/seedTreeGeneratingPatterns}
+    \caption{The seed tree generating the source and target patterns in Figure~\ref{fig:patternTrees}.}\label{fig:seedTreeGeneratingForWhilePatterns}
+\end{figure}
+
+\begin{figure}
+    \begin{subfigure}{0.5\textwidth}
+        \include{figures/sourcePattern}
+        \caption{Source pattern.}\label{subfig:sourcePattern}        
+    \end{subfigure}
+    \begin{subfigure}{0.5\textwidth}
+        \include{figures/targetPattern}
+        \caption{Target pattern.}\label{subfig:targetPattern}
+    \end{subfigure}
+    \caption{Source and target patterns. The source and target morphisms are identity everywhere, except for $\exampleSeedLanguageLoop_i$ and $\exampleSeedLanguageEndLoop_i$, which are indicated by colors blue and red respectively.}\label{fig:patternTrees}
+\end{figure}
+
+The source and target patterns are given in Figure~\ref{fig:patternTrees} and a seed tree generating these patterns is given in Figure~\ref{fig:seedTreeGeneratingForWhilePatterns}.
+Note that the seed alphabet is given by $\seedAlphabet := \coreAlphabet \uplus \set{\exampleSeedLanguageLoop_i/2, \exampleSeedLanguageEndLoop_i/0 \mid i \in [n]} \uplus \set{\exampleSeedLanguageNull/0}$. 
+
+In general, the seed language will contain all  trees in $\trees{\seedAlphabet}$ which contain each of the letters $\exampleSeedLanguageLoop_i$ and $\exampleSeedLanguageEndLoop_i$ at most once and are well-bracketed. We can observe that this is a regular tree language since $n$ is a constant. A detailed description and proof of this is given in Appendix~\ref{apdx:forWhileLoopExampleMoreDetails}
+
+In general, we see that for any program with no more than $n$ $\examplePatternLanguageFor$ loops, we will be able to find a seed tree, which will give us a source pattern and a target pattern through homomorphisms $\sourceMap, \targetMap$ respectively. The source pattern will match the program code with not more than $n$ $\examplePatternLanguageFor$ loops with a substitution, which when applied to the target pattern will give us the transformed version of the program code which has all $\examplePatternLanguageFor$ loops transformed into $\examplePatternLanguageWhile$ loops. 
+
+We may want to verify that applying a transformation to source trees belonging to some regular language (such as syntactically correct programs that use for loops) will never result in target trees violating desired properties (such as syntactically correct programs that use while loops). This motivates the problem we consider for our model, defined in the following section.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                              %
+%  Problems                                                                    %
+%                                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Problems}\label{subsec:problems_treeTransform}
+
+Just like for the atomic tree transforms, we are interested in the \tcp\ for the tree transform as well.
+
+\begin{problem}\label{prb:typecheckingProblem}
+    \problemtitle{\fullTypecheckingProblemFull}
+    \probleminput{Tree transform $\treeTransform := (B := (\seedLanguage, \sourceMap, \targetMap), \guardFunction)$, regular tree languages $\sourceLanguage, \targetLanguage$.}
+    \problemquestion{Do we have $\treeTransform(\sourceLanguage) \subseteq \targetLanguage$?}
+\end{problem}
+
+We will show that \fullTypecheckingProblemFull\ is in \twoexpt. More specifically, we can solve it in time $2^{polynomial(input)}$, where the degree of the polynomial is also linear in the size of the input. The idea behind this is to construct an ATTA corresponding to the input and check it for nonemptiness. 

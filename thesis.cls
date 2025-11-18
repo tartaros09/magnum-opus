@@ -36,8 +36,12 @@
 \usepackage{enumitem}
 \usepackage{vmargin}
 \usepackage{tabularx, environ}
-% \usepackage[disable]{todonotes}
-\usepackage{todonotes}
+\usepackage[linguistics]{forest}
+\usepackage{subcaption}
+
+\usepackage[disable]{todonotes}
+% \usepackage{todonotes}
+
 \usepackage{utfsym}
 \usepackage{lineno}
 
@@ -168,6 +172,7 @@ pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
+\newtheorem*{definition*}{Definition} 
 % \newtheorem{problem}[theorem]{Problem}
 %\newtheorem{algorithm}[theorem]{Algorithm}
 %\numberwithin{equation}{section}

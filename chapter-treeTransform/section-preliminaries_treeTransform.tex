@@ -1,0 +1,53 @@
+\section{Preliminaries}\label{sec:preliminaries_treeTransform}
+
+We use the definition of tree homomorphisms as given in \cite{tata}. For the sake of completeness, we include the definition here.
+
+\begin{definition}[Tree Homomorphism]\label{def:treeHomomorphism}
+    Let $\alphabet$ and $\alphabet'$ be two \rab s, not necessarily disjoint. For each  $n \geq 0$ such that $\alphabet$ contains a letter of arity $n$, define a set of variables $X_n := \set{x_1, x_2, \dots, x_n}$ disjoint from both $\alphabet$ and $\alphabet'$. Let $h : \alphabet \to \bigcup_{i=0}^\infty \trees{\alphabet' \uplus X_i}$ be a function which assigns to each $f/n \in \alphabet$, an element $h(f) \in \trees{\alphabet \uplus X_n}$. The \emph{tree homomorphism} $\widetilde{h} : \trees{\alphabet} \to \trees{\alphabet'}$ determined by $h$ is defined as follows:
+    \begin{itemize}
+        \item $\widetilde{h}(a) := h(a) \in \trees{\alphabet'}$ for all $a/0 \in \alphabet$.
+        \item $\widetilde{h}(f(t_1, t_2, \dots, t_n)) := h(f)\set{x_1 \leftarrow \widetilde{h}(t_1), x_2 \leftarrow \widetilde{h}(t_2), \dots, x_n \leftarrow \widetilde{h}(t_n)}$
+    \end{itemize}
+    where $h(f)\set{x_1 \leftarrow \widetilde{h}(t_1), x_2 \leftarrow \widetilde{h}(t_2), \dots, x_n \leftarrow \widetilde{h}(t_n)}$ is the result of applying the substitution $\set{x_1 \leftarrow \widetilde{h}(t_1), x_2 \leftarrow \widetilde{h}(t_2), \dots, x_n \leftarrow \widetilde{h}(t_n)}$ to the term $h(f)$.
+\end{definition}
+
+By abuse of notation, we shall refer to the $\widetilde{h}$ as $h$ when there is no confusion, or when the distinction is not relevant to the discussion.
+
+\begin{example}
+    Let $\alphabet := \set{g/3, a/0, b/0}$, and $\alphabet' := \set{f/2, a/0, b/0}$ be two \rab s. Let $h$ be defined by $h(a) := b, h(b) := a, h(g) := f(x_1, f(x_2, x_3))$. Let $\widetilde{h}$ be the tree homomorphism $h$. Then we see that
+    \[\begin{forest}
+        [$g$[$a$][$g$[$b$][$b$][$b$]][$a$, baseline]]
+    \end{forest} ~~~ \xrightarrow{\widetilde{h}} ~~~
+    \begin{forest}
+        [$f$[$b$][$f$[$f$, baseline[$a$][$f$[$a$][$a$]]][$b$]]]
+    \end{forest}\]
+    We see that this homomorphism converts ternery trees to binary trees.
+\end{example}
+
+We shall call a tree homomorphism \emph{linear} if for each $f/n \in \alphabet$, $h(f) \in \trees{\alphabet' \uplus X_n}$ is a linear term, i.e., each of the variables $x_i$ occurs at most once.
+
+\todoMandate{Add motivation for bimorphisms.}
+Below we give a definition of a bimorphism as taken from \cite{tata}, Section 6.2.2.
+
+\begin{definition}[Bimorphism]\label{def:treeBimorphism}
+    Let $\alphabet, \Gamma$ be \rab s. A \emph{bimorphism} is an ordered triple $B := (S, \phi, \psi)$ where $S$ is a language over $\Gamma$ referred to as the \emph{seed language} and $\phi, \psi : \trees{\Gamma} \to \trees{\alphabet}$ are tree homomorphisms. The binary relation induced by $B$ over $\trees{\alphabet}$ denoted by $\sem\B$ is defined as
+    \[ \sem{B} := \set{(\phi(t), \psi(t)) \mid t \in S} \subseteq \trees{\alphabet} \times \trees{\alphabet} \]
+    We say two bimorphisms $B_1, B_2$ are equivalent if they induce the same relation over $\trees{\alphabet}$.
+\end{definition}
+
+\todoMandate{Give examples of bimorphisms.}
+
+\begin{definition}[Alternating Top-down Tree Automaton(ATTA)]\label{def:atta}
+    An \emph{alternating top-down tree automaton} or \emph{ATTA} over a \rab\ $\alphabet$ is a tuple $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet)$ where $\automatonStateSet$ is a finite set of \emph{states}, $\automatonInitialStateSet \subseteq \automatonStateSet$ is the set of \emph{initial states}, and $\automatonTransitionSet : \automatonStateSet \times \alphabet \to \mathcal{B}^+(\automatonStateSet \times \N)$ is a function such that $\automatonTransitionSet(q, a/k) \in \mathcal{B}^+(\automatonStateSet \times [a])$ for all $q \in \automatonStateSet$ and $/k \in \alphabet$. Here, for any set $X$, $\mathcal{B}^+(X)$ denotes the set of all positive boolean combinations of elements in $X$.
+\end{definition}
+
+Note that as defined earlier in \ref{def:ntta}, both NTTA and DTTA re special cases of ATTA. Clearly, and NTTA(resp. DTTA) is an ATTA such that for all $q \in \automatonStateSet, a/k \in \alphabet$ we have that $\automatonTransitionSet(q, a/k) =  \bigvee_{(q_1, q_2, \dots, q_k) \in S}\bigwedge_{i=1}^k (q_i, i)$ for some $S \subseteq \automatonStateSet^k$(resp. $S \subseteq \automatonStateSet^k, \abs{S} = 1$).
+
+\begin{definition}[Run, Acceptance for ATTA]\label{def:acceptanceForAtta}
+    Given a tree $t \in \trees{\alphabet}$ and an ATTA $\automaton := (\automatonStateSet, \alphabet, \automatonTransitionSet, \automatonInitialStateSet)$, we define a \emph{run} of $\automaton$ on $t$ to be another tree $\rho$ over $\automatonStateSet \times \N^*$ such that $\rho(\e) := (q, \e)$ for some state $q$ and every position $u \in \positions(\rho)$ satisfies the following condition: if $\rho(u) = (q, x), t(x) = a/k, \automatonTransitionSet(q, a) = \phi$, then there is a subset $S := \set{(q_1, i_1), (q_2, i_2), \dots, (q_n, i_n)} \subseteq \automatonStateSet \times [a]$ such that $S \models \phi$, the successor positions of $u$ are $\set{u1, u2, \dots, un}$, and $\rho(uj) = (q_j, xi_j)$ for all $j \in [n]$.
+
+    A run is \emph{successful} if $\rho(\e) = (q, \e)$ for some initial state $q \in \automatonInitialStateSet$.  tree $t$ is \emph{accepted} by ATTA $\automaton$if there exists at least one successful run of $\automaton$ on $t$. The set of al trees accepted by $\automaton$ is called the tree language \emph{recognised} by $\automaton$ and is denoted by $\languageOf{\automaton} \subseteq \trees{\alphabet}$. A tree language $L \subseteq \trees{\alphabet}$ is called \emph{recognisable} if there exists an ATTA $\automaton$ such that $L = \languageOf{\automaton}$.
+\end{definition}
+
+We know from \cite{tata}, that despite the way they are defined, ATTA equivalent to NTTA in terms of expressive power.
+\todoQuestion{Maybe add proof of equivalence?}

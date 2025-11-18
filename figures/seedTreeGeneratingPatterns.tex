@@ -1,0 +1,37 @@
+\scalebox{0.8}{\begin{tikzpicture}[node distance = 2mm]
+    \node[draw, align = left] (blob1) {\texttt{int[] A = new int[m];}}; 
+    \node[draw, color=blue, align=left, below =2mm of blob1] (loop1) {$\exampleSeedLanguageLoop_1$};
+    \node[draw, align=left, below left=2mm and -10mm of loop1] (blob2) {\texttt{A[i] = getInputFromUser();}};
+    \node[draw, align=left, color=red, below=of blob2] (endLoop1) {$\exampleSeedLanguageEndLoop_1$};
+    \node[draw, align=left, color=blue, below right=2mm and 8mm of endLoop1] (loop2) {$\exampleSeedLanguageLoop_2$};
+    \node[draw, align=left, below left=2mm and -10mm of loop2] (blob3) {
+        \texttt{int minIndex = j;}\\
+        \texttt{int minValue = A[minIndex];}};
+    \node[draw, color=blue, align=left, below =2mm of blob3] (loop3) {$\exampleSeedLanguageLoop_3$};
+    \node[draw, align=left, below left=2mm and -10mm of loop3] (blob4) {
+        \texttt{if(A[k] < minValue) \{}\\
+        \texttt{minIndex = k;}\\
+        \texttt{minValue = A[k]; \}}};
+    \node[draw, align=left, color=red, below=of blob4] (endLoop3) {$\exampleSeedLanguageEndLoop_3$};
+    \node[draw, align=left, below right =2mm and 2mm of endLoop3] (blob5) {
+        \texttt{int temp = A[j];}\\
+        \texttt{A[j] = A[k];}\\
+        \texttt{A[k] = temp;}};
+    \node[draw, align=left, color=red, below=of blob5] (endLoop2) {$\exampleSeedLanguageEndLoop_2$};
+    \node[draw, align=left, below right=2mm and -2mm of endLoop2] (blob6) {\texttt{return A;}};
+    \node[draw, align=left, below=2mm of blob6] (null1) {$\examplePatternLanguageNull$};
+    
+    \draw[->]
+    (blob1) edge (loop1)
+    (loop1) edge[bend left=0] (blob2)
+    (blob2) edge (endLoop1)
+    (loop1) edge[bend left=50] (loop2)
+    (loop2) edge (blob3)
+    (blob3) edge (loop3)
+    (loop3) edge (blob4)
+    (blob4) edge (endLoop3)
+    (loop3) edge[bend left=50] (blob5)
+    (blob5) edge (endLoop2)
+    (loop2) edge[bend left=50] (blob6)
+    (blob6) edge (null1);
+\end{tikzpicture}}

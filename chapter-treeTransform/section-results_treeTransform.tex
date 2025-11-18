@@ -1,0 +1,250 @@
+\section{Results}\label{sec:results_treeTransforms}
+
+\subsection{Core Idea Behind the Automata Construction.}\label{sec:proofOutline}
+
+\begin{figure}\centering
+    \begin{tikzpicture}[node distance=5mm, inner sep=0pt, text width=2mm]
+        \node[fill=blue, circle, label={[xshift=-3mm, yshift=-3mm]$\eta$}] (eta) {};
+        \node[fill=green, below=of eta,  circle, label={[xshift=-3mm, yshift=-3mm]$\beta$}] (beta) {};
+        \node[fill=magenta, left=of beta,  circle, label={[xshift=-3mm, yshift=-3mm]$\alpha$}] (alpha) {};
+        \node[fill=orange, right=of beta,  circle, label={[xshift=-3mm, yshift=-3mm]$\gamma$}] (gamma) {};
+        
+        \draw[dotted, thick] ($(eta)+(0,+5mm)$)--(eta);
+        \draw[dotted, thick] ($(alpha)+(-2mm,-5mm)$)--(alpha);
+        \draw[dotted, thick] ($(alpha)+(+2mm,-5mm)$)--(alpha);
+        \draw[dotted, thick] ($(beta)+(-3mm,-5mm)$)--(beta);
+        \draw[dotted, thick] ($(beta)+(0,-5mm)$)--(beta);
+        \draw[dotted, thick] ($(beta)+(+3mm,-5mm)$)--(beta);
+        \draw[dotted, thick] ($(gamma)+(-2mm,-5mm)$)--(gamma);
+        \draw[dotted, thick] ($(gamma)+(+2mm,-5mm)$)--(gamma);
+        \draw[-]
+        (eta) edge (alpha)
+        (eta) edge (beta)
+        (eta) edge (gamma);
+        
+        \node[above=1cm of eta, text width=1.5cm] () {Seed tree};
+        \node[right=0.5cm of eta] (arrow1) {$\xrightarrow{\phi := \sourceMap}$};
+        
+        \coordinate (alphap) at ($(eta) + (1.7cm,-1.3cm)$);
+        \coordinate (betap) at  ($(eta) + (3cm,-1.3cm)$);
+        \coordinate (gammap) at ($(eta) + (4.3cm,-1.3cm)$);
+        
+        \fill[color=blue!20] ($(eta) + (3cm,15mm)$) -- ($(eta) + (4.5cm,-1cm)$) -- ($(eta) + (1.5cm,-1cm)$);
+        \draw[color=blue, thick] ($(eta) + (3cm,15mm)$) -- ($(eta) + (4.5cm,-1cm)$) -- ($(eta) + (1.5cm,-1cm)$) -- ($(eta) + (3cm,15mm)$);
+        \fill[color=magenta!20] (alphap) -- ($(eta) + (2.2cm,-2cm)$) -- ($(eta) + (1.2cm,-2cm)$);
+        \draw[color=magenta, thick] (alphap) -- ($(eta) + (2.2cm,-2cm)$) -- ($(eta) + (1.2cm,-2cm)$) -- (alphap);
+        \fill[color=green!20] (betap)-- ($(eta) + (3.5cm,-2cm)$) -- ($(eta) + (2.5cm,-2cm)$);
+        \draw[color=green, thick] (betap)-- ($(eta) + (3.5cm,-2cm)$) -- ($(eta) + (2.5cm,-2cm)$) -- (betap);
+        \fill[color=orange!20] (gammap) -- ($(eta) + (4.8cm,-2cm)$) -- ($(eta) + (3.8cm,-2cm)$);
+        \draw[color=orange, thick] (gammap) -- ($(eta) + (4.8cm,-2cm)$) -- ($(eta) + (3.8cm,-2cm)$) -- (gammap);
+
+        \draw[dotted, thick] ($(eta)+(3cm,+18mm)$)-- ($(eta) + (3cm,15mm)$) ;
+        \draw[dotted, thick] ($(eta)+(1.4cm,-23mm)$)--($(eta) + (1.5cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+20mm,-23mm)$)--($(eta) + (1.9cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+25mm,-23mm)$)--($(eta) + (2.8cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+30mm,-23mm)$)--($(eta) + (3cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+35mm,-23mm)$)--($(eta) + (3.2cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(4cm,-23mm)$)--($(eta) + (4.1cm,-2cm)$);
+        \draw[dotted, thick] ($(eta)+(+46mm,-23mm)$)--($(eta) + (4.5cm,-2cm)$);
+
+        \draw[] ($(alphap)+(0,3mm)$)--(alphap) ;
+        \draw[] ($(betap)+(0,3mm)$)--(betap) ;
+        \draw[] ($(gammap)+(0,3mm)$)--(gammap) ;
+
+        \node[fill=red, above right=5mm and 28mm of eta,  circle, label={[xshift=-3mm, yshift=-3mm]$x$}] (x1) {};
+        \node[fill=red, below left=8mm and 4mm of x1,  circle, label={[xshift=-3mm, yshift=-3mm]$x$}] (x2) {};
+
+        \draw[dotted, thick] ($(x1)+(-2mm,-5mm)$)--(x1) ;
+        \draw[dotted, thick] ($(x1)+(+2mm,-5mm)$)--(x1) ;
+        \draw[dotted, thick] ($(x2)+(-2mm,-5mm)$)--(x2) ;
+        \draw[dotted, thick] ($(x2)+(+2mm,-5mm)$)--(x2) ;
+        
+        \node at (alphap) [below left  = 3.5mm and 1mm of alphap] {\small $\phi(\alpha)$};
+        \node at (betap) [below left  = 3.5mm and 1mm of betap] {\small $\phi(\beta)$};
+        \node at (gammap) [below left  = 3.5mm and 1mm of gammap] {\small $\phi(\gamma)$};
+
+        \node[above right =2.3cm and 2.1cm of eta, text width =3cm]  (){Source pattern};
+        \node[right = 4.4cm of arrow1]  {$\xrightarrow{\substitution}$};
+        \node[ right = 4.5cm of eta]  (phanta) {};
+
+        \coordinate (alphas) at ($(phanta) + (1.7cm,-1.5cm)$);
+        \coordinate (betas) at  ($(phanta) + (3cm,-1.5cm)$) ;
+        \coordinate (gammas) at ($(phanta) + (4.3cm,-1.5cm)$);
+
+        \fill[color=blue!20] ($(phanta) + (3cm,18mm)$) -- ($(phanta) + (4.7cm,-1.2cm)$) -- ($(phanta) + (1.3cm,-1.2cm)$);		
+        \draw[color=blue, thick] ($(phanta) + (3cm,18mm)$) -- ($(phanta) + (4.7cm,-1.2cm)$) -- ($(phanta) + (1.3cm,-1.2cm)$) -- ($(phanta) + (3cm,18mm)$);		
+        \fill[color=magenta!20] (alphas) -- ($(phanta) + (2.2cm,-2.4cm)$) -- ($(phanta) + (1.2cm,-2.4cm)$);			
+        \draw[color=magenta, thick] (alphas) -- ($(phanta) + (2.2cm,-2.4cm)$) -- ($(phanta) + (1.2cm,-2.4cm)$) -- (alphas);	
+        \fill[color=green!20] (betas)-- ($(phanta) + (3.5cm,-2.4cm)$) -- ($(phanta) + (2.5cm,-2.4cm)$);		
+        \draw[color=green, thick] (betas) -- ($(phanta) + (3.5cm,-2.4cm)$) -- ($(phanta) + (2.5cm,-2.4cm)$) -- (betas);							
+        \fill[color=orange!20] (gammas) -- ($(phanta) + (4.8cm,-2.4cm)$) -- ($(phanta) + (3.8cm,-2.4cm)$);
+        \draw[color=orange, thick] (gammas) -- ($(phanta) + (4.8cm,-2.4cm)$) -- ($(phanta) + (3.8cm,-2.4cm)$) -- (gammas) ;
+    
+        \draw[dotted, thick] ($(phanta) + (3cm,18mm)$) -- ($(phanta)+(3cm,+21mm)$)  node[right , xshift = 1pt] {$q_{10}$} ;
+        \draw[dotted, thick] ($(phanta)+(1.4cm,-27mm)$)--($(phanta) + (1.5cm,-2.4cm)$) ;
+        \draw[dotted, thick] ($(phanta)+(+20mm,-27mm)$)--($(phanta) + (1.9cm,-2.4cm)$) ;
+        \draw[dotted, thick] ($(phanta)+(+25mm,-27mm)$)--($(phanta) + (2.8cm,-2.4cm)$) ;
+        \draw[dotted, thick] ($(phanta)+(+30mm,-27mm)$)--($(phanta) + (3cm,-2.4cm)$) ;
+        \draw[dotted, thick] ($(phanta)+(+35mm,-27mm)$)--($(phanta) + (3.2cm,-2.4cm)$) ;
+        \draw[dotted, thick] ($(phanta)+(4cm,-27mm)$)--($(phanta) + (4.1cm,-2.4cm)$) ;
+        \draw[dotted, thick] ($(phanta)+(+46mm,-27mm)$)--($(phanta) + (4.5cm,-2.4cm)$) ;
+    
+        \draw[ ] ($(alphas)+(0,3mm)$)--(alphas) node[above right, , xshift = 1pt] {$q_{7}$}  ;
+        \draw[ ] ($(betas)+(0,3mm)$)--(betas) node[above right, xshift = 1pt] {$q_{8}$} ;
+        \draw[ ] ($(gammas)+(0,3mm)$)--(gammas) node[above right, xshift = 1pt] {$q_{9}$} ;
+    
+        \node[fill=red!20, draw = red,  above right=5mm and 27mm of phanta,  regular polygon,regular polygon sides=3, text width = 4mm, label={[xshift=-6pt, yshift=-8mm]$\footnotesize\substitution(x)$}] (x1) {};
+        
+        \node[fill=red!20,draw = red, regular polygon,regular polygon sides=3, text width = 4mm, below left=8mm and 4mm of x1, label={[xshift=-6pt, yshift=-8mm]$\footnotesize\substitution(x)$}] (x2) {};
+        \draw[dotted, thick] (x1) -- ($(x1)+(-2mm,-5mm)$) node[left, xshift = -3pt] {\color{red}$q_1$} ;
+        \draw[dotted, thick] (x1) --($(x1)+(+2mm,-5mm)$) node[ right, xshift = 1pt] {\color{red}$q_{2}$} ;
+        \draw[dotted, thick] (x1) --($(x1)+(0mm,+8mm)$) node[ right, xshift = 1pt] {\color{red}$q_{3}$};
+        \draw[dotted, thick] (x2) --($(x2)+(-2mm,-5mm)$) node[left, xshift = -3pt] {\color{red}$q_4$}  ;
+        \draw[dotted, thick] (x2) -- ($(x2)+(+2mm,-5mm)$) node[ right, xshift = 1pt] {\color{red}$q_{5}$}  ;
+        \draw[dotted, thick] (x2) --($(x2)+(0mm,+8mm)$) node[ left, xshift = -5pt] {\color{red}$q_{6}$};
+            
+        \node at (alphas) [below left  = 6.5mm and 2.7mm of alphas] {\scriptsize $\substitution(\phi(\alpha))$};
+        \node at (betas) [below left  = 6.5mm and 2.7mm of betas] {\scriptsize $\substitution(\phi(\beta))$};
+        \node at (gammas) [below left  = 6.5mm and 2.7mm of gammas] {\scriptsize $\substitution(\phi(\gamma))$};
+        \node[above right =2.5cm and 13mm of phanta, text width =4cm] () {Annotated Source tree};
+    \end{tikzpicture}
+    \caption{The source tree is annotated with states of $\automaton_{\sourceLanguage}$. We want to simulate the effect of running $\automaton_{\sourceLanguage}$ on the source tree in the seed tree itself. This means, when processing $\eta$, it should guess and validate the potential transformation of the tuple $(q_7, q_8, q_9)$ to $q_{10}$ by a context (colored blue) in the source tree that matches $\sourceMap(\eta)$, and simultaneously make sure that there is a substitution for $x$ that preserves the transformations $(q_1, q_2)$ to $q_3 $ as well as $(q_4, q_5)$ to $q_6 $. An alternating tree automaton on the seed tree can achieve this.}\label{fig:proofOutline}
+\end{figure}
+
+To solve the \tcp, we need to check for the existence of a seed tree $s$ giving rise to an atomic transformation $T_s$, a source tree $t_\src$, a target tree $t_\tgt$ and a substitution $\substitution$ satisfying two constraints. First, the source tree $t_\src$ should be in $\sourceLanguage$ and second, the target tree $t_\tgt$ should be in $\targetLanguage$. The source tree is obtained from the seed tree by first applying the homomorphism $\sourceMap$ and then applying the substitution $\substitution$. Suppose a node $\eta$ in the seed tree is transformed into a context as shown in the middle of Fig.~\ref{fig:proofOutline}. Suppose a variable $x$ is substituted with the tree $\substitution(x)$ as shown in the right side of Fig.~\ref{fig:proofOutline}. Consider a run of $\automaton_{\sourceLanguage}$ on the annotated source tree, in particular the state transformation ($(q_7,q_8,q_9)$ to $(q_{10})$) when the run parses the portion of the source tree that comes from the node $\eta$ of the seed tree. The idea of our decision procedure is to design a tree automaton (we will call this the \emph{\fsa} in the next two paragraphs) that parses the seed tree, and when it traverses the node $\eta$, it simulates $\automaton_{\sourceLanguage}$'s state transformation $(q_7,q_8,q_9)$ to $(q_{10})$. To determine that $(q_7,q_8,q_9)$ is transformed to $q_{10}$, the \fsa\ needs to know that $(q_1,q_2)$ is transformed to $q_3$ by $\substitution(x)$.
+
+The \fsa\ doesn't know what is $\substitution$ (in fact, our goal is to check if a suitable $\substitution$ exists). There might be infinitely many substitutions $\substitution$ out of which one might work; but our \fsa\ is supposed to be a finite state automaton, incapable of picking one choice from infinitely many. To work around this, we observe that the actual tree $\substitution(x)$ is not important; the important thing is that it transforms $(q_1,q_2)$ to $(q_3)$. Any other $\substitution'(x)$ which does the same transformation will work equally well in place of $\substitution(x)$. The number of such transformations is finite (since they are transformations on a finite set of states) and the \fsa\ only needs to check if one of these finitely many transformations work.
+
+One thing we ignored in the above explanation is that the variable $x$ may occur multiple times in the source pattern. In the run of $\automaton_{\sourceLanguage}$ on the source tree, one occurrence of $\substitution(x)$ may encounter $(q_1,q_2)$ (which is transformed to $q_3$). Some other occurrence of $\substitution(x)$ may encounter some other pair $(q_4,q_5)$ (which is transformed to some other state, say $q_6$). What we need is a substitution that transforms $(q_1,q_2)$ to $q_3$ and also transforms $(q_4,q_5)$ to $q_6$ (and does other transformations too, if there are more occurrences of $x$ in the source pattern). To capture all these transformations simultaneously, we introduce the concept of relational lifts that is formally defined in the next section. The \fsa\ nondeterministically picks out one such possible set of transformations to check that the source tree is in $\sourceLanguage$. It similarly needs to check that the target tree is in $\targetLanguage$. Alternating tree automata offer a convenient way to achieve all these tasks of the \fsa. The proof idea is to design an alternating tree automaton whose nonemptiness is equivalent to the existence of a seed tree that satisfies the two required constraints.
+
+\subsection{Main Result}\label{subsec:treeTransformTypeCheckingProblemUpperBound}
+
+\begin{theorem}\label{thm:treeTransformTypeCheckingProblemUpperBound}
+    The \fullTypecheckingProblemFull\ mentioned in \ref{prb:typecheckingProblem} is in \twoexpt.
+\end{theorem}
+
+\begin{proof}
+    Let $\left( \treeTransform := (\seedLanguage, \sourceMap, \targetMap, \guardFunction), \sourceLanguage, \targetLanguage \right)$ be a given instance of the \fullTypecheckingProblemFull, where
+    \begin{itemize}
+        \item $\seedLanguage$ is the seed language over $\seedAlphabet$ given by the NBTA $\automaton := (P, \seedAlphabet, \Theta, E)$.
+        \item $\sourceMap, \targetMap : \trees{\seedAlphabet} \to \trees{\alphabet \uplus \variables}$ are tree homomorphisms.
+        \item $\guardFunction$ is a guard over $\alphabet$ such that $\variables(\sourceMap) \cup \variables(\targetMap) \subseteq \dom(\guardFunction)$, where we define (by abuse of notation) $\variables(\sourceMap) := \bigcup_{\gamma \in \seedAlphabet} \variables(\sourceMap(\gamma))$ and also $\variables(\targetMap) := \bigcup_{\gamma \in \seedAlphabet} \variables(\targetMap(\gamma))$.
+        \item $\sourceLanguage, \targetLanguage$ are the source and target languages respectively, which are regular tree languages given by the NBTAs $\automatonB_i := (\automatonStateSet_i, \alphabet, \automatonTransitionSet_i, \automatonFinalStateSet_i)$ for $i \in \set{\src, \tgt}$.
+    \end{itemize}
+
+    We see that solving \fullTypecheckingProblemFull\ is equivalent to finding whether there exists $\tau \in \seedLanguage$ and a substitution $\substitution$ such that $\substitution(\phi_i(\tau)) \in \genericLanguage_i$ for $i \in \set{\src, \tgt}$. Let $J \subseteq \seedLanguage$ be given by $J := \set{\tau \in \seedLanguage \mid \exists\substitution\mbox{ such that }\substitution(\phi_i(\tau)) \in \genericLanguage_i, i \in \set{\src, \tgt}}$. We will construct a number of ATTAs such that the union of the languages they recognise will be equal to $J$. This will imply that solving \fullTypecheckingProblemFull\ will be a matter of checking each of the correspondingly constructed ATTAs for nonemptiness.
+
+    For each $x \in \variables(\sourceMap) \setminus \variables(\targetMap)$, using Theorem~\ref{thm:relationRealisabilityExptc} we compute a priori, the set {of relations} $\realisableRelations{\sourceAutomatonB}{\guard{x}}$ of all the relations and corresponding contexts realisable by $\sourceAutomatonB$ under $\guard{x}$. Similarly for each variable $y \in \variables(\targetMap) \setminus \variables(\sourceMap)$, we compute $\realisableRelations{\targetAutomatonB}{\guard{y}}$.
+    For all variables $z \in \variables(\sourceMap) \cap \variables(\targetMap)$, we compute the set
+    \[ \realisableRelations{\sourceAutomatonB \cap \targetAutomatonB}{\guard{z}} \subseteq \relations(Q_\src \times Q_\tgt) \times \contexts{\alphabet}{} \]
+
+    From this set, we obtain another set $\realisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}$ of pair of relations that are \emph{simultaneously} realisable by $\sourceAutomatonB$ and $\targetAutomatonB$ along with a context $c \in L(\guard{z})$ that realises both of them. The idea  is that given an element
+    \[ ((q_\src^{(1)}, q_\tgt^{(1)}), (q_\src^{(2)}, q_\tgt^{(2)}), \dots, (q_\src^{(k+1)}, q_\tgt^{(k+1)})) \in R \]
+    we `split' it into two components $(q_\src^{(1)}, q_\src^{(2)}, \dots, q_\src^{(k+1)})$ and $(q_\tgt^{(1)}, q_\tgt^{(2)}, \dots, q_\tgt^{(k+1)})$. We do this for all elements in $R$ to get a pair of relations $R_\src, R_\tgt$ over $Q_\src, Q_\tgt$ respectively. Then, we define $\realisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}$ as
+    \[  := \{((R_\src, R_\tgt), c) \mid (R, c) \in \realisableRelations{\sourceAutomatonB \cap \targetAutomatonB}{\guard{z}}\}. \]
+    In other words, we have 
+    \[ \realisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}} := \{((R_\src, R_\tgt), c) \mid c \in L(\guard{z}), \widetilde{\automatonTransitionSet_i}(c) = R_i, i \in \{\src, \tgt\}\}. \]
+
+    Fix a pair of choice functions of realisable relations $R_\src, R_\tgt$ over $\variables(\sourceMap), \variables(\targetMap)$ respectively such that
+    \[ \twopartfunc{R_\src(z)}{R \in \pi_1[\realisableRelations{\automatonB_s}{\guard{z}}]}{z \in \variables(\sourceMap) \setminus \variables(\targetMap)}{R' \in \pi_1[\pi_1[\realisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]]}{z \in \variables(\sourceMap) \cap \variables(\targetMap)} \]
+    \[ \twopartfunc{R_\tgt(z)}{R \in \pi_1[\realisableRelations{\targetAutomatonB}{\guard{z}}]}{z \in \variables(\targetMap) \setminus \variables(\sourceMap)}{R'' \in \pi_2[\pi_1[\realisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]]}{z \in \variables(\sourceMap) \cap \variables(\targetMap)} \]
+    and $(R', R'') \in \pi_1[\realisableRelations{\sourceAutomatonB, \targetAutomatonB}{\guard{z}}]$ for all $z \in \variables(\sourceMap) \cap \variables(\targetMap)$. Note that this also provides us with corresponding contexts which realise the chosen relations.
+
+    Armed with this, we compute the ETRs $\widetilde{\automatonTransitionSet_i}(\phi_i(\gamma))$ for all $\gamma \in \seedAlphabet$ and $i \in \{\src, \tgt\}$ by simply considering each $x \in \variables(\sourceMap) \cup \variables(\targetMap)$ as a separate letter with the `transition relation' given by the corresponding $R_i(x)$ and running the corresponding automaton on it.
+
+    We will show that for each pair of choice functions $R_\src, R_\tgt$, there exists an ATTA $\Z_{R_\src, R_\tgt}$ of size $\bigo(\max{\abs{Q_\src}, \abs{Q_\tgt}})$ such that
+    \[ L(\Z_{R_\src, R_\tgt}) = \set{\tau \mid \substitution(\sourceMap(\tau)) \in \sourceLanguage, \substitution(\targetMap(\tau)) \in \targetLanguage} \]
+    where $\substitution$ is a function which assigns to each variable $x$, a context that induces the relation $R_i(x)$ for $i \in \{\src, \tgt\}$ and satisfies the guard $\guardFunction$.
+
+    \begin{definition}[Destination Function]\label{def:destinationFunction}
+        Let $\seedLanguage, \genericLanguage$ be tree languages over finite ranked alphabets $\seedAlphabet, \alphabet$ respectively and let $\phi : \trees{\seedAlphabet} \to \trees{\alphabet}$ be a tree homomorphism. For each letter $\gamma/k \in \seedAlphabet$ with $m := \arity(\phi(\gamma))$, we define a function $\destinationFunction{\phi}{\gamma} : [k] \to 2^{[m]}$ as follows. Since $\phi(\gamma)$ is a context of arity $m$, we label the holes of $\phi(\gamma)$ by the set $[m]$ according to the precedence in the inorder traversal of $\phi(\gamma)$. Then, $\destinationFunction{\phi}{\gamma}(i) := \{j \in [m] \mid \mbox{ $j^{th}$ hole of $\phi(\gamma)$ is labelled $u_i$}\}$ for all $i \in [k]$. 
+    \end{definition}
+
+    We illustrate this with an example. Let $\gamma/5 \in \seedAlphabet$ be a letter and let $\phi(\gamma/5)$ be given as in Figure~\ref{fig:destinationFunctionExample}. The numbers in blue denote the order of the vertex in the inorder traversal of $\phi(\gamma)$.
+
+    \begin{figure}\centering
+        \scalebox{.6}{\begin{tikzpicture}[level distance=3em]
+            \begin{scope}[yshift=-2cm]
+                \node [sibling distance=1em] (root) {$\gamma$}
+                child { node {$u_{1}$} }
+                child { node {$u_{2}$} }
+                child { node {$u_{3}$} }
+                child { node {$u_{4}$} }
+                child { node {$u_{5}$} };
+                \node at ([xshift=3cm]root) {$\xrightarrow{\phi}$};
+            \end{scope}
+            \begin{scope}[xshift=6cm]
+                \node {$a$}
+                child[grow=south west] { 
+                node{$x$}
+                child { node{$u_1\blue{(1)}$} }
+                child { node{$u_3\blue{(2)}$} }
+                }
+                child[grow=south] {
+                node {$b$}
+                child[grow=south] {
+                    node{$y$}
+                    child { node{$u_1\blue{(3)}$} }
+                    child {
+                    node{$x$}
+                    child { node{$u_2\blue{(4)}$} }
+                    child { node{$u_4\blue{(5)}$} }
+                    }
+                    child { node{$u_1\blue{(6)}$} }
+                }
+                child[grow=south east] {
+                node{$a$}
+                child[grow=south east] { node{$c$} }
+                child[grow=east] { node{$u_3\blue{(7)}$}}}};
+            \end{scope}
+        \end{tikzpicture}}
+        \caption{Example computation of $\destinationFunction{\phi}{\gamma}$}\label{fig:destinationFunctionExample}
+    \end{figure}
+
+    Then $\destinationFunction{\phi}{\gamma} : [5] \to [7]$ would be given by
+
+    \begin{tabular}{|c||c|c|c|c|c|}
+    \hline
+    $i$ & 1 & 2 & 3 & 4 & 5 \\\hline
+    $\destinationFunction{\phi}{\gamma}(i)$ & $\set{1, 3, 6}$ & $\set{4}$ & $\set{2, 7}$ & $\set{5}$ & $\emptyset$ \\\hline
+    \end{tabular}
+
+    Note that as demonstrated by this example, in each case we must necessarily have that the set $\set{\destinationFunction{\phi}{\gamma}(i) \mid i \in [k]}$ is a partition of $[\arity(\phi(\gamma))]$. Intuitively, we also consider the function $\destinationFunction{\phi}{\gamma}$ as a kind of ``inverse'' of the origin function as mentioned in \cite{originFunctionReference}.
+
+    With this definition, we constuct ATTA $\Z_{R_\src, R_\tgt}$ as follows. For each pair of choice functions $R_\src, R_\tgt$, we define ATTA $\Z_{R_\src, R_\tgt}$ given by
+    \[ \Z_{R_\src, R_\tgt} := \left((P \biguplus Q_\src \biguplus Q_\tgt \biguplus \{\start\}), \seedAlphabet, I := \{\start\}, \automatonTransitionSet'\right) \]
+    where we define $\automatonTransitionSet'$ as follows. For a fixed letter $\gamma \in \seedAlphabet$,
+    \begin{itemize}
+        \item For a state $p \in P$, we set
+        \[ \automatonTransitionSet'(p, \gamma/k) := \bigvee_{(p_1, p_2, \dots, p_k, p) \in \Theta(\gamma)}(p_1, 1) \land (p_2, 2) \land \dots \land (p_k, k) \]
+        This transition basically ensures that the ATTA $\Z_{R_\src, R_\tgt}$ simulates $\automaton$.
+        \item For a state $q \in Q_\src$, we set
+        \[ \automatonTransitionSet'(q, \gamma/k) := \bigvee_{(q_1, \dots, q_m, q) \in \widetilde{\automatonTransitionSet_\src}(\sourceMap(\gamma))} \bigwedge_{i \in [k]} \left[\bigwedge_{j \in \destinationFunction{\sourceMap}{i}}(q_j, i)\right] \]
+        Intuitively, this transition simulates the running of $\sourceAutomatonB$ on $\sourceMap(\tau)$.
+        \item Similarly, for a state $q \in Q_\tgt$, we set
+        \[ \automatonTransitionSet'(q, \gamma/k) := \bigvee_{(q_1, \dots, q_m, q) \in \widetilde{\automatonTransitionSet_\tgt}(\targetMap(\gamma))} \bigwedge_{i \in [k]} \left[\bigwedge_{j \in \destinationFunction{\targetMap}{i}}(q_j, i)\right] \]
+        Intuitively, this transition simulates the running of $\targetAutomatonB$ on $\targetMap(\tau)$.
+        \item We also have an $\e$-transition $\automatonTransitionSet'(\start, \e/1) := \bigvee_{p \in E, q_\src \in F_\src, q_\tgt \in F_\tgt}((p, 1) \land (q_\src, 1) \land (q_\tgt, 1))$
+    \end{itemize}
+
+    We illustrate this with an example. Let $q \in Q_\src$, and $\gamma/5 \in \seedAlphabet$, i.e., $\gamma$ is a letter with arity 5. Also let $\sourceMap(\gamma)$ be defined as in Figure~\ref{fig:destinationFunctionExample}. Note that we have already completely computed the extended transition relation $\widetilde{\automatonTransitionSet_\src}(\sourceMap(\gamma))$ given the choice function $R_\src$. In such a case we define $\automatonTransitionSet'(q, \gamma/5) :=$
+    \[
+    \bigvee_{\begin{matrix} (q_1, \dots, q_7, q)\\ \in \widetilde{\automatonTransitionSet_\src}(\sourceMap(\gamma)) \end{matrix}} 
+    \begin{matrix}
+        \left[ \underbrace{(q_1, 1) \land (q_3, 1) \land (q_6, 1)}_{\destinationFunction{\sourceMap}{1} = \{1, 3, 6\}} \land \underbrace{(q_4, 2)}_{\destinationFunction{\sourceMap}{2} = \{4\}} \right.\\
+        \left. \land \underbrace{(q_2, 3) \land (q_7, 3)}_{\destinationFunction{\sourceMap}{3} = \{2, 7\}} \land \underbrace{(q_5, 4)}_{\destinationFunction{\sourceMap}{4} = \{5\}} \right]
+    \end{matrix}
+    \]
+
+    For the given pair of choice functions $R_\src, R_\tgt$, let $C_{R_\src, R_\tgt}$ be a function that assigns to each $x \in \variables(\sourceMap) \cup \variables(\targetMap)$, a context that induces the relation $R_i(x)$ for $i \in \{\src, \tgt\}$ and satisfies the guard $\guardFunction$. Then we see that this is exactly the context that we are looking for.
+
+    ($\Leftarrow$) Let $\substitution := C_{R_\src, R_\tgt}$ such that $\substitution(\sourceMap(\tau)) \in \sourceLanguage$ and $\substitution(\targetMap(\tau)) \in \targetLanguage$ for some $\tau \in \trees{\seedAlphabet}$. This implies that for an accepting run of $\sourceAutomatonB$ on $\substitution(\sourceMap(\tau))$, the result of that run is some final state $f_\src \in F_\src$. Similarly for an accepting run of $\targetAutomatonB$ on $\substitution(\targetMap(\tau))$, the result of that run is some final state $f_\tgt \in F_\tgt$. Also, since $\tau \in \seedLanguage$, there is an accepting run of $\automaton$ on $\tau$ such that the result of that run is $e \in E$. Then we can see that the set $\{e, f_\src, f_\tgt\} \models I$, the starting formula for $\Z_{R_\src, R_\tgt}$. From here the run of $\Z_{R_\src, R_\tgt}$ simulates the run of $\automaton$ on $\tau$, and the runs of $\automatonB_i$ on $\phi_i(\tau)$ for $i \in \{\src, \tgt\}$ conforming to the transition $C_{R_\src, R_\tgt}$. Since all of these are successful runs, the run of $\Z_{R_\src, R_\tgt}$ we described on $\tau$ is also a successful run, and hence $\tau \in L(\Z_{R_\src, R_\tgt})$.
+
+    ($\Rightarrow$) Conversely, let $\tau \in L(\Z_{R_\src, R_\tgt})$. This implies that there is an accepting run of $\Z_{R_\src, R_\tgt}$ on $\tau$. Given the nature of the starting formula $I$, we must have a $e \in E, f_\src \in F_\src, f_\tgt \in F_\tgt$ such that $\{e, f_\src, f_\tgt\} \models I$. Since $\Z_{R_\src, R_\tgt}$ simulates $\automaton$ on $\tau$ and $e \in E$, we see that $\tau \in L(\automaton)$. Since $\Z_{R_\src, R_\tgt}$ also simulates $\automatonB_i$ on $\phi_i(\tau)$ conforming to $C_{R_\src, R_\tgt}$ for all $i \in \{\src, tgt\}$, we see that $\substitution(\phi_i(\tau)) \in \genericLanguage_i$ for $i \in \{\src, \tgt\}$.
+
+    We know from \cite{tata} that the emptiness problem for ATTA is \exptc\ in the size of the automaton. Note that this computation has been performed for a specific choice of $R_\src, R_\tgt$. Let $\mathcal{R}$ be the set of all pairs of choice functions. To complete the solution of the problem, we need to perform this computation for each pair of choice functions $(R_\src, R_\tgt) \in \mathcal{R}$. We know that $|\mathcal{R}|$ is bounded above by $\prod_{x/k \in \variables(\sourceMap)}2^{|Q_\src|^{k+1}} \cdot \prod_{y/m \in \variables(\targetMap)}2^{|Q_\tgt|^{m+1}}$. Let $M_Q := \max\{|Q_\src|, |Q_\tgt|\}$ and $M_\arity := 1+\max\{\arity(x) \mid x \in \variables(\sourceMap) \cup \variables(\targetMap)\}$. This gives an upper bound 
+    \[ |\R| \leq \prod_{x/k \in \variables(\sourceMap)}2^{M_Q^{M_\arity}} \cdot \prod_{y/m \in \variables(\targetMap)}2^{M_Q^{M_\arity}} \]
+    which eventually simplifies to the bound $|\R| \leq \left(2^{M_Q^{M_\arity}}\right)^{|\variables(\sourceMap) \cup \variables(\targetMap)|}$. We also know see from the above that the size of the ATTA $\Z_{R_\src, R_\tgt}$ is bounded above by $\bigo(M_Q)$ and hence each nonemptiness check requires time given by $2^{\bigo(M_Q)}$. Hence the total time required for all the nonemptiness checks is given by:
+    \[ \mbox{Total running time } = 2^{\bigo(M_Q)} \cdot \left(2^{M_Q^{M_\arity}}\right)^{|\variables(\sourceMap) \cup \variables(\targetMap)|}. \]
+    On simplifying the above, we get that the running time of the algorithm we have provided is $2^{p(M_Q)}$, where $p$ is a polynomial of degree which is also dependent on the size of the input.
+\end{proof}

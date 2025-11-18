@@ -1,0 +1,79 @@
+\scalebox{0.8}{\begin{tikzpicture}[node distance=2mm]
+    \node[draw, align=left] (blob1) {\footnotesize \texttt{int[] A = new int[m];}};
+
+    \node[draw, align=left, below=2mm of blob1] (for1) {\texttt{for}};
+    \node[draw, align=left, below left=2mm of for1] (init1) {\texttt{int i=0;}};
+    \node[draw, align=left, below left=2mm and -10mm of init1] (null1) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -8mm of null1] (term1) {\texttt{i<A.length;}};
+    \node[draw, align=left, below left=2mm and -10mm of term1] (null2) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -3mm of null2] (incr1) {\texttt{i++}};
+    \node[draw, align=left, below left=2mm and -10mm of incr1] (null3) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -25mm of null3] (blob2) {\texttt{A[i] = getInputFromUser();}};
+    \node[draw, align=left, below left=2mm and -10mm of blob2] (null4) {\texttt{null}};
+
+    \node[draw, align=left, below right=2mm and 19mm of null4] (for2) {\texttt{for}};
+    \node[draw, align=left, below left=2mm of for2] (init2) {\texttt{int j=0;}};
+    \node[draw, align=left, below left=2mm and -10mm of init2] (null5) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -8mm of null5] (term2) {\texttt{j<A.length;}};
+    \node[draw, align=left, below left=2mm and -10mm of term2] (null6) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -3mm of null6] (incr2) {\texttt{j++}};
+    \node[draw, align=left, below left=2mm and -10mm of incr2] (null7) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -28mm of null7] (blob3) {
+        \texttt{int minIndex = j;}\\
+        \texttt{int minValue = A[minIndex];}};
+    \node[draw, align=left, below=2mm of blob3] (for3) {\texttt{for}};
+    \node[draw, align=left, below left=2mm of for3] (init3) {\texttt{int k=j;}};
+    \node[draw, align=left, below left=2mm and -10mm of init3] (null8) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -8mm of null8] (term3) {\texttt{k<A.length;}};
+    \node[draw, align=left, below left=2mm and -10mm of term3] (null9) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -3mm of null9] (incr3) {\texttt{k++}};
+    \node[draw, align=left, below left=2mm and -10mm of incr3] (null10) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and -24mm of null10] (blob4) {
+        \texttt{if(A[k] < minValue) \{}\\
+        \texttt{\quad minIndex = k;}\\
+        \texttt{\quad minValue = A[k];}\\
+        \texttt{\}}};
+    \node[draw, align=left, below left=2mm and -10mm of blob4] (null11) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and 6mm of null11] (blob5) {
+        \texttt{int temp = A[j];}\\
+        \texttt{int A[j] = A[k];}\\
+        \texttt{int A[k] = temp;}};
+    \node[draw, align=left, below left=2mm and -10mm of blob5] (null12) {\texttt{null}};
+    \node[draw, align=left, below right=2mm and 6mm of null12] (blob6) {\texttt{return A;}};
+    \node[draw, align=left, below left=2mm and -10mm of blob6] (null13) {\texttt{null}};
+
+    \draw[->]
+    (blob1) edge (for1)
+    
+    (for1) edge (init1)
+    (init1) edge (null1)
+    (for1) edge (term1)
+    (term1) edge (null2)
+    (for1) edge[bend left=50] (incr1)
+    (incr1) edge (null3)
+    (for1) edge[bend left=60] (blob2)
+    (blob2) edge (null4)
+    (for1) edge[bend left=80] (for2)
+
+    (for2) edge (init2)
+    (init2) edge (null5)
+    (for2) edge (term2)
+    (term2) edge (null6)
+    (for2) edge[bend left=50] (incr2)
+    (incr2) edge (null7)
+    (for2) edge[bend left=40] (blob3)
+    (blob3) edge (for3)
+    (for2) edge[bend left=40] (blob6)
+    (blob6) edge (null13)
+
+    (for3) edge (init3)
+    (init3) edge (null8)
+    (for3) edge (term3)
+    (term3) edge (null9)
+    (for3) edge[bend left=50] (incr3)
+    (incr3) edge (null10)
+    (for3) edge[bend left=40] (blob4)
+    (blob4) edge (null11)
+    (for3) edge[bend left=40] (blob5)
+    (blob5) edge (null12);
+\end{tikzpicture}}
